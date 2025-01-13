@@ -1,0 +1,19 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+
+ :dependencies
+ [[lilactown/helix "0.2.0"] [com.teknql/shadow-cljs-tailwind-jit "1.0.0"]]
+
+ :builds
+ {:app {:target :browser
+        :modules {:main {:init-fn app.core/init}}
+        :devtools {:reload-strategy :full
+                   :preloads [app.dev]
+                   :http-root "public"
+                   :http-port 8080}
+        :build-hooks
+         [(teknql.tailwind/start-watch!)]
+        :tailwind/output "public/css/output.css"}}}
