@@ -3,7 +3,8 @@
             [helix.hooks :as hooks]
             [helix.dom :as d]
             ["react-dom/client" :as rdom]
-            [app.components.toc :refer [TableOfContents]]
+            [app.components.contents :refer [TableOfContents]]
+            [app.components.table :refer [Table]]
             [clojure.walk :as walk]
             ["react-katex" :refer [InlineMath BlockMath]]
             )
@@ -33,8 +34,8 @@
       (d/h3 {:id "subB" :class-name (:h3 outline-style)} "Subsection B")
            (d/p {:class-name "indent-6"}"more text here")
            (d/h2 {:id "bottom" :class-name (:h2 outline-style)} "Section 2")
-      ($ InlineMath "\\frac{a}{b} \\cdot \\frac{c}{d} = \\frac{ac}{bd}")
       ($ BlockMath {:math "\\int_0^\\infty x^2 dx"})
+      ($ Table {:headers ["Rank" "Hand Name"] :rows [[1 "Royal Flush"] [2 "Straight Flush"]]})
       ))
 
 ($ InlineMath {:math "\\int_0^\\infty x^2 dx"})

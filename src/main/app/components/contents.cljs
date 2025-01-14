@@ -1,4 +1,4 @@
-(ns app.components.toc
+(ns app.components.contents
   (:require [helix.core :refer [defnc $ <>]]
             [helix.hooks :as hooks]
             [helix.dom :as d]
