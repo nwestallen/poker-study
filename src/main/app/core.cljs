@@ -2,10 +2,11 @@
   (:require [helix.core :refer [defnc $ <>]]
             [helix.hooks :as hooks]
             [helix.dom :as d]
+            [shadow.css :refer [css]]
             ["react-dom/client" :as rdom]
             [app.components.contents :refer [TableOfContents]]
             [app.components.table :refer [Table]]
-            [app.components.cards :refer [hand-text]]
+            [app.components.cards :refer [hand-text card-img Fourd card-map]]
             [clojure.walk :as walk]
             ["react-katex" :refer [InlineMath BlockMath]]
             )
@@ -26,9 +27,22 @@
   {:h2 "font-bold indent-2 text-2xl text-slate-600 my-2"
    :h3 "font-semibold indent-4 text-xl text-slate-500 my-1"})
 
+(def test-style
+      (css :bg-blue-500
+        :text-3xl
+        :p-8
+        :m-4
+        :border-4
+        :border-red-500
+        :rounded-lg))
+
+(defnc TestComponent []
+  (d/div {:class-name test-style}
+         "This should be blue with big text"))
+
 (defpage PageContent
     (d/div
-           (d/h1 {:class-name "text-4xl font-bold py-5"} "♠" (d/span {:class "text-red-600"} "♥︎ ") "Understanding Poker Theory " (d/span {:class "text-sky-600"} "♦︎") (d/span {:class "text-green-600"}"♣︎"))
+     (d/h1 {:class-name (css :px-4 :shadow {:color "green"})}"♠" (d/span {:class (css"text-red-600")} "♥︎ ") "Poker Theory "(d/span {:class "text-sky-600"} "♦︎") (d/span {:class "text-green-600"}"♣︎"))
       (d/h2 {:id "hand-rankings" :class-name (:h2 outline-style)} "Hand Rankings")
            (d/h3 {:id "suba" :class-name (:h3 outline-style)} "Subsection A")
            (d/p {:class-name "indent-6"}"I'm gonna put some more text here, maybe talk about " (hand-text "Ah" "Kd"))
@@ -39,16 +53,21 @@
       ($ Table {:headers ["Rank" "Hand Name" "Form"]
                 :rows [
                        [1 "Royal Flush" (hand-text "Ts" "Js" "Ks" "Qs" "As")]
-                       [2 "Straight Flush" (hand-text "6h" "7h" "8h" "9h" "Th")]
+                       [2 "Straight Flush" (hand-text "6h" "7h" "8h" "9h" "Td")]
                        ]})
-      (d/img {:src "Poker Sprite Sheet - 4.png" :class-name "object-[position:-207.9px_-97.4px] object-none h-[97.4px] w-[69.3px]"})
+      (d/img {:src "Poker Sprite Sheet - 4.png" :class-name "object-[position:-277.2px_-97.4px] object-none h-[97.4px] w-[69.3px]"})
+      (card-img "6d")
+      (card-img "Th")
+      (card-map "As")
+      (card-map "4d")
       ))
 
 (defnc app []
   {:helix/features {:fast-refresh true}}
   (d/div {:class-name "flex flex-row h-screen"}
          ($ TableOfContents {:headers (extract-headers PageContent-structure)})
-         ($ PageContent)
+         ;;($ PageContent)
+         ($ TestComponent)
     ))
 
 ;; start your app with your favorite React renderer
