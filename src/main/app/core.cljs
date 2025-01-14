@@ -6,7 +6,7 @@
             ["react-dom/client" :as rdom]
             [app.components.contents :refer [TableOfContents]]
             [app.components.table :refer [Table]]
-            [app.components.cards :refer [hand-text card-img Fourd card-map]]
+            [app.components.cards :refer [hand-text cards]]
             [clojure.walk :as walk]
             ["react-katex" :refer [InlineMath BlockMath]]
             )
@@ -42,7 +42,9 @@
                        [1 "Royal Flush" (hand-text "Ts" "Js" "Ks" "Qs" "As")]
                        [2 "Straight Flush" (hand-text "6h" "7h" "8h" "9h" "Td")]
                        ]})
-      (d/img {:src "Poker Sprite Sheet - 4.png" :class-name "object-[position:-277.2px_-97.4px] object-none h-[97.4px] w-[69.3px]"})
+      (d/div {:class-name (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:height "97.4px"} {:width "69.3px"}
+                               {:background-position "69.3px 0px"})})
+      (d/div {:class-name (get cards "Td")})
       ))
 
 (defnc app []

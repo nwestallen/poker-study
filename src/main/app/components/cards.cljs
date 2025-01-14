@@ -30,41 +30,63 @@
 (defn hand-text [& strings]
   (map card-text strings))
 
-(def rank-offset
+(def cards
   {
-   "A" 0
-   "K" 1
-   "Q" 2
-   "J" 3
-   "T" 4
-   "9" 5
-   "8" 6
-   "7" 7
-   "6" 8
-   "5" 9
-   "4" 10
-   "3" 11
-   "2" 12
-   })
+   "As" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "0px 0px"})
+   "Ks" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-69.3px 0px"})
+   "Qs" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-138.6px 0px"})
+   "Js" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-207.9px 0px"})
+   "Ts" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-277.2px 0px"})
+   "9s" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-356.5px 0px"})
+   "8s" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-415.8px 0px"})
+   "7s" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-4851px 0px"})
+   "6s" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-554.4px 0px"})
+   "5s" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-623.7px 0px"})
+   "4s" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-693px 0px"})
+   "3s" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-762.3px 0px"})
+   "2s" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-831.6px 0px"})
 
-(def suit-offset
-  {"s" 0 "h" 1 "c" 2 "d" 3})
+   "Ah" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "0px -97.4px"})
+   "Kh" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-69.3px -97.4px"})
+   "Qh" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-138.6px -97.4px"})
+   "Jh" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-207.9px -97.4px"})
+   "Th" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-277.2px -97.4px"})
+   "9h" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-356.5px -97.4px"})
+   "8h" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-415.8px -97.4px"})
+   "7h" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-4851px -97.4px"})
+   "6h" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-554.4px -97.4px"})
+   "5h" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-623.7px -97.4px"})
+   "4h" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-693px -97.4px"})
+   "3h" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-762.3px -97.4px"})
+   "2h" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-831.6px -97.4px"})
 
-(def card-size {:h 97.4 :w 69.3})
+   "Ac" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "0px -194.8px"})
+   "Kc" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-69.3px -194.8px"})
+   "Qc" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-138.6px -194.8px"})
+   "Jc" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-207.9px -194.8px"})
+   "Tc" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-277.2px -194.8px"})
+   "9c" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-356.5px -194.8px"})
+   "8c" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-415.8px -194.8px"})
+   "7c" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-4851px -194.8px"})
+   "6c" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-554.4px -194.8px"})
+   "5c" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-623.7px -194.8px"})
+   "4c" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-693px -194.8px"})
+   "3c" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-762.3px -194.8px"})
+   "2c" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-831.6px -194.8px"})
 
-(defn card-img [text]
-  (d/img {:src "Poker Sprite Sheet - 4.png" :class-name (str "object-[position:-" (gstring/format "%.1f" (* (:w card-size) (get rank-offset (first text))))"px_-"(gstring/format "%.1f" (* (:h card-size) (get suit-offset (last text))))"px] object-none h-[97.4px] w-[69.3px]")}))
+   "Ad" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "0px -292.2px"})
+   "Kd" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-69.3px -292.2px"})
+   "Qd" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-138.6px -292.2px"})
+   "Jd" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-207.9px -292.2px"})
+   "Td" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-277.2px -292.2px"})
+   "9d" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-356.5px -292.2px"})
+   "8d" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-415.8px -292.2px"})
+   "7d" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-4851px -292.2px"})
+   "6d" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-554.4px -292.2px"})
+   "5d" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-623.7px -292.2px"})
+   "4d" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-693px -292.2px"})
+   "3d" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-762.3px -292.2px"})
+   "2d" (css {:background-image "url(\"../PokerSpriteSheet-4.png\")"} {:width "69.3px"} {:height "97.4px"} {:background-position "-831.6px -292.2px"})
+   }
+  )
 
-(def Fourd (card-img "4d"))
-
-(card-img "Js")
-
-(def card-map
-  {"As" (d/img {:src "Poker Sprite Sheet - 4.png" :class-name "object-[position:0px_0px] object-none h-[97.4px] w-[69.3px]"})
-   "4d" (d/img {:src "Poker Sprite Sheet - 4.png" :class-name "object-[position:-693px_-292.2px] object-none h-[97.4px] w-[69.3px]"})
-   "Kc" (d/img {:src "Poker Sprite Sheet - 4.png" :class-name "object-[position:-69.3px_-194.8px] object-none h-[97.4px] w-[69.3px]"})
-
-})
-
-;;(d/img {:src "Poker Sprite Sheet - 4.png" :class-name "object-[position:-207.9px_-97.4px] object-none h-[97.4px] w-[69.3px]"})
-;; big problem, the dynamically defined image won't dispay - abandon tailwind if necessary, you're using repeated styles anyway, try shadow-css, first maybe static css that defines the position of every card explicityly (ugh)
