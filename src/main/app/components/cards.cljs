@@ -2,6 +2,7 @@
   (:require [helix.core :refer [defnc $ <>]]
             [helix.hooks :as hooks]
             [helix.dom :as d]
+            [shadow.css :refer [css]]
             ["react-dom/client" :as rdom]
             [clojure.walk :as walk]
             [goog.string :as gstring]
@@ -9,10 +10,10 @@
 
 (def colors
   {
-   "s" "text-neutral-950"
-   "h" "text-red-600"
-   "c" "text-green-600"
-   "d" "text-sky-600"
+   "s" (css :text-neutral-950)
+   "h" (css :text-red-600)
+   "c" (css :text-green-600)
+   "d" (css :text-sky-600)
    })
 
 (def shapes
