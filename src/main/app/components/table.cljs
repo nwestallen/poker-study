@@ -7,6 +7,6 @@
 
 (defnc  Table [{:keys [headers rows]}]
   (d/table
-   (d/tr {:class-name "bg-slate-300"}
+   (d/tr {:class-name "bg-red-400 text-white"}
          (for [h headers] (d/th {:class-name "border border-gray-500 text-center px-2 py-1"} h)))
-   (for [r rows] (d/tr {:class-name "bg-blue-50"} (for [c r] (d/td {:class-name "border border-gray-500 text-center px-2 py-1"} c))))))
+   (for [r rows] (d/tr {:class-name "bg-sky-100"} (for [c r] (d/td {:class-name "border border-gray-500 text-center px-2 py-1"} c))))))
