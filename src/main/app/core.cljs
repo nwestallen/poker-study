@@ -41,9 +41,8 @@
                        [1 "Royal Flush" (hand-text "Ts" "Js" "Ks" "Qs" "As")]
                        [2 "Straight Flush" (hand-text "6h" "7h" "8h" "9h" "Th")]
                        ]})
+      (d/img {:src "Poker Sprite Sheet - 4.png" :class-name "object-[position:-207.9px_-97.4px] object-none h-[97.4px] w-[69.3px]"})
       ))
-
-($ InlineMath {:math "\\int_0^\\infty x^2 dx"})
 
 (defnc app []
   {:helix/features {:fast-refresh true}}
