@@ -90,3 +90,10 @@
    }
   )
 
+(defn card-img [text]
+  (d/div {:class-name (css :border-solid :border :m-1 :border-gray-300 :rounded :shadow-sm)}
+  (d/div {:class-name (get cards text)})))
+
+(defn hand-img [& strings]
+  (d/div {:class-name (css :flex :flex-row :border-solid :border-2 :p-2 :border-yellow-700 :w-fit :bg-green-700 :rounded-3xl :shadow-lg)}
+  (map card-img strings)))
