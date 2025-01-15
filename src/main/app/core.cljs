@@ -2,10 +2,11 @@
   (:require [helix.core :refer [defnc $ <>]]
             [helix.hooks :as hooks]
             [helix.dom :as d]
+            [shadow.css :refer [css]]
             ["react-dom/client" :as rdom]
             [app.components.contents :refer [TableOfContents]]
             [app.components.table :refer [Table]]
-            [app.components.cards :refer [hand-text]]
+            [app.components.cards :refer [hand-text hand-img]]
             [clojure.walk :as walk]
             ["react-katex" :refer [InlineMath BlockMath]]
             )
@@ -23,31 +24,30 @@
     @headers))
 
 (def outline-style
-  {:h2 "font-bold indent-2 text-2xl text-slate-600 my-2"
-   :h3 "font-semibold indent-4 text-xl text-slate-500 my-1"})
+  {:h2 (css :font-bold :pl-2 :text-2xl :text-slate-600 :my-2)
+   :h3 (css :font-semibold :pl-4 :text-xl :text-slate-500 :my-1)})
 
 (defpage PageContent
     (d/div
-           (d/h1 {:class-name "text-4xl font-bold py-5"} "♠" (d/span {:class "text-red-600"} "♥︎ ") "Understanding Poker Theory " (d/span {:class "text-sky-600"} "♦︎") (d/span {:class "text-green-600"}"♣︎"))
+     (d/h1 {:class-name (css :text-4xl :px-2 :py-5)}"♠" (d/span {:class-name (css :text-red-600)} "♥︎ ") "Understanding Poker Theory "(d/span {:class-name (css :text-sky-600)} "♦︎") (d/span {:class-name (css :text-green-600)}"♣︎"))
       (d/h2 {:id "hand-rankings" :class-name (:h2 outline-style)} "Hand Rankings")
-           (d/h3 {:id "suba" :class-name (:h3 outline-style)} "Subsection A")
-           (d/p {:class-name "indent-6"}"I'm gonna put some more text here, maybe talk about " (hand-text "Ah" "Kd"))
-      (d/h3 {:id "subB" :class-name (:h3 outline-style)} "Subsection B")
-           (d/p {:class-name "indent-6"}"more text here")
-           (d/h2 {:id "bottom" :class-name (:h2 outline-style)} "Section 2")
-      ($ BlockMath {:math "\\int_0^\\infty x^2 dx"})
-      ($ Table {:headers ["Rank" "Hand Name" "Form"]
+      ($ Table {:headers ["Rank" "Hand Name" "Form" "5 Card Combos" "7 Card Combos"]
                 :rows [
-                       [1 "Royal Flush" (hand-text "Ts" "Js" "Ks" "Qs" "As")]
-                       [2 "Straight Flush" (hand-text "6h" "7h" "8h" "9h" "Th")]
+                       [1 "Royal Flush" (hand-text "As" "Ks" "Qs" "Js" "Ts") ($ BlockMath {:math "\\binom{4}{1} = 4"})
+                        ($ BlockMath {:math "\\binom{4}{1}\\binom{47}{2} = 4324"})]
+                       [2 "Straight Flush" (hand-text "9h" "8h" "7h" "6h" "5h") ($ BlockMath {:math "\\binom{9}{1}\\binom{4}{1} = 36"}) ($ BlockMath {:math "\\binom{9}{1}\\binom{4}{1}\\binom{47}{2} = 37250"})]
                        ]})
+           (d/h3 {:id "suba" :class-name (:h3 outline-style)} "Subsection A")
+           (d/p {:class-name (css :pl-6)}"I'm gonna put some more text here, maybe talk about " (hand-text "Ah" "Kd"))
+      (d/h3 {:id "subB" :class-name (:h3 outline-style)} "Subsection B")
+           (d/p {:class-name (css :pl-6)}"more text here")
+           (d/h2 {:id "bottom" :class-name (:h2 outline-style)} "Section 2")
+      (hand-img "Qs" "Qh" "Qc" "Qd" "Ts")
       ))
-
-($ InlineMath {:math "\\int_0^\\infty x^2 dx"})
 
 (defnc app []
   {:helix/features {:fast-refresh true}}
-  (d/div {:class-name "flex flex-row h-screen"}
+  (d/div {:class-name (css :flex :flex-row :h-screen)}
          ($ TableOfContents {:headers (extract-headers PageContent-structure)})
          ($ PageContent)
     ))
