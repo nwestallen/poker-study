@@ -33,9 +33,10 @@
       (d/h2 {:id "hand-rankings" :class-name (:h2 outline-style)} "Hand Rankings")
       ($ Table {:headers ["Rank" "Hand Name" "Form" "5 Card Combos" "7 Card Combos"]
                 :rows [
-                       [1 "Royal Flush" (hand-text "As" "Ks" "Qs" "Js" "Ts") ($ BlockMath {:math "\\binom{4}{1} = 4"})
-                        ($ BlockMath {:math "\\binom{4}{1}\\binom{47}{2} = 4324"})]
-                       [2 "Straight Flush" (hand-text "9h" "8h" "7h" "6h" "5h") ($ BlockMath {:math "\\binom{9}{1}\\binom{4}{1} = 36"}) ($ BlockMath {:math "\\binom{9}{1}\\binom{4}{1}\\binom{47}{2} = 37250"})]
+                       [1 "Royal Flush" (hand-text "As" "Ks" "Qs" "Js" "Ts") ($ BlockMath {:math "\\binom{4}{1} = 4"}) ($ BlockMath {:math "\\binom{4}{1}\\binom{47}{2} = 4\\,324"})]
+                       [2 "Straight Flush" (hand-text "9h" "8h" "7h" "6h" "5h") ($ BlockMath {:math "\\binom{9}{1}\\binom{4}{1} = 36"}) ($ BlockMath {:math "\\binom{9}{1}\\binom{4}{1}\\binom{47}{2} = 37\\,260"})]
+                       [3 "Four of a Kind" (hand-text "Qs" "Qh" "Qc" "Qd" "Kc") ($ BlockMath {:math "\\binom{13}{1}\\binom{4}{1}\\binom{12}{1}\\binom{4}{1} = 156"}) ($ BlockMath {:math "\\binom{13}{1}\\binom{48}{3} = 224\\,848"})]
+                       [3 "Four of a Kind" (hand-text "Qs" "Qh" "Qc" "Qd" "Kc") ($ BlockMath {:math "\\binom{13}{1}\\binom{4}{1}\\binom{12}{1}\\binom{4}{1} = 156"}) ($ BlockMath {:math "\\binom{13}{1}\\binom{48}{3} = 224\\,848"})]
                        ]})
            (d/h3 {:id "suba" :class-name (:h3 outline-style)} "Subsection A")
            (d/p {:class-name (css :pl-6)}"I'm gonna put some more text here, maybe talk about " (hand-text "Ah" "Kd"))
@@ -43,11 +44,12 @@
            (d/p {:class-name (css :pl-6)}"more text here")
            (d/h2 {:id "bottom" :class-name (:h2 outline-style)} "Section 2")
       (hand-img "Qs" "Qh" "Qc" "Qd" "Ts")
+      (d/p "Just a little test")
       ))
 
 (defnc app []
   {:helix/features {:fast-refresh true}}
-  (d/div {:class-name (css :flex :flex-row :h-screen)}
+  (d/div {:class-name (css :flex :flex-row :min-h-screen)}
          ($ TableOfContents {:headers (extract-headers PageContent-structure)})
          ($ PageContent)
     ))
