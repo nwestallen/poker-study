@@ -7,6 +7,7 @@
             [app.components.contents :refer [TableOfContents]]
             [app.components.table :refer [Table]]
             [app.components.cards :refer [hand-text hand-img]]
+            [app.components.cardchart :refer [Cardchart]]
             [clojure.walk :as walk]
             ["react-katex" :refer [InlineMath BlockMath]]
             )
@@ -51,15 +52,14 @@
            (d/h2 {:id "bottom" :class-name (:h2 outline-style)} "Section 2")
       (hand-img "Qs" "Qh" "Qc" "Qd" "Ts")
       (d/p "Just a little test")
-      (d/div {:class-name (css :grid {:grid-template-columns "repeat(14, 50px)"} {:grid-template-rows "repeate(14, 50px)"} :gap-2 :bg-red-300 {:width "fit-content"})}
-             (for [i (range 14)] (d/div {:class-name (css :flex :flex-row {:width "50px" :height "50px"} :bg-slate-500)} "x"))
-             (for [i (range 13)] (conj (for [j (range 13)] (d/div {:class-name (css :flex :flex-row {:width "50px" :height "50px"} :bg-blue-400)} (str i "-" j))) (d/div {:class-name (css :flex :flex-row {:width "50px" :height "50px"} :bg-slate-500)} "x"))))
+      ($ Cardchart)
       ))
 
 ;; Single square component that can accept total fill, eventually partial fill or saturation based on percentage props. Naturally hand letter props
 ;; Syntax/dsl for grid props dictating quickly how each square is to be colored
 ;; Should be able to programmatically generate props e.g. from solvers in order to integrate theory
 ;; User should be able to manually paint squares or easily type percentages to make their own charts (similar to GTO range tool)
+;; See if you can write a macro to build (css ...) forms so that it can be both dynamic and compatible with shadow-css (I think this should work) - can replace card css list if so
 
 (defnc app []
   {:helix/features {:fast-refresh true}}
