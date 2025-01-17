@@ -51,7 +51,14 @@
            (d/h2 {:id "bottom" :class-name (:h2 outline-style)} "Section 2")
       (hand-img "Qs" "Qh" "Qc" "Qd" "Ts")
       (d/p "Just a little test")
+      (d/div {:class-name (css :grid {:grid-template-columns "repeat(13, 50px)"} {:grid-template-rows "repeate(13, 50px)"} :gap-4 :bg-red-300 {:width "fit-content"})}
+             (for [i (range 13)] (for [j (range 13)] (d/div {:class-name (css :flex :flex-row {:width "50px" :height "50px"} :bg-blue-400)} (str i "-" j)))))
       ))
+
+;; Single square component that can accept total fill, eventually partial fill or saturation based on percentage props. Naturally hand letter props
+;; Syntax/dsl for grid props dictating quickly how each square is to be colored
+;; Should be able to programmatically generate props e.g. from solvers in order to integrate theory
+;; User should be able to manually paint squares or easily type percentages to make their own charts (similar to GTO range tool)
 
 (defnc app []
   {:helix/features {:fast-refresh true}}
