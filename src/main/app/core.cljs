@@ -51,8 +51,9 @@
            (d/h2 {:id "bottom" :class-name (:h2 outline-style)} "Section 2")
       (hand-img "Qs" "Qh" "Qc" "Qd" "Ts")
       (d/p "Just a little test")
-      (d/div {:class-name (css :grid {:grid-template-columns "repeat(13, 50px)"} {:grid-template-rows "repeate(13, 50px)"} :gap-4 :bg-red-300 {:width "fit-content"})}
-             (for [i (range 13)] (for [j (range 13)] (d/div {:class-name (css :flex :flex-row {:width "50px" :height "50px"} :bg-blue-400)} (str i "-" j)))))
+      (d/div {:class-name (css :grid {:grid-template-columns "repeat(14, 50px)"} {:grid-template-rows "repeate(14, 50px)"} :gap-2 :bg-red-300 {:width "fit-content"})}
+             (for [i (range 14)] (d/div {:class-name (css :flex :flex-row {:width "50px" :height "50px"} :bg-slate-500)} "x"))
+             (for [i (range 13)] (conj (for [j (range 13)] (d/div {:class-name (css :flex :flex-row {:width "50px" :height "50px"} :bg-blue-400)} (str i "-" j))) (d/div {:class-name (css :flex :flex-row {:width "50px" :height "50px"} :bg-slate-500)} "x"))))
       ))
 
 ;; Single square component that can accept total fill, eventually partial fill or saturation based on percentage props. Naturally hand letter props
