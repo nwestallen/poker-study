@@ -8,7 +8,6 @@
             [app.components.table :refer [Table]]
             [app.components.cards :refer [hand-text hand-img]]
             [app.components.cardchart :refer [Cardchart]]
-            [app.utils.strategy :refer [strategy raise-range]]
             [clojure.walk :as walk]
             ["react-katex" :refer [InlineMath BlockMath]]
             )
@@ -53,7 +52,7 @@
            (d/h2 {:id "bottom" :class-name (:h2 outline-style)} "Section 2")
       (hand-img "Qs" "Qh" "Qc" "Qd" "Ts")
       (d/p "Just a little test")
-      ($ Cardchart {:strategy (strategy (raise-range '("TT+" "A5s+" "K9s+" "AKo+" "J5o")))})
+      ($ Cardchart {:strategy {:raise '("TT+" "A5s+" "K9s+" "AKo+" "J5o") :call '("99-55" "QTs+")}})
       ))
 
 (defnc app []

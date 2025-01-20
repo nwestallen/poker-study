@@ -29,8 +29,11 @@
         result
         (recur (rest s) (assoc-in result [(hand-index (:hand (first s))) :act] (:act (first s))))))))
 
-(defn raise [hands]
-  (map #(hash-map :hand % :act :raise) hands))
+(defn action [act hands]
+  (partial (map #(hash-map :hand % :act act) hands)))
+
+(defn actions [actionmap]
+  (flatten (map (fn [[k v]] (action k v)) actionmap)))
 
 (def ranks '("2" "3" "4" "5" "6" "7" "8" "9" "T" "J" "Q" "K" "A"))
 
@@ -61,5 +64,10 @@
 
 (def hand-ranges (comp flatten (partial map hand-range)))
 
-(def raise-range (comp (partial raise) hand-ranges))
+(defn act-ranges [actionmap]
+  (flatten (map (fn [[k v]] (action k (hand-ranges v))) actionmap)))
+
+(def strat-ranges
+  (comp strategy act-ranges))
+
 
