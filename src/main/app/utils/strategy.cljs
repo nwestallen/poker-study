@@ -21,24 +21,16 @@
   (.indexOf all-fold (first (filter (comp #{h} :hand) all-fold)))
 )
 
-(empty? '())
-
-(defn strategy
-  ([strats]
-  (strategy (rest strats)
-  (assoc-in all-fold [(hand-index (:hand (first strats))) :act] (:act (first strats)))))
-  ([strats, result]
-   (if (empty? strats)
-     result
-     (recur (rest strats) (assoc-in result [(hand-index (:hand (first strats))) :act] (:act (first strats))))
-     )))
-
-(strategy '({:hand "AA" :act :raise} {:hand "KK" :act :raise}))
+(def strategy
+  (fn [strats]
+    (loop [s strats
+           result all-fold]
+      (if (empty? s)
+        result
+        (recur (rest s) (assoc-in result [(hand-index (:hand (first s))) :act] (:act (first s))))))))
 
 (defn raise [hands]
   (map #(hash-map :hand % :act :raise) hands))
-
-(raise '("AA" "AK" "KK"))
 
 (def ranks '("2" "3" "4" "5" "6" "7" "8" "9" "T" "J" "Q" "K" "A"))
 
@@ -50,8 +42,6 @@
         "J" 11
         "T" 10
         (js/parseInt card)))
-
-(rank-value "2")
 
 (defn pair-range [hand]
   (if (= (last hand) "+") (pair-range (apply str "AA-" (drop-last hand)))
@@ -67,24 +57,9 @@
 (defn hand-range [hand]
   (if (= (first hand) (second hand))
     (pair-range hand)
-    (unpair-range hand)))
+    (if (= (count hand) 3) (list hand) (unpair-range hand))))
 
-(pair-range "QQ+")
+(def hand-ranges (comp flatten (partial map hand-range)))
 
-(unpair-range "Q9s-Q6s")
-
-(unpair-range "74o-72o")
-
-(unpair-range "74o+")
-(unpair-range "32s+")
-
-(nth "ABCD" 0)
-(hand-range "TT+")
-(hand-range "KTo-K6o")
-(hand-range "J8s+")
-
-(raise (hand-range "J8s+"))
-
-(strategy (raise (hand-range "K8s+")))
-
+(def raise-range (comp (partial raise) hand-ranges))
 
