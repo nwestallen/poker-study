@@ -21,17 +21,70 @@
   (.indexOf all-fold (first (filter (comp #{h} :hand) all-fold)))
 )
 
-(hand-index "AQs")
+(empty? '())
 
-(assoc-in all-fold [1 :act] :raise)
+(defn strategy
+  ([strats]
+  (strategy (rest strats)
+  (assoc-in all-fold [(hand-index (:hand (first strats))) :act] (:act (first strats)))))
+  ([strats, result]
+   (if (empty? strats)
+     result
+     (recur (rest strats) (assoc-in result [(hand-index (:hand (first strats))) :act] (:act (first strats))))
+     )))
 
-(let [s {:hand "QQ" :act :raise}] (assoc-in all-fold [(hand-index (:hand s)) :act] (:act s)))
+(strategy '({:hand "AA" :act :raise} {:hand "KK" :act :raise}))
 
-(defn strategy [& strats]
-  (for [s strats] (assoc-in all-fold [(hand-index (:hand s)) :act] (:act s))))
+(defn raise [hands]
+  (map #(hash-map :hand % :act :raise) hands))
 
-(strategy {:hand "AA" :act :raise} {:hand "KK" :act :raise})
+(raise '("AA" "AK" "KK"))
 
-;;QQ+ = AA, KK, QQ
-;;KTo+ = KTo, KJo, KQo
-;;T7s-T9s = T7s, T8s, T9s
+(def ranks '("2" "3" "4" "5" "6" "7" "8" "9" "T" "J" "Q" "K" "A"))
+
+(defn rank-value [card]
+  (case card
+        "A" 14
+        "K" 13
+        "Q" 12
+        "J" 11
+        "T" 10
+        (js/parseInt card)))
+
+(rank-value "2")
+
+(defn pair-range [hand]
+  (if (= (last hand) "+") (pair-range (apply str "AA-" (drop-last hand)))
+  (map (fn [r] (str r r)) (filter #(<= (rank-value (last hand)) (rank-value %) (rank-value (first hand))) ranks))
+  ))
+
+(defn unpair-range [hand]
+  (if (= (last hand) "+") (unpair-range (apply str (first hand) (nth ranks (- (rank-value (first hand)) 3)) (nth hand 2) "-" (drop-last hand)))
+  (let [top (first hand) start (second hand) end (nth hand 5) suit (last hand)]
+    (map (fn [b] (str top b suit)) (filter #(<= (rank-value end) (rank-value %) (rank-value start)) ranks))
+    )))
+
+(defn hand-range [hand]
+  (if (= (first hand) (second hand))
+    (pair-range hand)
+    (unpair-range hand)))
+
+(pair-range "QQ+")
+
+(unpair-range "Q9s-Q6s")
+
+(unpair-range "74o-72o")
+
+(unpair-range "74o+")
+(unpair-range "32s+")
+
+(nth "ABCD" 0)
+(hand-range "TT+")
+(hand-range "KTo-K6o")
+(hand-range "J8s+")
+
+(raise (hand-range "J8s+"))
+
+(strategy (raise (hand-range "K8s+")))
+
+
