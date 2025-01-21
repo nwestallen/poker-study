@@ -7,7 +7,7 @@
             [app.components.contents :refer [TableOfContents]]
             [app.components.table :refer [Table]]
             [app.components.cards :refer [hand-text hand-img]]
-            [app.components.cardchart :refer [Cardchart]]
+            [app.components.cardchart :refer [Cardchart Cardsquare]]
             [clojure.walk :as walk]
             [goog.string :as gstring]
             [goog.string.format]
@@ -76,6 +76,7 @@
       (d/h2 {:id "counting-outs" :class-name (:h2 outline-style)} "Counting Outs")
       ($ Table {:headers ["Outs" "Flop to Turn" "Turn to River" "Flop to River"]
                 :rows (mapv outs-prob (range 1 22))})
+      ($ Cardsquare)
       ))
 
 (defnc app []

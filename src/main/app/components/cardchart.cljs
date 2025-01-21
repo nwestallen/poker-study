@@ -22,3 +22,14 @@
              (for [p (partition 13 (strat-ranges strategy))] (<> (d/div {:class-name (:header squarestyle)} (second (:hand (first p)))) (for [i p] (d/div {:class-name ((:act i) squarestyle)} (:hand i)))))
              ))
 
+(defnc Cardsquare [{:keys [actions]}]
+  (d/svg {:viewBox "0 0 200 200" :width "200" :height "200" :xlmns "http://www.w3.org/2000/svg"}
+         (d/rect {:width "200" :height "200" :x "0" :y "0" :rx "20" :ry "20" :fill "none"})
+         (d/defs (d/clipPath {:id "rounded-corners"} (d/rect {:x "0" :y "0" :width "200" :height "200" :rx "20" :ry "20"})))
+         (d/g {:clipPath "url(#rounded-corners)"}
+              (d/rect {:width "50" :height"200" :x "0" :y "0" :fill "rgb(239 68 68)"})
+              (d/rect {:width "50" :height"200" :x "50" :y "0" :fill "rgb(34 197 94)"})
+              (d/rect {:width "150" :height"200" :x "100" :y "0" :fill "rgb(14 165 233)"})
+         )
+         (d/text {:x "100" :y "100" :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize "48"} "AA")
+         ))
