@@ -1,9 +1,8 @@
-# s(hadow-cljs)h(elix)t(ailwind)-template
-This is a clojurescript react project template that uses [shadow-cljs](https://github.com/thheller/shadow-cljs) for builds & dependency management, [helix](https://github.com/lilactown/helix) as the react wrapper, and [tailwind](https://tailwindcss.com/) for styling. Template uses [teknql's build hooks](https://github.com/teknql/shadow-cljs-tailwind-jit/tree/main?tab=readme-ov-file) to enable shadow-cljs to handle the css recompiling on change.
+# Understanding Poker Theory
+These notes will be a constant work in progress. They comprise my attempts to explain the essential, applicable aspects of poker theory to myself
 
-## Quick Start
-1. Clone this template into your local
-2. Cd into sht-template directory and run `npm i` in your terminal
-3. In the same directory run `shadow-cljs watch app`
-4. Navigate to http://localhost:8080/ to view dev server
-5. Make changes to src/main/app/core.cljs and save to view results
+## Dev Notes
+1. run `npx shadow-cljs run repl/start` in command line
+2. in Emacs cider-repl-connect-cljs
+3. choose localhost, then the port reported from the command line
+4. choose shadow, then either node or browser repl
