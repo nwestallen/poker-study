@@ -9,6 +9,8 @@
             [app.components.cards :refer [hand-text hand-img]]
             [app.components.cardchart :refer [Cardchart]]
             [clojure.walk :as walk]
+            [goog.string :as gstring]
+            [goog.string.format]
             ["react-katex" :refer [InlineMath BlockMath]]
             )
   (:require-macros [app.utils.macros :refer [defpage]]))
@@ -25,8 +27,16 @@
     @headers))
 
 (def outline-style
-  {:h2 (css :font-bold :pl-2 :text-2xl :text-slate-600 :my-2)
-   :h3 (css :font-semibold :pl-4 :text-xl :text-slate-500 :my-1)})
+  {:h2 (css :font-bold :ml-2 :text-2xl :text-slate-600 :my-6)
+   :h3 (css :font-semibold :ml-4 :text-xl :text-slate-500 :my-3)
+   :p2 (css :ml-6 :my-2)
+   :p3 (css :ml-10 :my-2)})
+
+(defn outs-prob [outs]
+  (let [turn (gstring/format "%.2f %%" (* 100.0 (/ outs (- 52 5))))
+        river (gstring/format "%.2f %%" (* 100.0 (/ outs (- 52 6))))
+        both (gstring/format "%.2f %%" (* 100.0 (- 1.0 (* (/ (- 52 5 outs) (- 52 5)) (/ (- 52 6 outs) (- 52 6))))))]
+    [outs turn river both]))
 
 (defpage PageContent
     (d/div
@@ -45,14 +55,27 @@
                        [9 "One Pair" (hand-text "Th" "Td" "Kc" "Qc" "4h") ($ BlockMath {:math "\\binom{13}{1}\\binom{4}{2}\\binom{12}{3}\\binom{4}{1}^3 = 1\\,098\\,240"}) ($ BlockMath {:math "58\\,627\\,800"})]
                        [10 "High Card" (hand-text "Kd" "Jh" "9d" "7c" "6c") ($ BlockMath {:math "\\left[\\binom{13}{5}-\\binom{10}{1}\\right]\\left[\\binom{4}{1}^5 - \\binom{4}{1}\\right] = 1\\,302\\,540"}) ($ BlockMath {:math "23\\,294\\,460"})]
                        ]})
-           (d/h3 {:id "suba" :class-name (:h3 outline-style)} "Subsection A")
-           (d/p {:class-name (css :pl-6)}"I'm gonna put some more text here, maybe talk about " (hand-text "Ah" "Kd"))
-      (d/h3 {:id "subB" :class-name (:h3 outline-style)} "Subsection B")
-           (d/p {:class-name (css :pl-6)}"more text here")
-           (d/h2 {:id "bottom" :class-name (:h2 outline-style)} "Section 2")
-      (hand-img "Qs" "Qh" "Qc" "Qd" "Ts")
-      (d/p "Just a little test")
-      ($ Cardchart {:strategy {:raise '("TT+" "A5s+" "K9s+" "AKo+" "J5o") :call '("99-55" "QTs+")}})
+      (d/h2 {:id "equity" :class-name (:h2 outline-style)} "Equity")
+      (d/p {:class-name (:p2 outline-style)} "Equity is the measure of a hand's expected likelihood of winning at showdown given the current state of the game and all possible game states that may unfold by the time the last card is dealt.")
+      (d/p {:class-name (:p2 outline-style)} "If all cards are face up, like when two players are all-in heads up in Texas Hold'em for example, all possible ways the remaining cards could be dealt can in principle be enumerated and the times each player's hand wins counted to determine the winning percentage of each hand, accounting for ties. These are the percentage values shown on TV when players are all-in.")
+      (d/h2 {:id "pot-odds" :class-name (:h2 outline-style)} "Pot Odds")
+      (d/p {:class-name (:p2 outline-style)} "When face another player's bet, you stand to gain the entire pot if you stay in the hand, including the aggressor's bet, but must risk the bet in order for a chacne to win. This implies a risk-to-reward ratio known as pot odds.")
+      (d/h3 {:id "immediate-pot-odds" :class-name (:h3 outline-style)} "Immediate Pot Odds")
+      (d/p {:class-name (:p3 outline-style)} "Immediate pot odds are the most straight-forward application of pot odds. They represent the odds you're getting on making your hand on the next immediate street, for example, when facing a bet on the turn, you have one more card to see and one more round of betting after finding out whether you made your hand.
+")
+      (d/h3 {:id "effective-pot-odds" :class-name (:h3 outline-style)} "Effective Pot Odds")
+      (d/p {:class-name (:p3 outline-style)} "Effective pot odds deviate from immediate pot odds when there are multiple streets remaining with additional rounds of betting. The additional rounds of betting mean that we likely have to put more money into the pot and therefore, immediate pot odds will be a poor representation of the true odds we are facing for the remainder of the hand.
+")
+      (d/p {:class-name (:p3 outline-style)} "Note that if one player goes all-in while heads-up on the flop, then imeediate pot odds are still appropriate despite there being two cards to come because there is no further betting action, so we only need to consider the odds of making our hand with the next two cards to come when determining whether to call or fold.")
+      (d/p {:class-name (:p3 outline-style)} "Considering effective pot odds will be most applicable in limit games where bet-sizes are predetermined and limited, and the pot can only grow so much relative to iteslf.")
+      (d/h3 {:id "implied-pot-odds" :class-name (:h3 outline-style)} "Implied Pot Odds")
+      (d/p {:class-name (:p3 outline-style)} "In pot-limit and no-limit games, implied odds can dominate effective odds. Implied odds factor in potential future winnings beyond what's in the pot, up to the smallest remaianing stack-size in the hand.")
+      (d/h3 {:id "reverse-pot-odds" :class-name (:h3 outline-style)} "Reverse Pot Odds")
+      (d/p {:class-name (:p3 outline-style)} "The combination of implied pot odds and reverse implied pot odds account for much of the theoretical importance of stack sizes.
+")
+      (d/h2 {:id "counting-outs" :class-name (:h2 outline-style)} "Counting Outs")
+      ($ Table {:headers ["Outs" "Flop to Turn" "Turn to River" "Flop to River"]
+                :rows (mapv outs-prob (range 1 22))})
       ))
 
 (defnc app []
