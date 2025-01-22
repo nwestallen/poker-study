@@ -8,6 +8,7 @@
             [app.components.table :refer [Table]]
             [app.components.cards :refer [hand-text hand-img]]
             [app.components.cardchart :refer [Cardchart Cardsquare]]
+            [app.utils.strategy :refer [all-fold]]
             [clojure.walk :as walk]
             [goog.string :as gstring]
             [goog.string.format]
@@ -76,7 +77,8 @@
       (d/h2 {:id "counting-outs" :class-name (:h2 outline-style)} "Counting Outs")
       ($ Table {:headers ["Outs" "Flop to Turn" "Turn to River" "Flop to River"]
                 :rows (mapv outs-prob (range 1 22))})
-      ($ Cardsquare)
+      (d/br)
+      ($ Cardchart {:strategy {{:raise 100} '("TT+" "A5s+" "K9s+" "AKo+" "J5o") {:call 100} '("99-55" "QTs+") {:call 50 :fold 50} '("44-22") {:raise 10 :call 20 :fold 70} '("AQo-ATo")}})
       ))
 
 (defnc app []
