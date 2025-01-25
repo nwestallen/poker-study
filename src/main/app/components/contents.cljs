@@ -13,7 +13,7 @@
    "d/h3" (css :font-medium :text-wrap)})
 
 (defnc TableOfContents [{:keys [headers]}]
-  (d/nav {:class-name (css :bg-sky-600 :text-neutral-100 :px-6 :mr-12 :pt-5 :border-solid :border-r-2 :border-sky-300 {:width "33rem"})}
+  (d/nav {:class-name (css :bg-sky-600 :text-neutral-100 :px-6 :mr-12 :pt-5 :border-solid :border-r-2 :border-sky-300 {:width "300px"})}
     (d/h1 {:class-name (css :font-semibold :underline :fixed)}"Table of Contents")
     (d/br)
     (d/ul {:class-name (css :list-none :list-inside :fixed)}

@@ -43,6 +43,7 @@
 (defpage PageContent
     (d/div
      (d/h1 {:class-name (css :text-4xl :px-2 :py-5)}"♠" (d/span {:class-name (css :text-red-600)} "♥︎ ") "Understanding Poker Theory "(d/span {:class-name (css :text-sky-600)} "♦︎") (d/span {:class-name (css :text-green-600)}"♣︎"))
+     ;;TODO: Put a choice for 5 & 7 card hands and update table based on seleection
       (d/h2 {:id "hand-rankings" :class-name (:h2 outline-style)} "Hand Rankings")
       ($ Table {:headers ["Rank" "Hand Name" "Form" "5 Card Combos" "7 Card Combos"]
                 :rows [
@@ -57,6 +58,8 @@
                        [9 "One Pair" (hand-text "Th" "Td" "Kc" "Qc" "4h") ($ BlockMath {:math "\\binom{13}{1}\\binom{4}{2}\\binom{12}{3}\\binom{4}{1}^3 = 1\\,098\\,240"}) ($ BlockMath {:math "58\\,627\\,800"})]
                        [10 "High Card" (hand-text "Kd" "Jh" "9d" "7c" "6c") ($ BlockMath {:math "\\left[\\binom{13}{5}-\\binom{10}{1}\\right]\\left[\\binom{4}{1}^5 - \\binom{4}{1}\\right] = 1\\,302\\,540"}) ($ BlockMath {:math "23\\,294\\,460"})]
                        ]})
+      ;;TODO: Section on identifying your own hand, minigame
+      ;;TODO: Section on identifying the nuts on any given board, minigame
       (d/h2 {:id "equity" :class-name (:h2 outline-style)} "Equity")
       (d/p {:class-name (:p2 outline-style)} "Equity is the measure of a hand's expected likelihood of winning at showdown given the current state of the game and all possible game states that may unfold by the time the last card is dealt.")
       (d/p {:class-name (:p2 outline-style)} "If all cards are face up, like when two players are all-in heads up in Texas Hold'em for example, all possible ways the remaining cards could be dealt can in principle be enumerated and the times each player's hand wins counted to determine the winning percentage of each hand, accounting for ties. These are the percentage values shown on TV when players are all-in.")
@@ -81,6 +84,7 @@
                 :rows (mapv outs-prob (range 1 22))})
       (d/p {:class-name (css {:width "33%" } :ml-20 :text-2xl :mt-20)} (d/h3 {:id "four-and-two" :class-name (css :font-bold)} "The Rule of 4 & 2 ") "To estimate the percentage probability of making your draws (and the required immediate pot odds to make a call profitable) with 2 and 1 card(s) to come,
 simply multiply your number of outs by 4 and 2, respectively."))
+      ;;TODO: Minigame for counting your outs, and comparing to immediate pot odds (and maybe even implied?)
       (d/br)
       ;;($ Cardchart {:strategy {{:raise 100} '("TT+" "A5s+" "K9s+" "92o+" "J5o") {:call 100} '("99-55" "QTs+") {:call 50 :fold 50} '("44-22") {:raise 10 :call 20 :fold 70} '("AQo-ATo")}})
       ;;(hand-img "As" "Ah" "Ad" "Ac")
