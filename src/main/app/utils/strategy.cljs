@@ -70,4 +70,16 @@
 (def strat-ranges
   (comp strategy act-ranges))
 
+(def six-strat
+  {:RFI {
+         :SB {{:raise 100} '("AKs" "ATs-A7s" "A5s" "KJs-K9s" "QJs-Q9s" "JTs-J9s") {:raise 50 :call 50} '("22+" "AQs-AJs" "A4s" "K8s-K5s" "J7-J4s" "Q5s-Q2s" "A5o+" "K8o+" "KQs")
+              {:call 100} '("A4o-A2o" "K7o-K4o" "Q6o+" "J7o+" "T7o+" "Q8s-Q6s" "J2s+" "K4s-K2s" "T3s+" "94s+" "84s+" "63s+" "53s+" "43s" "A3s" "A6s" "A2s" "74s+")}
+         :BTN {{:raise 100} '("22+" "53s+" "64s+" "75s+" "85s+" "96s+" "T6s+" "J4s+" "Q3s+" "K2s+" "A2s+" "A5o+" "K8o+" "Q9o+" "J9o+" "T8o+" "98o")}
+         :CO {{:raise 100} '("44+" "87s+" "97s+" "T8s+" "J8s+" "Q6s+" "K4s+" "A2s+" "A9o+" "KTo+" "QTo+" "JTo+") {:raise 50 :fold 50} '("76s" "T7s" "A8o" "33-22")}
+         :HJ {{:raise 100} '("66+" "A2s+" "K6s+" "Q9s+" "J9s+" "T9s" "ATo+" "KTo+" "QJo") {:raise 50 :fold 50} '("QTo" "55" "Q8s" "K5s" "98s" "T8s")}
+         :LJ {{:raise 100} '("77+" "ATo+" "KJo+" "A3s+" "K9s+" "Q9s+" "JTs" "T9s") {:raise 50 :fold 50} '("66" "QJo" "K8s")}
+         :EP {}
+         :BB {}
+         }})
+
 
