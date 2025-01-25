@@ -8,6 +8,7 @@
             [app.components.table :refer [Table]]
             [app.components.cards :refer [hand-text hand-img]]
             [app.components.cardchart :refer [Cardchart Cardsquare]]
+            [app.components.cards :refer [hand-img]]
             [app.utils.strategy :refer [all-fold]]
             [clojure.walk :as walk]
             [goog.string :as gstring]
@@ -75,10 +76,14 @@
       (d/p {:class-name (:p3 outline-style)} "The combination of implied pot odds and reverse implied pot odds account for much of the theoretical importance of stack sizes.
 ")
       (d/h2 {:id "counting-outs" :class-name (:h2 outline-style)} "Counting Outs")
+      (d/div {:class-name (css :flex :flex-column)}
       ($ Table {:headers ["Outs" "Flop to Turn" "Turn to River" "Flop to River"]
                 :rows (mapv outs-prob (range 1 22))})
+      (d/p {:class-name (css {:width "33%" } :ml-20 :text-2xl :mt-20)} (d/h3 {:id "four-and-two" :class-name (css :font-bold)} "The Rule of 4 & 2 ") "To estimate the percentage probability of making your draws (and the required immediate pot odds to make a call profitable) with 2 and 1 card(s) to come,
+simply multiply your number of outs by 4 and 2, respectively."))
       (d/br)
-      ($ Cardchart {:strategy {{:raise 100} '("TT+" "A5s+" "K9s+" "AKo+" "J5o") {:call 100} '("99-55" "QTs+") {:call 50 :fold 50} '("44-22") {:raise 10 :call 20 :fold 70} '("AQo-ATo")}})
+      ;;($ Cardchart {:strategy {{:raise 100} '("TT+" "A5s+" "K9s+" "92o+" "J5o") {:call 100} '("99-55" "QTs+") {:call 50 :fold 50} '("44-22") {:raise 10 :call 20 :fold 70} '("AQo-ATo")}})
+      ;;(hand-img "As" "Ah" "Ad" "Ac")
       ))
 
 (defnc app []
