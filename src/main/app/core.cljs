@@ -61,6 +61,9 @@
                        ]})
       ;;TODO: Section on identifying your own hand, minigame
       ;;TODO: Section on identifying the nuts on any given board, minigame
+      ;;TODO: Section on Expected Value, EV vs EQ, Equity Realization (dominaton, hiddenness)
+      ;;TODO: Frequencies and Counting Combos of hands within range
+      ;;TODO: Grouping board textures
       (d/h2 {:id "equity" :class-name (:h2 outline-style)} "Equity")
       (d/p {:class-name (:p2 outline-style)} "Equity is the measure of a hand's expected likelihood of winning at showdown given the current state of the game and all possible game states that may unfold by the time the last card is dealt.")
       (d/p {:class-name (:p2 outline-style)} "If all cards are face up, like when two players are all-in heads up in Texas Hold'em for example, all possible ways the remaining cards could be dealt can in principle be enumerated and the times each player's hand wins counted to determine the winning percentage of each hand, accounting for ties. These are the percentage values shown on TV when players are all-in.")
