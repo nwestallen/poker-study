@@ -71,16 +71,22 @@
   (comp strategy act-ranges))
 
 (def six-strat
+
   {:RFI {
          :EP {:OPEN {{:raise 100} '("77+" "AKo" "A5s+" "K9s+" "QTs+" "JTs+")}}
-         :SB {:OPEN {{:raise 100} '("AKs" "ATs-A7s" "A5s" "KJs-K9s" "QJs-Q9s" "JTs-J9s") {:raise 50 :call 50} '("22+" "AQs-AJs" "A4s" "K8s-K5s" "J7-J4s" "Q5s-Q2s" "A5o+" "K8o+" "KQs")
-              {:call 100} '("A4o-A2o" "K7o-K4o" "Q6o+" "J7o+" "T7o+" "Q8s-Q6s" "J2s+" "K4s-K2s" "T3s+" "94s+" "84s+" "63s+" "53s+" "43s" "A3s" "A6s" "A2s" "74s+")}
-              :vLBBR {{:raise 100} '("99+" "AQo+" "A8s+" "A5s" "K9s+" "Q9s+" "J9s+" "T9s+") {:call 100} '("88-22" "AJo-A7o" "A5o" "KQo-K9o" "QJo-Q9o" "JTo-J9o" "T9o" "A7s-A6s" "A4s-A2s" "K8s-K2s" "Q8s-Q2s" "J8s-J4s" "T8s-T6s")}
-              :vBB3BET {}}
-         :BTN {:OPEN {{:raise 100} '("22+" "53s+" "64s+" "75s+" "85s+" "96s+" "T6s+" "J4s+" "Q3s+" "K2s+" "A2s+" "A5o+" "K8o+" "Q9o+" "J9o+" "T8o+" "98o")}}
-         :CO {:OPEN {{:raise 100} '("44+" "87s+" "97s+" "T8s+" "J8s+" "Q6s+" "K4s+" "A2s+" "A9o+" "KTo+" "QTo+" "JTo+") {:raise 50 :fold 50} '("76s" "T7s" "A8o" "33-22")}}
-         :HJ {:OPEN {{:raise 100} '("66+" "A2s+" "K6s+" "Q9s+" "J9s+" "T9s" "ATo+" "KTo+" "QJo") {:raise 50 :fold 50} '("QTo" "55" "Q8s" "K5s" "98s" "T8s")}}
          :LJ {:OPEN {{:raise 100} '("77+" "ATo+" "KJo+" "A3s+" "K9s+" "Q9s+" "JTs" "T9s") {:raise 50 :fold 50} '("66" "QJo" "K8s")}}
+         :HJ {:OPEN {{:raise 100} '("66+" "A2s+" "K6s+" "Q9s+" "J9s+" "T9s" "ATo+" "KTo+" "QJo") {:raise 50 :fold 50} '("QTo" "55" "Q8s" "K5s" "98s" "T8s")}
+              :vCO-BTN-3Bet {{:raise 100} '("AA-QQ" "AKs" "AKo-AQo" "KJs-KTs") {:call 100} '("99" "AQs" "87s" "76s" "65s" "54s" "44-33")}
+              :vSB-BB-3BET {}}
+         :CO {:OPEN {{:raise 100} '("44+" "87s+" "97s+" "T8s+" "J8s+" "Q6s+" "K4s+" "A2s+" "A9o+" "KTo+" "QTo+" "JTo+") {:raise 50 :fold 50} '("76s" "T7s" "A8o" "33-22")}
+              :vBTN-3BET {{:raise 100} '("TT+" "AKs" "AKo-AQo" "KJs-KTs") {:call 100} '("AQs-A9s" "A5s" "KQs" "QJ-QTs" "JTs" "99-22" "86s" "76s" "65s" "54s")}
+              :vSB-BB-3BET {{:raise 100} '("AA" "AKs" "KK") {:call 100} '("AQs-A9s" "A5s-A4s" "QQ-22" "86s" "76s" "65s" "54s" "QJs-QTs" "JTs-J9s" "T9s" "KQs-K9s" "AKo-AQo")}}
+         :BTN {:OPEN {{:raise 100} '("22+" "53s+" "64s+" "75s+" "85s+" "96s+" "T6s+" "J4s+" "Q3s+" "K2s+" "A2s+" "A5o+" "K8o+" "Q9o+" "J9o+" "T8o+" "98o")}
+               :v3BET {{:raise 100} '("AA-KK" "AKs") {:call 100} '("AQs-A2s" "KQs-K5s" "QJs-Q8s" "JTs-J8s" "T9s-T7s" "98s-96s" "87s-86s" "76s-75s" "65s-64s" "54s-53s" "QQ-22" "AKo-ATo" "KQo-KJo")}}
+         :SB {:OPEN {{:raise 100} '("AKs" "ATs-A7s" "A5s" "KJs-K9s" "QJs-Q9s" "JTs-J9s") {:raise 50 :call 50} '("22+" "AQs-AJs" "A4s" "K8s-K5s" "J7-J4s" "Q5s-Q2s" "A5o+" "K8o+" "KQs" "980-97o"  "87o")
+              {:call 100} '("A4o-A2o" "K7o-K4o" "Q6o+" "J7o+" "T7o+" "Q8s-Q6s" "J2s+" "K4s-K2s" "T3s+" "94s+" "84s+" "63s+" "53s+" "43s" "A3s" "A6s" "A2s" "74s+")}
+              :vBBR {{:raise 100} '("99+" "AQo+" "A8s+" "A5s" "K9s+" "Q9s+" "J9s+" "T9s+") {:call 100} '("88-22" "AJo-A7o" "A5o" "KQo-K9o" "QJo-Q9o" "JTo-J9o" "T9o" "A7s-A6s" "A4s-A2s" "K8s-K2s" "Q8s-Q2s" "J8s-J4s" "T8s-T6s" "98s-96s" "87s-85s" "76s-74s" "65s-64s" "54s-53s")}
+              :vBB3BET {{:raise 100} '("JJ+" "AKs" "AKo") {:call 100} '("AQs-A2s" "KQs-K4s" "QJs-Q8s" "JTs-J8s" "T9s-T7s" "98s-97s" "87s-86s" "76s" "65s" "54s" "KTo" "QJo" "JTo" "99-22") {:raise 50 :call 50} '("AQo-ATo" "KQo-KTo" "TT")}}
          }
    :vEP-Open {}
    :vLJ-Open {}
