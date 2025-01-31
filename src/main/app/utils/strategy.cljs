@@ -74,10 +74,11 @@
 
   {:RFI {
          :EP {:OPEN {{:raise 100} '("77+" "AKo" "A5s+" "K9s+" "QTs+" "JTs+")}}
-         :LJ {:OPEN {{:raise 100} '("77+" "ATo+" "KJo+" "A3s+" "K9s+" "Q9s+" "JTs" "T9s") {:raise 50 :fold 50} '("66" "QJo" "K8s")}}
-         :HJ {:OPEN {{:raise 100} '("66+" "A2s+" "K6s+" "Q9s+" "J9s+" "T9s" "ATo+" "KTo+" "QJo") {:raise 50 :fold 50} '("QTo" "55" "Q8s" "K5s" "98s" "T8s")}
-              :vCO-BTN-3Bet {{:raise 100} '("AA-QQ" "AKs" "AKo-AQo" "KJs-KTs") {:call 100} '("99" "AQs" "87s" "76s" "65s" "54s" "44-33")}
-              :vSB-BB-3BET {}}
+         :LJ {:OPEN {{:raise 100} '("77+" "ATo+" "KJo+" "A3s+" "K9s+" "Q9s+" "JTs" "T9s") {:raise 50 :fold 50} '("66" "QJo" "K8s") {:raise 12 :fold 88} '("55-22" "98s" "87s" "76s" "65s" "54s")}
+              :vs3-BET {{:raise 100} '("AA-QQ" "AKs" "AKo") {:raise 50 :call 50} '("AQs-ATs" "KQs-KJs" "JJ-TT") {:call 100} '("55-22" "98s" "87s" "76s" "65s" "54s") {:call 50 :fold 50} '("99-66" "QTs" "JTs" "T9s")}}
+         :HJ {:OPEN {{:raise 100} '("66+" "A2s+" "K6s+" "Q9s+" "J9s+" "T9s" "ATo+" "KTo+" "QJo") {:raise 50 :fold 50} '("QTo" "55" "Q8s" "K5s" "98s" "T8s") {:raise 25 :fold 75} '("87s" "76s" "65s" "54s" "44-22" "JTo" "A9o")}
+              :vCO-BTN-3BET {{:raise 100} '("AA-QQ" "AKs" "AKo-AQo" "KJs-KTs") {:call 100} '("99" "AQs" "87s" "76s" "65s" "54s" "44-22") {:raise 50 :call 50} '("KQs-KTs" "AJs-ATs" "JJ-TT") {:call 50 :fold 50} '("JTs" "T9s" "98s" "88-55" "QJs")}
+              :vSB-BB-3BET {{:raise 100} '("AA") {:raise 50 :call 50} '("AKs" "KK") {:raise 25 :call 75} '("AJs-ATs" "KJs-KTs" "JJ" "AKo" "AQo") {:call 100} '("QQ" "TT-88" "87s" "76s" "65s" "54s" "JTs" "44-22" "QJs-QTs" "AQs" "KQs") {:call 50 :fold 50} '("T9s" "98s" "77-55")}}
          :CO {:OPEN {{:raise 100} '("44+" "87s+" "97s+" "T8s+" "J8s+" "Q6s+" "K4s+" "A2s+" "A9o+" "KTo+" "QTo+" "JTo+") {:raise 50 :fold 50} '("76s" "T7s" "A8o" "33-22")}
               :vBTN-3BET {{:raise 100} '("TT+" "AKs" "AKo-AQo" "KJs-KTs") {:call 100} '("AQs-A9s" "A5s" "KQs" "QJ-QTs" "JTs" "99-22" "86s" "76s" "65s" "54s")}
               :vSB-BB-3BET {{:raise 100} '("AA" "AKs" "KK") {:call 100} '("AQs-A9s" "A5s-A4s" "QQ-22" "86s" "76s" "65s" "54s" "QJs-QTs" "JTs-J9s" "T9s" "KQs-K9s" "AKo-AQo")}}

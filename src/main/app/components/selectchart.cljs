@@ -10,7 +10,7 @@
 (defnc Selectchart []
   (let [[state set-state] (hooks/use-state {:scenario :RFI :position :EP :act :OPEN})]
     (d/div
-     (d/div {:class-name (css :flex :flex-row)}
+     (d/div {:class-name (css :flex :flex-row :my-5)}
      (d/select {:class-name (css :px-3 :py-1 :mr-2 {:background-color "rgb(64, 64, 64)"} :text-white :mb-7)
                :value (name (:scenario state)):on-change #(set-state assoc :scenario (keyword (.. % -target -value)))}
                (for [sit (keys six-strat)] (d/option {:value (name sit)} (name sit))))
