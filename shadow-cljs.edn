@@ -1,13 +1,7 @@
 ;; shadow-cljs configuration
-{:source-paths
- ["src/dev"
-  "src/main"
-  "src/test"]
-
+{
+ :deps true
  :nrepl {:middleware [cider.nrepl/cider-middleware]}
-
- :dependencies
- [[lilactown/helix "0.2.0"] [com.thheller/shadow-css "0.5.0"] [cider/cider-nrepl "0.51.1"]]
 
  :builds
  {:app {:target :browser
