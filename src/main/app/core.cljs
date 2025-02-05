@@ -7,8 +7,6 @@
             [app.components.contents :refer [TableOfContents]]
             [app.components.table :refer [Table]]
             [app.components.cards :refer [hand-text hand-img]]
-            [app.components.cardchart :refer [Cardchart Cardsquare]]
-            [app.components.cards :refer [hand-img]]
             [app.components.selectchart :refer [Selectchart]]
             [app.utils.strategy :refer [all-fold]]
             [clojure.walk :as walk]

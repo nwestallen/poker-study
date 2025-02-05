@@ -17,17 +17,17 @@
     {:hand "A2o" :act {:fold 100}} {:hand "K2o" :act {:fold 100}} {:hand "Q2o" :act {:fold 100}} {:hand "J2o" :act {:fold 100}} {:hand "T2o" :act {:fold 100}} {:hand "92o" :act {:fold 100}} {:hand "82o" :act {:fold 100}} {:hand "72o" :act {:fold 100}} {:hand "62o" :act {:fold 100}} {:hand "52o" :act {:fold 100}} {:hand "42o" :act {:fold 100}} {:hand "32" :act {:fold 100}} {:hand "22" :act {:fold 100}}
     ])
 
-(defn hand-index [h]
-  (.indexOf all-fold (first (filter (comp #{h} :hand) all-fold)))
+(defn hand-index [h range]
+  (.indexOf range (first (filter (comp #{h} :hand) range)))
 )
 
 (def strategy
-  (fn [strats]
+  (fn [range strats]
     (loop [s strats
-           result all-fold]
+           result range]
       (if (empty? s)
         result
-        (recur (rest s) (assoc-in result [(hand-index (:hand (first s))) :act] (:act (first s))))))))
+        (recur (rest s) (assoc-in result [(hand-index (:hand (first s)) range) :act] (:act (first s))))))))
 
 (defn action [act hands]
   (partial (map #(hash-map :hand % :act act) hands)))
@@ -68,7 +68,10 @@
   (flatten (map (fn [[k v]] (action k (hand-ranges v))) actionmap)))
 
 (def strat-ranges
-  (comp strategy act-ranges))
+  (comp (partial strategy all-fold) act-ranges))
+
+(defn strat-pipe [range]
+  (comp (partial strategy range) act-ranges))
 
 (def six-strat
 

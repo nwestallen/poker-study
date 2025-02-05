@@ -4,7 +4,7 @@
             [helix.dom :as d]
             [shadow.css :refer [css]]
             [app.components.cardchart :refer [Cardchart]]
-            [app.utils.strategy :refer [all-fold six-strat]]
+            [app.utils.strategy :refer [six-strat]]
             ["react-dom/client" :as rdom]))
 
 (defnc Selectchart []
