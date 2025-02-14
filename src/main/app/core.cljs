@@ -32,6 +32,7 @@
    :h3 (css :font-semibold :ml-4 :text-xl :text-slate-500 :my-3)
    :p2 (css :ml-6 :my-2)
    :p3 (css :ml-10 :my-2)})
+;;Test
 
 (defn outs-prob [outs]
   (let [turn (gstring/format "%.2f %%" (* 100.0 (/ outs (- 52 5))))

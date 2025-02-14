@@ -11,7 +11,7 @@
              '{:ui
                {:entries [app.core]}})
             (cb/minify)
-            (cb/write-outputs-to (io/file "public" "css")))]
+            (cb/write-outputs-to (io/file "docs" "css")))]
 
     (doseq [mod (:outputs build-state)
             {:keys [warning-type] :as warning} (:warnings mod)]
