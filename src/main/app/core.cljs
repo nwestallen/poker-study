@@ -8,6 +8,7 @@
             [app.components.table :refer [Table]]
             [app.components.cards :refer [hand-text hand-img]]
             [app.components.selectchart :refer [Selectchart]]
+            [app.components.felt :refer [Felt]]
             [app.utils.strategy :refer [all-fold]]
             [clojure.walk :as walk]
             [goog.string :as gstring]
@@ -91,7 +92,11 @@ simply multiply your number of outs by 4 and 2, respectively."))
       (d/h2 {:id "hand-ranges" :class-name (:h2 outline-style)} "Hand Ranges")
       (d/span "There are ") (d/span ($ InlineMath "\\binom{52}{2} = 1{,}326 ")) (d/span " possible starting hands in Texas Hold'em. These can be sorted into pairs and combinations of suited and unsuited mixed ranks represented by a 13x13 grid: ")
       ($ Selectchart)
-      ;;(hand-img "As" "Ah" "Ad" "Ac")
+      (d/br)
+      (hand-img "As" "Ah" "Ad" "Ac")
+      (d/br)
+      ($ Felt {:fill "skyblue" :border "lightgreen"})
+      (d/br)
       ))
 
 (defnc app []
