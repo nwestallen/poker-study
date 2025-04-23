@@ -6,7 +6,7 @@
             ["react-dom/client" :as rdom]
             [app.components.contents :refer [TableOfContents]]
             [app.components.table :refer [Table]]
-            [app.components.cards :refer [hand-text hand-img]]
+            [app.components.cards :refer [hand-text hand-img card-img]]
             [app.components.selectchart :refer [Selectchart]]
             [app.components.felt :refer [Felt]]
             [app.utils.strategy :refer [all-fold]]
@@ -93,9 +93,14 @@ simply multiply your number of outs by 4 and 2, respectively."))
       (d/span "There are ") (d/span ($ InlineMath "\\binom{52}{2} = 1{,}326 ")) (d/span " possible starting hands in Texas Hold'em. These can be sorted into pairs and combinations of suited and unsuited mixed ranks represented by a 13x13 grid: ")
       ($ Selectchart)
       (d/br)
-      (hand-img "As" "Ah" "Ad" "Ac")
+      (d/div {:class-name (css :w-10)}
+      (hand-img "2s" "3h" "4d" "5c" "6s" "7h" "8d" "9c"))
       (d/br)
-      ($ Felt {:fill "skyblue" :border "lightgreen"})
+      ($ Felt {:fill "skyblue" :border "navy" :border-width "10" :width "750" :height "300"})
+      (d/br)
+      (d/div {:class-name (css :w-20)}
+      (card-img "Ts")
+      )
       (d/br)
       ))
 

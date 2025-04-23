@@ -37,4 +37,4 @@
 
 (defn hand-img [& strings]
   (d/div {:class-name (css :flex :flex-row :border-solid :border-2 :p-2 :border-yellow-700 :w-fit :bg-green-700 :rounded-3xl :shadow-lg)}
-  (map card-img strings)))
+  (map #(d/div {:class-name (css {:width "70px"})}(card-img %)) strings)))

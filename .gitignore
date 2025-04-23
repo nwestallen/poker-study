@@ -5,6 +5,7 @@ public/css
 /target
 /checkouts
 /src/gen
+/docs/js/cljs-runtime
 
 pom.xml
 pom.xml.asc
