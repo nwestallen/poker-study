@@ -96,7 +96,7 @@ simply multiply your number of outs by 4 and 2, respectively."))
       (d/div {:class-name (css :w-10)}
       (hand-img "2s" "3h" "4d" "5c" "6s" "7h" "8d" "9c"))
       (d/br)
-      ($ PokerTable)
+      ($ PokerTable {:cards '("As" "Kh" "Qc" "Jd" "Ts")})
       (d/br)
       ))
 
