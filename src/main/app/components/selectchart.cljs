@@ -4,11 +4,13 @@
             [helix.dom :as d]
             [shadow.css :refer [css]]
             [app.components.cardchart :refer [Cardchart]]
-            [app.utils.strategy :refer [six-strat]]
+            [app.utils.strategy :refer [six-strat strat-ranges]]
             ["react-dom/client" :as rdom]))
 
 (defnc Selectchart []
-  (let [[state set-state] (hooks/use-state {:scenario :RFI :position :EP :act :OPEN})]
+  (let [[state set-state] (hooks/use-state {:scenario :RFI :position :EP :act :OPEN})
+        [strategy set-strategy] (hooks/use-state (strat-ranges (get-in six-strat [(:scenario state) (:position state) (:act state)])))]
+    (hooks/use-effect [state] (set-strategy (strat-ranges (get-in six-strat [(:scenario state) (:position state) (:act state)]))))
     (d/div
      (d/div {:class-name (css :flex :flex-row :my-5)}
      (d/select {:class-name (css :px-3 :py-1 :mr-2 {:background-color "rgb(64, 64, 64)"} :text-white :mb-7)
@@ -24,5 +26,6 @@
      (d/div {:class-name (css :w-5 :h-5 :rounded-full :bg-green-500 :mx-1 :mt-0.5)}) (d/p {:class-name (css :font-semibold :mr-2)}"Call")
      (d/div {:class-name (css :w-5 :h-5 :rounded-full :bg-sky-500 :mx-1 :mt-0.5)}) (d/p {:class-name (css :font-semibold :mr-2)}"Fold")
      )
-     ($ Cardchart {:strategy (get-in six-strat [(:scenario state) (:position state) (:act state)])})
+     ($ Cardchart {:strategy strategy :set-strategy set-strategy})
+     (d/p (prn-str strategy))
      )))
