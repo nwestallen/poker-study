@@ -9,11 +9,13 @@
 
 (def ranks '("A" "K" "Q" "J" "T" "9" "8" "7" "6" "5" "4" "3" "2"))
 
-(defnc Cardsquare [{:keys [hand strategy set-strategy update-strat] {:keys [raise call fold]} :act}]
+(defnc Cardsquare [{:keys [hand strategy set-strategy update-strat paint] {:keys [raise call fold]} :act}]
   (let [
-        [state set-state] (hooks/use-state {:r (str raise) :c (str call) :f (str fold) :rc (str (+ raise call))})]
+        [state set-state] (hooks/use-state {:r (str raise) :c (str call) :f (str fold) :rc (str (+ raise call))})
+        paint-square (fn [] (set-strategy ((strat-pipe strategy) {(edn/read-string update-strat) (list hand)})))
+        ]
     (hooks/use-effect [strategy] (set-state {:r (str raise) :c (str call) :f (str fold) :rc (str (+ raise call))}))
-    (d/svg {:viewBox "0 0 100 100" :width "100%" :height "100%" :xlmns "http://www.w3.org/2000/svg" :on-click #(do (set-strategy ((strat-pipe strategy) {(edn/read-string update-strat) (list hand)})) (.log js/console (prn-str update-strat)))}
+    (d/svg {:viewBox "0 0 100 100" :width "100%" :height "100%" :xlmns "http://www.w3.org/2000/svg" :on-mouse-down #(paint-square) :on-mouse-enter #(if paint (paint-square))}
            (d/rect {:width "100%" :height "100%" :x "0" :y "0" :rx "10" :ry "10" :fill "rgb(64 64 64)"})
            (d/defs (d/clipPath {:id "rounded-corners"} (d/rect {:x "0" :y "0" :width "100" :height "100" :rx "10" :ry "10"})))
            (d/g {:clipPath "url(#rounded-corners)"}
@@ -21,12 +23,13 @@
                 (d/rect {:width (:c state) :height"100" :x (:r state) :y "0" :fill "rgb(34 197 94)"})
                 (d/rect {:width (:f state) :height"100" :x (:rc state) :y "0" :fill "rgb(14 165 233)"})
          )
-         (d/text {:x "50" :y "50" :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize "36" :fontWeight "500"} hand)
+         (d/text {:x "50" :y "50" :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize "36" :fontWeight "500" :class-name (css :select-none)} hand)
          )))
 
 (defnc Cardchart [{:keys [strategy set-strategy update-strat]}]
-  (d/div {:class-name (css :grid {:grid-template-columns "repeat(14, 51.2px)"} {:gap "1px"} :bg-white {:width "fit-content" :height "714px"})}
+  (let [[paint set-paint] (hooks/use-state false)]
+  (d/div {:class-name (css :grid {:grid-template-columns "repeat(14, 51.2px)"} {:gap "1px"} :bg-white {:width "fit-content" :height "714px"}) :on-mouse-down #(set-paint true) :on-mouse-up #(set-paint false)}
              (for [i (conj ranks 0)] ($ Cardsquare {:hand (if (= i 0) nil i)}))
-             (for [p (partition 13 strategy)] (<> ($ Cardsquare {:hand (second (:hand (first p))) :strategy strategy :set-strategy set-strategy :update-strat update-strat}) (for [i p] ($ Cardsquare {:act (:act i) :hand (:hand i) :strategy strategy :set-strategy set-strategy :update-strat update-strat}))))
+             (for [p (partition 13 strategy)] (<> ($ Cardsquare {:hand (second (:hand (first p))) :strategy strategy :set-strategy set-strategy :update-strat update-strat :paint paint}) (for [i p] ($ Cardsquare {:act (:act i) :hand (:hand i) :strategy strategy :set-strategy set-strategy :update-strat update-strat :paint paint})))))
              ))
 

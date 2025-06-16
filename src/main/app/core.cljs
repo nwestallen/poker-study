@@ -8,6 +8,7 @@
             [app.components.table :refer [Table]]
             [app.components.cards :refer [hand-text hand-img card-img]]
             [app.components.selectchart :refer [Selectchart]]
+            [app.components.paintchart :refer [Paintchart]]
             [app.utils.strategy :refer [all-fold]]
             [app.components.pokertable :refer [PokerTable]]
             [clojure.walk :as walk]
@@ -98,6 +99,7 @@ simply multiply your number of outs by 4 and 2, respectively."))
       (d/br)
       ($ PokerTable {:cards '("As" "Kh" "Qc" "Jd" "Ts")})
       (d/br)
+      ($ Paintchart)
       ))
 
 (defnc app []
