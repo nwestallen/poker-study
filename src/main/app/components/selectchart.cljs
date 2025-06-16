@@ -26,6 +26,6 @@
      (d/div {:class-name (css :w-5 :h-5 :rounded-full :bg-green-500 :mx-1 :mt-0.5)}) (d/p {:class-name (css :font-semibold :mr-2)}"Call")
      (d/div {:class-name (css :w-5 :h-5 :rounded-full :bg-sky-500 :mx-1 :mt-0.5)}) (d/p {:class-name (css :font-semibold :mr-2)}"Fold")
      )
-     ($ Cardchart {:strategy strategy :set-strategy set-strategy})
+     ($ Cardchart {:strategy strategy :set-strategy set-strategy :update-strat "{:raise 50 :call 50}"})
      (d/p (prn-str strategy))
      )))
