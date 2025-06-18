@@ -99,4 +99,52 @@
    :v-BTN-Open {}
    })
 
+(defn combos [hand]
+  (if (= (first hand) (last hand))
+    6
+    (if (= (last hand) "s")
+      4
+      12)
+    ))
+
+(defn combo-count [handact]
+  (hash-map :hand (:hand handact) :act
+  (update-vals (:act handact) #(/ (* (combos (:hand handact)) %) 100)))
+  )
+
+(defn standardize [handact]
+  (hash-map :hand (:hand handact) :act
+            (merge-with + {:raise 0 :call 0 :fold 0} (:act handact)))
+  )
+
+(def combodize
+  (comp standardize combo-count))
+
+(def HJvCO (strat-ranges (get-in six-strat [:RFI :HJ :vCO-BTN-3BET])))
+
+(defn action-combos [strat]
+  (map #(combodize %) strat))
+
+(defn action-summary [strat]
+  (apply merge-with + (map #(:act %) (action-combos strat)))
+  )
+
+(defn keyed-strat [strat]
+  (apply merge (map #(hash-map (keyword (:hand %)) (:act %)) strat)))
+
+(def key-combos (comp keyed-strat action-combos))
+
+(defn diff-strats [strat1 strat2]
+  (merge-with (partial merge-with -) (key-combos strat1) (key-combos strat2))
+  )
+
+(/ (apply + (map abs (vals {:raise 4 :call -4 :fold 0}))) 2)
+
+(defn summarize-diff [diff]
+  (/ (apply + (map abs (vals diff))) 2)
+  )
+
+(defn diff-summary [strat1 strat2]
+  (filter #(> (last %) 0) (sort-by val > (update-vals (diff-strats strat1 strat2) summarize-diff)))
+  )
 
