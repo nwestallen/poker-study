@@ -6,6 +6,7 @@
         com.thheller/shadow-css {:mvn/version "0.5.0"}
         cider/cider-nrepl {:mvn/version "0.51.0"}
         com.github.nwestallen/poker-hand-evaluator {:git/sha "47f449d202448bf5e1f562bbaf8ab8c1592408d8"}
+        cljs-bean/cljs-bean {:mvn/version "1.9.0"}
         }
  }
 

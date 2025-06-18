@@ -11,6 +11,7 @@
             [app.components.paintchart :refer [Paintchart]]
             [app.utils.strategy :refer [all-fold]]
             [app.components.pokertable :refer [PokerTable]]
+            [app.components.rechart :refer [Barchart]]
             [clojure.walk :as walk]
             [goog.string :as gstring]
             [goog.string.format]
@@ -100,6 +101,7 @@ simply multiply your number of outs by 4 and 2, respectively."))
       ($ PokerTable {:cards '("As" "Kh" "Qc" "Jd" "Ts")})
       (d/br)
       ($ Paintchart)
+      ($ Barchart)
       ))
 
 (defnc app []
