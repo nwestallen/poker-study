@@ -15,7 +15,7 @@
 (defnc Cardsquare [{:keys [hand strategy set-strategy update-strat paint] {:keys [raise call fold]} :act}]
   (let [
         [state set-state] (hooks/use-state {:r raise :c call :f fold :rc (+ raise call) :h (+ raise call fold)})
-        paint-square (fn [] (set-strategy ((strat-pipe strategy) {(edn/read-string update-strat) (list hand)})))
+        paint-square (fn [] (set-strategy ((strat-pipe strategy) {update-strat (list hand)})))
         ]
     (hooks/use-effect [strategy] (set-state {:r (str raise) :c (str call) :f (str fold) :rc (str (+ raise call)) :h (+ raise call fold)}))
     (d/svg {:viewBox "0 0 100 100" :width "100%" :height "100%" :xlmns "http://www.w3.org/2000/svg" :on-mouse-down #(paint-square) :on-mouse-enter #(if paint (paint-square))}

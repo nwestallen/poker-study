@@ -2,14 +2,16 @@
   (:require [helix.core :refer [defnc $ <>]]
             [helix.hooks :as hooks]
             [helix.dom :as d]
+            [clojure.edn :as edn]
             [shadow.css :refer [css]]
             [app.components.cardchart :refer [Cardchart]]
             [app.components.rechart :refer [EChart]]
+            [app.components.mixslider :refer [MixSlider]]
             [app.utils.strategy :refer [all-fold strat-ranges action-summary]]
             ["react-dom/client" :as rdom]))
 
 (defnc Paintchart []
-  (let [[update set-update] (hooks/use-state "{:raise 100}")
+  (let [[update set-update] (hooks/use-state {:raise 20, :call 60, :fold 20})
         [strategy set-strategy] (hooks/use-state all-fold)
         [summary set-summary] (hooks/use-state (action-summary all-fold))]
     (hooks/use-effect [strategy] #(set-summary (action-summary strategy)))
@@ -18,8 +20,17 @@
                   (d/h3 {:class-name (css :font-bold :mb-2 :text-lg)} "Strategy")
                   ($ Cardchart {:strategy strategy :set-strategy set-strategy :update-strat update})
                   (d/div {:class-name (css :flex :flex-row :my-2)}
-                         (d/p {:class-name (css :mr-2)} "Paintbrush:")
-                         (d/input {:type "text" :class-name (css :border-2 :border-black {:width "200px"}) :value update :on-change (fn [e] (set-update e.target.value))})))
+                         (d/p {:class-name (css :mr-2)} "Raise:")
+                         (d/input {:type "text" :class-name (css :border-2 :border-black {:width "50px"}) :value (:raise update) :on-change (fn [e] (set-update (assoc update :raise (js/parseInt e.target.value))))})
+                         (d/p {:class-name (css :mx-2)} "Call:")
+                         (d/input {:type "text" :class-name (css :border-2 :border-black {:width "50px"}) :value (:call update) :on-change (fn [e] (set-update (assoc update :call (js/parseInt e.target.value))))})
+                         (d/p {:class-name (css :mx-2)} "Fold:")
+                         (d/input {:type "text" :class-name (css :border-2 :border-black {:width "50px"}) :value (:fold update) :on-change (fn [e] (set-update (assoc update :fold (js/parseInt e.target.value))))})
+                         )
+                  (d/div
+                  ($ MixSlider {:mix update :set-mix set-update})
+                  )
+                  )
            ($ EChart
               {:option {:title {:text "Action Summary (Card Combo Count)"}
                         :tooltip {}
@@ -30,4 +41,5 @@
                                           {:value (:call summary) :itemStyle {:color "rgb(34 197 94)"}}
                                           {:value (:raise summary) :itemStyle {:color "rgb(239 68 68)"}}]}]
                         :animationDuration 0}
-               :style {:width "600px" :height "400px"}}))))
+               :style {:width "600px" :height "400px"}})
+           )))
