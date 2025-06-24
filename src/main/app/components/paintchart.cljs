@@ -4,9 +4,9 @@
             [helix.dom :as d]
             [clojure.edn :as edn]
             [shadow.css :refer [css]]
-            [app.components.cardchart :refer [Cardchart]]
+            [app.components.cardchart :refer [Cardchart MixSquare]]
             [app.components.rechart :refer [EChart]]
-            [app.components.mixslider :refer [MixSlider]]
+            [app.components.mixslider :refer [MixSlider HeightSlider PercentSlider]]
             [app.utils.strategy :refer [all-fold strat-ranges action-summary]]
             ["react-dom/client" :as rdom]))
 
@@ -28,7 +28,15 @@
                          (d/input {:type "text" :class-name (css :border-2 :border-black {:width "50px"}) :value (:fold update) :on-change (fn [e] (set-update (assoc update :fold (js/parseInt e.target.value))))})
                          )
                   (d/div
-                  ($ MixSlider {:mix update :set-mix set-update})
+                  (d/div {:class-name (css :flex :flex-row {:width "200px"})}
+                  (d/div {:class-name (css {:width "150px"} {:height "150px"})}
+                         ($ MixSquare {:hand "AA" :strategy strategy :act update})
+                         )
+                  (d/div {:class-name (css :ml-2)}
+                  ($ HeightSlider {:mix update :set-mix set-update}))
+                  )
+                  (d/div {:class-name (css :mt-2)}
+                  ($ PercentSlider {:mix update :set-mix set-update}))
                   )
                   )
            ($ EChart

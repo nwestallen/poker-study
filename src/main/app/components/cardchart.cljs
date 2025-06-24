@@ -31,8 +31,22 @@
 
 (defnc Cardchart [{:keys [strategy set-strategy update-strat]}]
   (let [[paint set-paint] (hooks/use-state false)]
-  (d/div {:class-name (css :grid {:grid-template-columns "repeat(14, 51.2px)"} {:gap "1px"} :bg-white {:width "fit-content" :height "714px"}) :on-mouse-down #(set-paint true) :on-mouse-up #(set-paint false)}
-             (for [i (conj ranks 0)] ($ Cardsquare {:hand (if (= i 0) nil i)}))
-             (for [p (partition 13 strategy)] (<> ($ Cardsquare {:hand (second (:hand (first p))) :strategy strategy :set-strategy set-strategy :update-strat update-strat :paint paint}) (for [i p] ($ Cardsquare {:act (:act i) :hand (:hand i) :strategy strategy :set-strategy set-strategy :update-strat update-strat :paint paint})))))
-             ))
+    (d/div {:class-name (css :grid {:grid-template-columns "repeat(14, 51.2px)"} {:gap "1px"} :bg-white {:width "fit-content" :height "714px"}) :on-mouse-down #(set-paint true) :on-mouse-up #(set-paint false)}
+           (for [i (conj ranks 0)] ($ Cardsquare {:hand (if (= i 0) nil i)}))
+           (for [p (partition 13 strategy)] (<> ($ Cardsquare {:hand (second (:hand (first p))) :strategy strategy :set-strategy set-strategy :update-strat update-strat :paint paint}) (for [i p] ($ Cardsquare {:act (:act i) :hand (:hand i) :strategy strategy :set-strategy set-strategy :update-strat update-strat :paint paint})))))
+    ))
 
+
+(defnc MixSquare [{:keys [hand] {:keys [raise call fold]} :act}]
+  (let [[state set-state] (hooks/use-state {:r raise :c call :f fold :rc (+ raise call) :h (+ raise call fold)})]
+    (hooks/use-effect [raise call fold] (set-state {:r (str raise) :c (str call) :f (str fold) :rc (str (+ raise call)) :h (+ raise call fold)}))
+    (d/svg {:viewBox "0 0 100 100" :width "100%" :height "100%" :xlmns "http://www.w3.org/2000/svg"}
+           (d/rect {:width "100%" :height "100%" :x "0" :y "0" :rx "10" :ry "10" :fill "rgb(64 64 64)"})
+           (d/defs (d/clipPath {:id "rounded-corners"} (d/rect {:x "0" :y "0" :width "100" :height "100" :rx "10" :ry "10"})))
+           (d/g {:clipPath "url(#rounded-corners)"}
+                (d/rect {:width (pct (:r state) (:h state)) :height (:h state) :x "0" :y (- 100 (:h state)) :fill "rgb(239 68 68)"})
+                (d/rect {:width (pct (:c state) (:h state)) :height (:h state) :x (pct (:r state) (:h state)) :y (- 100 (:h state)) :fill "rgb(34 197 94)"})
+                (d/rect {:width (pct (:f state) (:h state)) :height (:h state) :x (pct (:rc state)(:h state)) :y (- 100 (:h state)) :fill "rgb(14 165 233)"})
+         )
+         (d/text {:x "50" :y "50" :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize "36" :fontWeight "500" :class-name (css :select-none)} hand)
+         )))
