@@ -2,7 +2,6 @@
   (:require [helix.core :refer [defnc $ <>]]
             [helix.hooks :as hooks]
             [helix.dom :as d]
-            [clojure.edn :as edn]
             [shadow.css :refer [css]]
             [app.utils.strategy :refer [strat-ranges strat-pipe]]
             ["react-dom/client" :as rdom]))
@@ -14,10 +13,9 @@
 
 (defnc Cardsquare [{:keys [hand strategy set-strategy update-strat paint] {:keys [raise call fold]} :act}]
   (let [
-        [state set-state] (hooks/use-state {:r raise :c call :f fold :rc (+ raise call) :h (+ raise call fold)})
+        state (hooks/use-memo [strategy] {:r raise :c call :f fold :rc (+ raise call) :h (+ raise call fold)})
         paint-square (fn [] (set-strategy ((strat-pipe strategy) {update-strat (list hand)})))
         ]
-    (hooks/use-effect [strategy] (set-state {:r (str raise) :c (str call) :f (str fold) :rc (str (+ raise call)) :h (+ raise call fold)}))
     (d/svg {:viewBox "0 0 100 100" :width "100%" :height "100%" :xlmns "http://www.w3.org/2000/svg" :on-mouse-down #(paint-square) :on-mouse-enter #(if paint (paint-square))}
            (d/rect {:width "100%" :height "100%" :x "0" :y "0" :rx "10" :ry "10" :fill "rgb(64 64 64)"})
            (d/defs (d/clipPath {:id "rounded-corners"} (d/rect {:x "0" :y "0" :width "100" :height "100" :rx "10" :ry "10"})))
@@ -38,8 +36,7 @@
 
 
 (defnc MixSquare [{:keys [hand] {:keys [raise call fold]} :act}]
-  (let [[state set-state] (hooks/use-state {:r raise :c call :f fold :rc (+ raise call) :h (+ raise call fold)})]
-    (hooks/use-effect [raise call fold] (set-state {:r (str raise) :c (str call) :f (str fold) :rc (str (+ raise call)) :h (+ raise call fold)}))
+  (let [state (hooks/use-memo [raise call fold] {:r (str raise) :c (str call) :f (str fold) :rc (str (+ raise call)) :h (+ raise call fold)})]
     (d/svg {:viewBox "0 0 100 100" :width "100%" :height "100%" :xlmns "http://www.w3.org/2000/svg"}
            (d/rect {:width "100%" :height "100%" :x "0" :y "0" :rx "10" :ry "10" :fill "rgb(64 64 64)"})
            (d/defs (d/clipPath {:id "rounded-corners"} (d/rect {:x "0" :y "0" :width "100" :height "100" :rx "10" :ry "10"})))
