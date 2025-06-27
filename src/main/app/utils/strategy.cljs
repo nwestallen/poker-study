@@ -17,6 +17,24 @@
     {:hand "A4o" :act {:fold 100}} {:hand "K4o" :act {:fold 100}} {:hand "Q4o" :act {:fold 100}} {:hand "J4o" :act {:fold 100}} {:hand "T4o" :act {:fold 100}} {:hand "94o" :act {:fold 100}} {:hand "84o" :act {:fold 100}} {:hand "74o" :act {:fold 100}} {:hand "64o" :act {:fold 100}} {:hand "54o" :act {:fold 100}} {:hand "44" :act {:fold 100}} {:hand "43s" :act {:fold 100}} {:hand "42s" :act {:fold 100}}
     {:hand "A3o" :act {:fold 100}} {:hand "K3o" :act {:fold 100}} {:hand "Q3o" :act {:fold 100}} {:hand "J3o" :act {:fold 100}} {:hand "T3o" :act {:fold 100}} {:hand "93o" :act {:fold 100}} {:hand "83o" :act {:fold 100}} {:hand "73o" :act {:fold 100}} {:hand "63o" :act {:fold 100}} {:hand "53o" :act {:fold 100}} {:hand "43o" :act {:fold 100}} {:hand "33" :act {:fold 100}} {:hand "32s" :act {:fold 100}}
     {:hand "A2o" :act {:fold 100}} {:hand "K2o" :act {:fold 100}} {:hand "Q2o" :act {:fold 100}} {:hand "J2o" :act {:fold 100}} {:hand "T2o" :act {:fold 100}} {:hand "92o" :act {:fold 100}} {:hand "82o" :act {:fold 100}} {:hand "72o" :act {:fold 100}} {:hand "62o" :act {:fold 100}} {:hand "52o" :act {:fold 100}} {:hand "42o" :act {:fold 100}} {:hand "32" :act {:fold 100}} {:hand "22" :act {:fold 100}}
+   ])
+
+
+(def blank-strat
+  [
+   {:hand "AA" :act {}} {:hand "AKs" :act {}} {:hand "AQs" :act {}} {:hand "AJs" :act {}} {:hand "ATs" :act {}} {:hand "A9s" :act {}} {:hand "A8s" :act {}} {:hand "A7s" :act {}} {:hand "A6s" :act {}} {:hand "A5s" :act {}} {:hand "A4s" :act {}} {:hand "A3s" :act {}} {:hand "A2s" :act {}}
+    {:hand "AKo" :act {}} {:hand "KK" :act {}} {:hand "KQs" :act {}} {:hand "KJs" :act {}} {:hand "KTs" :act {}} {:hand "K9s" :act {}} {:hand "K8s" :act {}} {:hand "K7s" :act {}} {:hand "K6s" :act {}} {:hand "K5s" :act {}} {:hand "K4s" :act {}} {:hand "K3s" :act {}} {:hand "K2s" :act {}}
+    {:hand "AQo" :act {}} {:hand "KQo" :act {}} {:hand "QQ" :act {}} {:hand "QJs" :act {}} {:hand "QTs" :act {}} {:hand "Q9s" :act {}} {:hand "Q8s" :act {}} {:hand "Q7s" :act {}} {:hand "Q6s" :act {}} {:hand "Q5s" :act {}} {:hand "Q4s" :act {}} {:hand "Q3s" :act {}} {:hand "Q2s" :act {}}
+    {:hand "AJo" :act {}} {:hand "KJo" :act {}} {:hand "QJo" :act {}} {:hand "JJ" :act {}} {:hand "JTs" :act {}} {:hand "J9s" :act {}} {:hand "J8s" :act {}} {:hand "J7s" :act {}} {:hand "J6s" :act {}} {:hand "J5s" :act {}} {:hand "J4s" :act {}} {:hand "J3s" :act {}} {:hand "J2s" :act {}}
+    {:hand "ATo" :act {}} {:hand "KTo" :act {}} {:hand "QTo" :act {}} {:hand "JTo" :act {}} {:hand "TT" :act {}} {:hand "T9s" :act {}} {:hand "T8s" :act {}} {:hand "T7s" :act {}} {:hand "T6s" :act {}} {:hand "T5s" :act {}} {:hand "T4s" :act {}} {:hand "T3s" :act {}} {:hand "T2s" :act {}}
+    {:hand "A9o" :act {}} {:hand "K9o" :act {}} {:hand "Q9o" :act {}} {:hand "J9o" :act {}} {:hand "T9o" :act {}} {:hand "99" :act {}} {:hand "98s" :act {}} {:hand "97s" :act {}} {:hand "96s" :act {}} {:hand "95s" :act {}} {:hand "94s" :act {}} {:hand "93s" :act {}} {:hand "92s" :act {}}
+    {:hand "A8o" :act {}} {:hand "K8o" :act {}} {:hand "Q8o" :act {}} {:hand "J8o" :act {}} {:hand "T8o" :act {}} {:hand "98o" :act {}} {:hand "88" :act {}} {:hand "87s" :act {}} {:hand "86s" :act {}} {:hand "85s" :act {}} {:hand "84s" :act {}} {:hand "83s" :act {}} {:hand "82s" :act {}}
+    {:hand "A7o" :act {}} {:hand "K7o" :act {}} {:hand "Q7o" :act {}} {:hand "J7o" :act {}} {:hand "T7o" :act {}} {:hand "97o" :act {}} {:hand "87o" :act {}} {:hand "77" :act {}} {:hand "76s" :act {}} {:hand "75s" :act {}} {:hand "74s" :act {}} {:hand "73s" :act {}} {:hand "72s" :act {}}
+    {:hand "A6o" :act {}} {:hand "K6o" :act {}} {:hand "Q6o" :act {}} {:hand "J6o" :act {}} {:hand "T6o" :act {}} {:hand "96o" :act {}} {:hand "86o" :act {}} {:hand "76o" :act {}} {:hand "66" :act {}} {:hand "65s" :act {}} {:hand "64s" :act {}} {:hand "63s" :act {}} {:hand "62s" :act {}}
+    {:hand "A5o" :act {}} {:hand "K5o" :act {}} {:hand "Q5o" :act {}} {:hand "J5o" :act {}} {:hand "T5o" :act {}} {:hand "95o" :act {}} {:hand "85o" :act {}} {:hand "75o" :act {}} {:hand "65o" :act {}} {:hand "55" :act {}} {:hand "54s" :act {}} {:hand "53s" :act {}} {:hand "52s" :act {}}
+    {:hand "A4o" :act {}} {:hand "K4o" :act {}} {:hand "Q4o" :act {}} {:hand "J4o" :act {}} {:hand "T4o" :act {}} {:hand "94o" :act {}} {:hand "84o" :act {}} {:hand "74o" :act {}} {:hand "64o" :act {}} {:hand "54o" :act {}} {:hand "44" :act {}} {:hand "43s" :act {}} {:hand "42s" :act {}}
+    {:hand "A3o" :act {}} {:hand "K3o" :act {}} {:hand "Q3o" :act {}} {:hand "J3o" :act {}} {:hand "T3o" :act {}} {:hand "93o" :act {}} {:hand "83o" :act {}} {:hand "73o" :act {}} {:hand "63o" :act {}} {:hand "53o" :act {}} {:hand "43o" :act {}} {:hand "33" :act {}} {:hand "32s" :act {}}
+   {:hand "A2o" :act {}} {:hand "K2o" :act {}} {:hand "Q2o" :act {}} {:hand "J2o" :act {}} {:hand "T2o" :act {}} {:hand "92o" :act {}} {:hand "82o" :act {}} {:hand "72o" :act {}} {:hand "62o" :act {}} {:hand "52o" :act {}} {:hand "42o" :act {}} {:hand "32" :act {}} {:hand "22" :act {}}
     ])
 
 (defn hand-index [h range]
@@ -159,9 +177,10 @@
 (defn get-hand [string]
   (apply str (take 4 string)))
 
-(classify-hand "7c7h")
+;;(classify-hand "7c7h")
 
-;;(def gto-output "7d7c: 0.003,7h7c: 0.003,7h7d: 0.003,7s7c: 0.003,7s7d: 0.003,7s7h: 0.003,8d8c: 0.00800000028,8h8c: 0.00800000028,8h8d: 0.00800000028,8s8c: 0.00800000028,8s8d: 0.00800000028,8s8h: 0.00800000028,9d9c: 0.036000003,9h9c: 0.036000003,9h9d: 0.036000003,9s9c: 0.036000003,9s9d: 0.036000003,9s9h: 0.036000003")
+(def gto-output "7d7c: 0.003,7h7c: 0.003,7h7d: 0.003,7s7c: 0.003,7s7d: 0.003,7s7h: 0.003,8d8c: 0.00800000028,8h8c: 0.00800000028,8h8d: 0.00800000028,8s8c: 0.00800000028,8s8d: 0.00800000028,8s8h: 0.00800000028,9d9c: 0.036000003,9h9c: 0.036000003,9h9d: 0.036000003,9s9c: 0.036000003,9s9d: 0.036000003,9s9h: 0.036000003")
+
 ;;(as-> gto-output x
 ;;(str/split x #",")
 ;;)
@@ -177,12 +196,13 @@
 
 (defn get-amount [string]
   (let [d (str/index-of string " ")]
-    (js/parseFloat (.toFixed (js/parseFloat (apply str (drop (+ d 1) string))) 3))))
+    (* 100 (js/parseFloat (apply str (drop (+ d 1) string))))))
 
 ;;(get-amount  "7d7c: 0.003")
 
 (defn parse-hand [string]
-  {(keyword (classify-hand (get-hand string))) (get-amount string)})
+  (let [hand (classify-hand (get-hand string))]
+  {(keyword hand) (js/parseFloat (.toFixed (/ (get-amount string) (combos hand)) 3))}))
 
 ;;(parse-hand "7d7c: 0.003")
 
@@ -191,7 +211,7 @@
     (str/split x #",")
     (map parse-hand x)
     (apply (partial merge-with +) x)
-    (update-vals x (partial assoc {} action-key))
+    (update-vals x #(assoc {} action-key %))
     ))
 
 ;;(parse-hands gto-output :raise)
@@ -205,7 +225,16 @@
 ;;(consolidate-ranges (parse-hands gto-output :raise) (parse-hands gto-output :call) (parse-hands gto-output :fold))
 
 (defn convert-strat [strat]
-  (map #(hash-map :hand (name (key %)) :act (val %)) strat)
+  (strategy blank-strat (mapv #(hash-map :hand (name (key %)) :act (val %)) strat))
   )
 
 ;;(convert-strat (consolidate-ranges (parse-hands gto-output :raise) (parse-hands gto-output :call) (parse-hands gto-output :fold)))
+
+(defn convert-ranges [{:keys [raise call fold]}]
+  (convert-strat
+  (consolidate-ranges (parse-hands raise :raise)
+                      (parse-hands call :call)
+                      (parse-hands fold :fold))))
+
+(convert-ranges {:raise gto-output :call gto-output :fold gto-output})
+

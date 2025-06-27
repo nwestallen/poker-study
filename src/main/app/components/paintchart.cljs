@@ -6,7 +6,8 @@
             [app.components.cardchart :refer [Cardchart MixSquare]]
             [app.components.rechart :refer [EChart]]
             [app.components.mixslider :refer [SliderSquare]]
-            [app.utils.strategy :refer [all-fold strat-ranges action-summary]]
+            [app.components.rangeform :refer [RangeForm]]
+            [app.utils.strategy :refer [all-fold strat-ranges action-summary convert-ranges]]
             ["react-dom/client" :as rdom]))
 
 (defnc Paintchart []
@@ -38,6 +39,7 @@
                          (d/p (str "Update: " update))
                          )
                   )
+           (d/div {:class-name (css :flex :flex-col)}
            ($ EChart
               {:option {:title {:text "Action Summary (Card Combo Count)"}
                         :tooltip {}
@@ -49,4 +51,6 @@
                                           {:value (:raise summary) :itemStyle {:color "rgb(239 68 68)"}}]}]
                         :animationDuration 0}
                :style {:width "600px" :height "400px"}})
+           ($ RangeForm {:on-submit #(set-strategy (convert-ranges %))})
+           (d/p (prn-str strategy)))
            )))
