@@ -1,4 +1,6 @@
-(ns app.utils.strategy)
+(ns app.utils.strategy
+  (:require [cljs-bean.core :refer [->clj ->js]]
+            [clojure.string :as str]))
 
 (def all-fold
   [
@@ -138,7 +140,7 @@
   (merge-with (partial merge-with -) (key-combos strat1) (key-combos strat2))
   )
 
-(/ (apply + (map abs (vals {:raise 4 :call -4 :fold 0}))) 2)
+;;(/ (apply + (map abs (vals {:raise 4 :call -4 :fold 0}))) 2)
 
 (defn summarize-diff [diff]
   (/ (apply + (map abs (vals diff))) 2)
@@ -148,3 +150,62 @@
   (filter #(> (last %) 0) (sort-by val > (update-vals (diff-strats strat1 strat2) summarize-diff)))
   )
 
+(defn classify-hand [hand]
+  (if (= (first hand) (nth hand 2)) (str (first hand) (nth hand 2))
+      (if (= (second hand) (last hand)) (str (first hand) (nth hand 2) "s")
+          (str (first hand) (nth hand 2) "o")))
+    )
+
+(defn get-hand [string]
+  (apply str (take 4 string)))
+
+(classify-hand "7c7h")
+
+;;(def gto-output "7d7c: 0.003,7h7c: 0.003,7h7d: 0.003,7s7c: 0.003,7s7d: 0.003,7s7h: 0.003,8d8c: 0.00800000028,8h8c: 0.00800000028,8h8d: 0.00800000028,8s8c: 0.00800000028,8s8d: 0.00800000028,8s8h: 0.00800000028,9d9c: 0.036000003,9h9c: 0.036000003,9h9d: 0.036000003,9s9c: 0.036000003,9s9d: 0.036000003,9s9h: 0.036000003")
+;;(as-> gto-output x
+;;(str/split x #",")
+;;)
+
+;;(apply str (take 4 "7d7c: 0.003"))
+
+;;(get-hand "7d7c: 0.003")
+;;(classify-hand (get-hand "7d7c: 0.003"))
+
+;;(str/index-of "7d7c: 0.003" " ")
+
+;;(js/parseFloat (apply str (drop 5 "7d7c: 0.003")))
+
+(defn get-amount [string]
+  (let [d (str/index-of string " ")]
+    (js/parseFloat (.toFixed (js/parseFloat (apply str (drop (+ d 1) string))) 3))))
+
+;;(get-amount  "7d7c: 0.003")
+
+(defn parse-hand [string]
+  {(keyword (classify-hand (get-hand string))) (get-amount string)})
+
+;;(parse-hand "7d7c: 0.003")
+
+(defn parse-hands [string action-key]
+  (as-> string x
+    (str/split x #",")
+    (map parse-hand x)
+    (apply (partial merge-with +) x)
+    (update-vals x (partial assoc {} action-key))
+    ))
+
+;;(parse-hands gto-output :raise)
+
+;;(merge-with merge (parse-hands gto-output :raise) (parse-hands gto-output :call))
+
+(defn consolidate-ranges [& ranges]
+  (apply merge-with merge ranges)
+  )
+
+;;(consolidate-ranges (parse-hands gto-output :raise) (parse-hands gto-output :call) (parse-hands gto-output :fold))
+
+(defn convert-strat [strat]
+  (map #(hash-map :hand (name (key %)) :act (val %)) strat)
+  )
+
+;;(convert-strat (consolidate-ranges (parse-hands gto-output :raise) (parse-hands gto-output :call) (parse-hands gto-output :fold)))
