@@ -34,7 +34,7 @@
     {:hand "A5o" :act {}} {:hand "K5o" :act {}} {:hand "Q5o" :act {}} {:hand "J5o" :act {}} {:hand "T5o" :act {}} {:hand "95o" :act {}} {:hand "85o" :act {}} {:hand "75o" :act {}} {:hand "65o" :act {}} {:hand "55" :act {}} {:hand "54s" :act {}} {:hand "53s" :act {}} {:hand "52s" :act {}}
     {:hand "A4o" :act {}} {:hand "K4o" :act {}} {:hand "Q4o" :act {}} {:hand "J4o" :act {}} {:hand "T4o" :act {}} {:hand "94o" :act {}} {:hand "84o" :act {}} {:hand "74o" :act {}} {:hand "64o" :act {}} {:hand "54o" :act {}} {:hand "44" :act {}} {:hand "43s" :act {}} {:hand "42s" :act {}}
     {:hand "A3o" :act {}} {:hand "K3o" :act {}} {:hand "Q3o" :act {}} {:hand "J3o" :act {}} {:hand "T3o" :act {}} {:hand "93o" :act {}} {:hand "83o" :act {}} {:hand "73o" :act {}} {:hand "63o" :act {}} {:hand "53o" :act {}} {:hand "43o" :act {}} {:hand "33" :act {}} {:hand "32s" :act {}}
-   {:hand "A2o" :act {}} {:hand "K2o" :act {}} {:hand "Q2o" :act {}} {:hand "J2o" :act {}} {:hand "T2o" :act {}} {:hand "92o" :act {}} {:hand "82o" :act {}} {:hand "72o" :act {}} {:hand "62o" :act {}} {:hand "52o" :act {}} {:hand "42o" :act {}} {:hand "32" :act {}} {:hand "22" :act {}}
+   {:hand "A2o" :act {}} {:hand "K2o" :act {}} {:hand "Q2o" :act {}} {:hand "J2o" :act {}} {:hand "T2o" :act {}} {:hand "92o" :act {}} {:hand "82o" :act {}} {:hand "72o" :act {}} {:hand "62o" :act {}} {:hand "52o" :act {}} {:hand "42o" :act {}} {:hand "32o" :act {}} {:hand "22" :act {}}
     ])
 
 (defn hand-index [h range]
@@ -158,8 +158,6 @@
   (merge-with (partial merge-with -) (key-combos strat1) (key-combos strat2))
   )
 
-;;(/ (apply + (map abs (vals {:raise 4 :call -4 :fold 0}))) 2)
-
 (defn summarize-diff [diff]
   (/ (apply + (map abs (vals diff))) 2)
   )
@@ -177,64 +175,34 @@
 (defn get-hand [string]
   (apply str (take 4 string)))
 
-;;(classify-hand "7c7h")
-
-(def gto-output "7d7c: 0.003,7h7c: 0.003,7h7d: 0.003,7s7c: 0.003,7s7d: 0.003,7s7h: 0.003,8d8c: 0.00800000028,8h8c: 0.00800000028,8h8d: 0.00800000028,8s8c: 0.00800000028,8s8d: 0.00800000028,8s8h: 0.00800000028,9d9c: 0.036000003,9h9c: 0.036000003,9h9d: 0.036000003,9s9c: 0.036000003,9s9d: 0.036000003,9s9h: 0.036000003")
-
-;;(as-> gto-output x
-;;(str/split x #",")
-;;)
-
-;;(apply str (take 4 "7d7c: 0.003"))
-
-;;(get-hand "7d7c: 0.003")
-;;(classify-hand (get-hand "7d7c: 0.003"))
-
-;;(str/index-of "7d7c: 0.003" " ")
-
-;;(js/parseFloat (apply str (drop 5 "7d7c: 0.003")))
-
 (defn get-amount [string]
   (let [d (str/index-of string " ")]
     (* 100 (js/parseFloat (apply str (drop (+ d 1) string))))))
 
-;;(get-amount  "7d7c: 0.003")
-
 (defn parse-hand [string]
+  (if (str/blank? string) {}
   (let [hand (classify-hand (get-hand string))]
-  {(keyword hand) (js/parseFloat (.toFixed (/ (get-amount string) (combos hand)) 3))}))
-
-;;(parse-hand "7d7c: 0.003")
+  {(keyword hand) (js/parseFloat (.toFixed (/ (get-amount string) (combos hand)) 3))})))
 
 (defn parse-hands [string action-key]
   (as-> string x
     (str/split x #",")
     (map parse-hand x)
     (apply (partial merge-with +) x)
-    (update-vals x #(assoc {} action-key %))
+    (update-vals x #(assoc {} action-key (js/parseFloat (.toFixed % 3))))
     ))
-
-;;(parse-hands gto-output :raise)
-
-;;(merge-with merge (parse-hands gto-output :raise) (parse-hands gto-output :call))
 
 (defn consolidate-ranges [& ranges]
   (apply merge-with merge ranges)
   )
 
-;;(consolidate-ranges (parse-hands gto-output :raise) (parse-hands gto-output :call) (parse-hands gto-output :fold))
-
 (defn convert-strat [strat]
   (strategy blank-strat (mapv #(hash-map :hand (name (key %)) :act (val %)) strat))
   )
-
-;;(convert-strat (consolidate-ranges (parse-hands gto-output :raise) (parse-hands gto-output :call) (parse-hands gto-output :fold)))
 
 (defn convert-ranges [{:keys [raise call fold]}]
   (convert-strat
   (consolidate-ranges (parse-hands raise :raise)
                       (parse-hands call :call)
                       (parse-hands fold :fold))))
-
-(convert-ranges {:raise gto-output :call gto-output :fold gto-output})
 
