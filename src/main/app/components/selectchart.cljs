@@ -3,7 +3,7 @@
             [helix.hooks :as hooks]
             [helix.dom :as d]
             [shadow.css :refer [css]]
-            [app.components.cardchart :refer [Cardchart]]
+            [app.components.cardchart :refer [PureChart]]
             [app.utils.strategy :refer [six-strat strat-ranges]]
             ["react-dom/client" :as rdom]))
 
@@ -26,5 +26,5 @@
      (d/div {:class-name (css :w-5 :h-5 :rounded-full :bg-green-500 :mx-1 :mt-0.5)}) (d/p {:class-name (css :font-semibold :mr-2)}"Call")
      (d/div {:class-name (css :w-5 :h-5 :rounded-full :bg-sky-500 :mx-1 :mt-0.5)}) (d/p {:class-name (css :font-semibold :mr-2)}"Fold")
      )
-     ($ Cardchart {:strategy strategy :set-strategy set-strategy :update-strat "{:raise 50 :call 50}"})
+     ($ PureChart {:strategy strategy :set-strategy set-strategy :update-strat "{:raise 50 :call 50}"})
      )))

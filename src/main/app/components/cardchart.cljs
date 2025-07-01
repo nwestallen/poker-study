@@ -27,14 +27,6 @@
          (d/text {:x "50" :y "50" :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize "36" :fontWeight "500" :class-name (css :select-none)} hand)
          )))
 
-(defnc Cardchart [{:keys [strategy set-strategy update-strat]}]
-  (let [[paint set-paint] (hooks/use-state false)]
-    (d/div {:class-name (css :grid {:grid-template-columns "repeat(14, 51.2px)"} {:gap "1px"} :bg-white {:width "fit-content" :height "714px"}) :on-mouse-down #(set-paint true) :on-mouse-up #(set-paint false)}
-           (for [i (conj ranks 0)] ($ Cardsquare {:hand (if (= i 0) nil i)}))
-           (for [p (partition 13 strategy)] (<> ($ Cardsquare {:hand (second (:hand (first p))) :strategy strategy :set-strategy set-strategy :update-strat update-strat :paint paint}) (for [i p] ($ Cardsquare {:act (:act i) :hand (:hand i) :strategy strategy :set-strategy set-strategy :update-strat update-strat :paint paint})))))
-    ))
-
-
 (defnc MixSquare [{:keys [hand] {:keys [raise call fold]} :act}]
   (let [state (hooks/use-memo [raise call fold] {:r (str raise) :c (str call) :f (str fold) :rc (str (+ raise call)) :h (+ raise call fold)})]
     (d/svg {:viewBox "0 0 100 100" :width "100%" :height "100%" :xlmns "http://www.w3.org/2000/svg"}
@@ -47,3 +39,10 @@
          )
          (d/text {:x "50" :y "50" :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize "36" :fontWeight "500" :class-name (css :select-none)} hand)
          )))
+
+(defnc PureChart [{:keys [strategy set-strategy update-strat]}]
+  (let [[paint set-paint] (hooks/use-state false)]
+    (d/div {:class-name (css :grid {:grid-template-columns "repeat(14, 51.2px)"} {:gap "1px"} :bg-white {:width "fit-content" :height "714px"}) :on-mouse-down #(set-paint true) :on-mouse-up #(set-paint false)}
+           (for [i (conj ranks 0)] ($ Cardsquare {:hand (if (= i 0) nil i)}))
+           (for [p (partition 13 strategy)] (<> ($ Cardsquare {:hand (second (name (key (first p)))) :strategy strategy :set-strategy set-strategy :update-strat update-strat :paint paint}) (for [i p] ($ Cardsquare {:act (val i) :hand (name (key i)) :strategy strategy :set-strategy set-strategy :update-strat update-strat :paint paint})))))
+    ))

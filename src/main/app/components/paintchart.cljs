@@ -3,7 +3,7 @@
             [helix.hooks :as hooks]
             [helix.dom :as d]
             [shadow.css :refer [css]]
-            [app.components.cardchart :refer [Cardchart MixSquare]]
+            [app.components.cardchart :refer [PureChart MixSquare]]
             [app.components.rechart :refer [EChart]]
             [app.components.mixslider :refer [SliderSquare]]
             [app.components.rangeform :refer [RangeForm]]
@@ -21,7 +21,7 @@
     (d/div {:class-name (css :flex :flex-row :my-10)}
            (d/div {:class-name (css :flex :flex-col :mr-10)}
                   (d/h3 {:class-name (css :font-bold :mb-2 :text-lg)} "Strategy")
-                  ($ Cardchart {:strategy strategy :set-strategy set-strategy :update-strat update})
+                  ($ PureChart {:strategy strategy :set-strategy set-strategy :update-strat update})
                   (d/div {:class-name (css :flex :flex-row :my-2)}
                          (d/p {:class-name (css :mr-2)} "Raise:")
                          (d/input {:type "text" :class-name (css :border-2 :border-black {:width "50px"}) :value (:raise mix) :on-change (fn [e] (set-mix (assoc mix :raise (js/parseInt e.target.value))))})
