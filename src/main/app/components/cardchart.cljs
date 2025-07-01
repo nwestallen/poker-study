@@ -11,6 +11,11 @@
 (defn pct [n d]
   (* 100 (/ n d)))
 
+(defn squarestyle [{:keys [height hand]}]
+  (if (>= 1 (count hand)) (css {:opacity 0})
+      (if (= height 0) (css :fill "rgb(300 300 300)" {:opacity 0.5})
+          (css :fill "rgb(64 64 65)" {:opacity 0} [:hover {:opacity 0.1} :cursor-pointer]))))
+
 (defnc Cardsquare [{:keys [hand strategy set-strategy update-strat paint] {:keys [raise call fold]} :act}]
   (let [
         state (hooks/use-memo [strategy] {:r raise :c call :f fold :rc (+ raise call) :h (+ raise call fold)})
@@ -23,8 +28,9 @@
                 (d/rect {:width (pct (:r state) (:h state)) :height (:h state) :x "0" :y (- 100 (:h state)) :fill "rgb(239 68 68)"})
                 (d/rect {:width (pct (:c state) (:h state)) :height (:h state) :x (pct (:r state) (:h state)) :y (- 100 (:h state)) :fill "rgb(34 197 94)"})
                 (d/rect {:width (pct (:f state) (:h state)) :height (:h state) :x (pct (:rc state)(:h state)) :y (- 100 (:h state)) :fill "rgb(14 165 233)"})
-         )
-         (d/text {:x "50" :y "50" :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize "36" :fontWeight "500" :class-name (css :select-none)} hand)
+                )
+           (d/text {:x "50" :y "50" :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize "36" :fontWeight "500" :class-name (css :select-none)} hand)
+           (d/rect {:width "100%" :height "100%" :x "0" :y "0" :class-name (squarestyle {:height (:h state) :hand hand})})
          )))
 
 (defnc MixSquare [{:keys [hand] {:keys [raise call fold]} :act}]

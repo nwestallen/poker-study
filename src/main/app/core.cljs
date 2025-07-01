@@ -13,7 +13,6 @@
   {:helix/features {:fast-refresh true}}
   (d/div {:class-name (css :flex :flex-row :min-h-screen)}
          ($ Paintchart)
-         ($ Selectchart)
     ))
 
 (defn ^:export init []

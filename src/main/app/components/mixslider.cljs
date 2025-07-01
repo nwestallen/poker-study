@@ -30,12 +30,12 @@
 
 (defnc HeightSlider [{:keys [height set-height]}]
   (d/input {:type "range" :class-name (css {:writing-mode "vertical-lr"} {:direction "rtl"} {:vertical-align "bottom"} {:webkit-appearance "none"} {:appearance "none"} {:background "rgb(64 64 64)"} {:height "150px"} {:width "15px"}
-                                           ["&::-webkit-slider-thumb" {:-webkit-appearance "none"} {:background-color "lightgrey"} {:width "15px"} {:height "15px"}]) :on-change (fn [e] (set-height (js/parseInt e.target.value))) :value height})
+                                           ["&::-webkit-slider-thumb" {:-webkit-appearance "none"} {:background-color "lightgrey"} {:width "15px"} {:height "15px"} :cursor-pointer]) :on-change (fn [e] (set-height (js/parseInt e.target.value))) :value height})
   )
 
 (defnc SliderSquare [{:keys [mix set-mix height set-height update]}]
-  (<>
-   (d/div {:class-name (css :flex :flex-row {:width "200px"})}
+  (d/div {:class-name (css :flex :flex-col :w-fit)}
+   (d/div {:class-name (css :flex :flex-row {:width "182px"})}
    (d/div {:class-name (css {:width "150px"} {:height "150px"})}
           ($ MixSquare {:hand "AA" :act update}))
    (d/div {:class-name (css :ml-2)}
