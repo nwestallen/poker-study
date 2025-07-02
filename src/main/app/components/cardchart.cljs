@@ -48,7 +48,7 @@
 
 (defnc PureChart [{:keys [strategy set-strategy update-strat]}]
   (let [[paint set-paint] (hooks/use-state false)]
-    (d/div {:class-name (css :grid {:grid-template-columns "repeat(14, 51.2px)"} {:gap "1px"} :bg-white {:width "fit-content" :height "714px"}) :on-mouse-down #(set-paint true) :on-mouse-up #(set-paint false)}
+    (d/div {:class-name (css :grid {:grid-template-columns "repeat(14, 7%)"} {:gap "1px"} {:width "fit-content" :height "100%"}) :on-mouse-down #(set-paint true) :on-mouse-up #(set-paint false)}
            (for [i (conj ranks 0)] ($ Cardsquare {:hand (if (= i 0) nil i)}))
            (for [p (partition 13 strategy)] (<> ($ Cardsquare {:hand (second (name (key (first p)))) :strategy strategy :set-strategy set-strategy :update-strat update-strat :paint paint}) (for [i p] ($ Cardsquare {:act (val i) :hand (name (key i)) :strategy strategy :set-strategy set-strategy :update-strat update-strat :paint paint})))))
     ))

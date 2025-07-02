@@ -142,6 +142,10 @@ all-fold
   (filter #(> (last %) 0) (sort-by val > (update-vals (diff-strats strat1 strat2) summarize-diff)))
   )
 
+(defn strat-accuracy [strat1 strat2]
+  (.toFixed (* 100 (/ (- 1326 (reduce + (vals (diff-summary strat1 strat2)))) 1326)) 1)
+  )
+
 (defn classify-hand [hand]
   (if (= (first hand) (nth hand 2)) (str (first hand) (nth hand 2))
       (if (= (second hand) (last hand)) (str (first hand) (nth hand 2) "s")
