@@ -8,14 +8,16 @@
             [app.components.mixslider :refer [SliderSquare]]
             [app.components.rangeform :refer [RangeForm]]
             [app.components.paintcontrol :refer [ActionInputs HeightInput ControlPanel]]
-            [app.utils.strategy :refer [all-fold strat-ranges action-summary convert-ranges]]
+            [app.utils.strategy :refer [all-fold strat-ranges action-summary convert-ranges diff-summary]]
             ["react-dom/client" :as rdom]))
 
-(defnc Paintchart []
+(defnc Paintchart [{:keys [answer]}]
   (let [[strategy set-strategy] (hooks/use-state all-fold)
         [summary set-summary] (hooks/use-state (action-summary all-fold))
         [height set-height] (hooks/use-state 100)
         [mix set-mix] (hooks/use-state {:raise 35, :call 35, :fold 30})
+        [show-an set-show-an] (hooks/use-state false)
+        [result set-result] (hooks/use-state {})
         update (hooks/use-memo [mix height] (update-vals mix #(js/parseFloat (.toFixed (* (/ height 100) %) 2))))
         summary (hooks/use-memo [strategy] (action-summary strategy))
         ]
@@ -26,9 +28,12 @@
                   (d/div {:class-name (css :flex :flex-row)}
                   ($ ControlPanel {:mix mix :set-mix set-mix :height height :set-height set-height :update update})
                   ($ RangeForm {:on-submit #(set-strategy (convert-ranges %))})
+                  (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(do (set-show-an (not show-an)) (set-result "Result"))}"Check Answer")
                   )
                   )
            (d/div {:class-name (css :flex :flex-col)}
+                  (if show-an (d/div (d/p (prn-str (diff-summary answer strategy)))
+                                    ($ PureChart {:strategy answer})))
            (comment
              ($ EChart
               {:option {:title {:text "Action Summary (Card Combo Count)"}

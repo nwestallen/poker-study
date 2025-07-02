@@ -6,13 +6,13 @@
             ["react-dom/client" :as rdom]
             [app.components.paintchart :refer [Paintchart]]
             [app.components.selectchart :refer [Selectchart]]
-            [app.utils.strategy :refer [all-fold keyed-strat]]
+            [app.utils.strategy :refer [all-fold keyed-strat six-strat strat-ranges]]
             ))
 
 (defnc app []
   {:helix/features {:fast-refresh true}}
   (d/div {:class-name (css :flex :flex-row :min-h-screen)}
-         ($ Paintchart)
+         ($ Paintchart {:answer (strat-ranges (get-in six-strat [:RFI :EP :OPEN]))})
     ))
 
 (defn ^:export init []
