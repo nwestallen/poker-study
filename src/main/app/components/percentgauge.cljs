@@ -16,7 +16,7 @@
                       :color (if (< percentage 51) "rgb(239 68 68)" (if (< percentage 76) "gold" "rgb(34 197 94)"))
                       :pointer {:show false}
                       :progress {:show true :overlap false :roundCap true :clip false}
-                      :axisLine {:lineStyle {:width 20}}
+                      :axisLine {:lineStyle {:width 10 :color [[1 "rgb(64 64 64)"]]}}
                       :splitLine {:show false :distance 0 :length 10}
                       :axisTick {:show false}
                       :axisLabel {:show false :distance 50}
@@ -27,7 +27,7 @@
                               :detail {:offsetCenter ["0%" "0%"]}
                               }]
                       :title {:fontSize 14}
-                      :detail {:color "inherit" :formatter "{value}%" :fontSize 48}}
+                      :detail {:color "inherit" :formatter "{value}%" :fontSize 36}}
                      ]
             }
    }

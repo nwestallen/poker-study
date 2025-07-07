@@ -20,7 +20,7 @@
     (<>
                   (if show-an
                     (d/div
-                    (d/div {:class-name (css :absolute :w-screen :h-full :bg-slate-500 {:opacity 0.7})})
+                    (d/div {:class-name (css :absolute :w-screen {:height "150vh"} :bg-slate-700 {:opacity 0.7})})
                     ($ AccReport {:guess strategy :answer answer :on-close #(set-show-an (not show-an))})
                     ))
     (d/div {:class-name (css :m-2 :flex :flex-row :my-10)}
