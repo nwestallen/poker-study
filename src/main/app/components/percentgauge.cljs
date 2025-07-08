@@ -9,6 +9,7 @@
 (defnc PercentGauge [{:keys [percentage]}]
   ($ EChart
    {:option {
+            :animation false
             :series [
                      {:type "gauge"
                       :startAngle 90

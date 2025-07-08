@@ -25,7 +25,7 @@
   (str (.toFixed n 1) "%"))
 
 (defnc FreqBar [{:keys [left right]}]
-  (d/svg {:viewBox "0 0 100 100" :width "100%" :height "100%" :xlmns "http://www.w3.org/2000/svg"}
+  (d/svg {:viewBox "0 0 100 100" :width "100%" :height "200%" :xlmns "http://www.w3.org/2000/svg"}
          (d/defs
            (d/clipPath {:id "rounded8"} (d/rect {:x "0" :y "8" :width "100" :height "6" :rx "4" :ry "4" :clipPathUnits "objectBoundingBox"}))
            (d/clipPath {:id "rounded24"} (d/rect {:x "0" :y "24" :width "100" :height "6" :rx "4" :ry "4" :clipPathUnits "objectBoundingBox"}))
