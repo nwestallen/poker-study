@@ -21,6 +21,9 @@
                         :animationDuration 0}
                :style {:width "300px" :height "170px"}}))
 
+(defn p-form [n]
+  (str (.toFixed n 1) "%"))
+
 (defnc FreqBar [{:keys [left right]}]
   (d/svg {:viewBox "0 0 100 100" :width "100%" :height "100%" :xlmns "http://www.w3.org/2000/svg"}
          (d/defs
@@ -43,8 +46,14 @@
        (d/rect {:width 1 :height "6" :x "49.5%" :y "8" :rx "0" :ry "0" :fill "white"})
        (d/rect {:width 1 :height "6" :x "49.5%" :y "24" :rx "0" :ry "0" :fill "white"})
        (d/rect {:width 1 :height "6" :x "49.5%" :y "40" :rx "0" :ry "0" :fill "white"})
+       (d/text {:x 10 :y 3 :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize 6} (p-form (:raise left)))
        (d/text {:x "50" :y "3" :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize "6" :class-name (css :select-none)} "Raise")
+       (d/text {:x 90 :y 3 :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize 6} (p-form (:raise right)))
+       (d/text {:x 10 :y 20 :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize 6} (p-form (:call left)))
        (d/text {:x "50" :y "20" :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize "6" :class-name (css :select-none)} "Call")
+       (d/text {:x 90 :y 20 :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize 6} (p-form (:call right)))
+       (d/text {:x 10 :y 36 :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize 6} (p-form (:fold left)))
        (d/text {:x "50" :y "36" :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize "6" :class-name (css :select-none)} "Fold")
+       (d/text {:x 90 :y 36 :textAnchor "middle" :dominantBaseline "middle" :fill "white" :fontSize 6} (p-form (:fold right)))
          ))
 
