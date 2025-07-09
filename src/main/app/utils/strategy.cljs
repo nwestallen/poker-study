@@ -188,4 +188,33 @@ all-fold
 (defn percent-summary [strat]
   (update-vals (action-summary strat) combo-percent))
 
+(defn mult-round [m n]
+  (/ (Math/round (* 100 (* (Math/round (/ n m)) m))) 100)
+  )
+
+(defn pair-round [n]
+  (mult-round (/ 100 6) n))
+
+(defn suited-round [n]
+  (mult-round 25 n))
+
+(defn offsuit-round [n]
+  (let [p (pair-round n)
+        s (suited-round n)]
+    (first (min-key second [p (Math/abs (- p n))] [s (Math/abs (- s n))]))
+      )
+  )
+
+(defn round-hand [h]
+  (let [hand (name (key h))
+        act (val h)
+        rnd (if (= (first hand) (second hand))
+              pair-round
+              (if (= (last hand) "s") suited-round offsuit-round))]
+    (vector (key h) (update-vals act rnd))
+  ))
+
+(defn simplify-strat [strat]
+  (ordered-map (map round-hand strat)))
+
 

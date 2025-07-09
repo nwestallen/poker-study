@@ -7,7 +7,7 @@
 
 (defnc RangeForm [{:keys [on-submit]}]
   (let [[state set-state] (hooks/use-state {:raise "" :call "" :fold ""})]
-  (d/form {:class-name (css {:width "200px"} :m-3 :rounded-lg :p-2 {:background-color "rgb(175 175 175)"}) :on-submit #(do (.preventDefault %) (.log js/console (prn-str state)) (on-submit state))}
+  (d/form {:class-name (css :h-fit {:width "200px"} :m-3 :rounded-lg :p-2 {:background-color "rgb(175 175 175)"}) :on-submit #(do (.preventDefault %) (.log js/console (prn-str state)) (on-submit state))}
           (d/h3 {:class-name (css :font-bold)} "Solver Range Input")
           (d/div (d/p "Raise Range: ") (d/input {:type "text" :class-name (css :border :border-black) :value (:raise state) :on-change (fn [e] (set-state (assoc state :raise e.target.value)))}))
           (d/div (d/p "Call Range: ") (d/input {:type "text" :class-name (css :border :border-black) :value (:call state) :on-change (fn [e] (set-state (assoc state :call e.target.value)))}))

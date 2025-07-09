@@ -7,7 +7,7 @@
             [app.components.rangeform :refer [RangeForm]]
             [app.components.accreport :refer [AccReport]]
             [app.components.paintcontrol :refer [ControlPanel]]
-            [app.utils.strategy :refer [all-fold convert-ranges strat-accuracy]]
+            [app.utils.strategy :refer [all-fold convert-ranges strat-accuracy simplify-strat]]
             ["react-dom/client" :as rdom]))
 
 (defnc Paintchart [{:keys [answer]}]
@@ -31,7 +31,10 @@
                   (d/div {:class-name (css :flex :flex-row)}
                   ($ ControlPanel {:mix mix :set-mix set-mix :height height :set-height set-height :update update})
                   ($ RangeForm {:on-submit #(set-strategy (convert-ranges %))})
+                  (d/div {:class-name (css :flex :flex-col)}
                   (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-show-an (not show-an))}"Check Answer")
+                  (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-strategy (simplify-strat strategy))}"Simplify Strat")
+                  )
                   )
                   )
            (d/div {:class-name (css :flex :flex-col)}

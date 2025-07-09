@@ -28,7 +28,7 @@
   )
 
 (defnc ControlPanel [{:keys [mix set-mix height set-height update]}]
-  (d/div {:class-name (css :p-2 :w-fit :m-3 :rounded-lg {:background-color "rgb(150 150 150)"})}
+  (d/div {:class-name (css :p-2 :w-fit :m-3 :rounded-lg :h-fit {:background-color "rgb(150 150 150)"})}
                    (d/div {:class-name (css :flex :flex-row :items-center)}
                   ($ SliderSquare {:mix mix :set-mix set-mix :height height :set-height set-height :update update})
                   ($ HeightInput {:height height :set-height set-height})
