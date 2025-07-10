@@ -7,7 +7,8 @@
             [app.components.rangeform :refer [RangeForm]]
             [app.components.accreport :refer [AccReport]]
             [app.components.paintcontrol :refer [ControlPanel]]
-            [app.utils.strategy :refer [all-fold convert-ranges strat-accuracy simplify-strat]]
+            [app.components.freqchart :refer [FreqChart]]
+            [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat]]
             ["react-dom/client" :as rdom]))
 
 (defnc Paintchart [{:keys [answer]}]
@@ -37,6 +38,4 @@
                   )
                   )
                   )
-           (d/div {:class-name (css :flex :flex-col)}
-           )
            ))))

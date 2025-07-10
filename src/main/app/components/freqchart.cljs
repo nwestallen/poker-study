@@ -9,17 +9,17 @@
 
 (defnc FreqChart [{:keys [summary]}]
              ($ EChart
-              {:option {:title {:text ""}
+              {:option {:title {:text "Action Frequency"}
                         :tooltip {}
-                        :yAxis   {:data ["Fold" "Call" "Raise"] :axisLabel {:color "white"}}
-                        :xAxis   {:axisLabel {:color "white"}}
+                        :yAxis   {:data ["Fold" "Call" "Raise"] :axisLabel {:color "Black"}}
+                        :xAxis   {:axisLabel {:color "Black"}}
                         :series  [{:name "Sales" :type "bar"
                                    :data [{:value (:fold summary) :itemStyle {:color "rgb(14 165 233)"}}
                                           {:value (:call summary) :itemStyle {:color "rgb(34 197 94)"}}
                                           {:value (:raise summary) :itemStyle {:color "rgb(239 68 68)"}}]
-                                   :barWidth "200px"}]
+                                   }]
                         :animationDuration 0}
-               :style {:width "300px" :height "170px"}}))
+               :style {:width "600px" :height "400px"}}))
 
 (defn p-form [n]
   (str (.toFixed n 1) "%"))

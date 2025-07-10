@@ -205,9 +205,25 @@ all-fold
       )
   )
 
+(apply min-key (juxt second first) {:call 20 :raise 20 :fold 70})
+
+(dissoc {:raise 20 :call 10 :fold 70} :call)
+
+(min :raise :fold)
+
+(defn drop-min [act]
+  (let [d (apply min-key (juxt second first) act)]
+    (update-vals (dissoc act (first d)) #(+ % (/ (second d) 2)))
+    ))
+
+(defn drop-third [act]
+  (if (> (count act) 2) (drop-min act) act))
+
+(def mact {:call 20 :raise 20 :fold 60})
+
 (defn round-hand [h]
   (let [hand (name (key h))
-        act (val h)
+        act (drop-third (val h))
         rnd (if (= (first hand) (second hand))
               pair-round
               (if (= (last hand) "s") suited-round offsuit-round))]
