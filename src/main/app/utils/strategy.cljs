@@ -42,6 +42,14 @@ all-fold
         "T" 10
         (js/parseInt card)))
 
+(defn hand-type [hand]
+  (if (= (first hand) (second hand))
+    :pair
+    (if (= (last hand) "s") :suited :offsuit)))
+
+(group-by hand-type '("AA" "AKs" "AJo" "QQ" "KQo" "54s"))
+(update-vals (group-by hand-type '("AA" "AKs" "AJo" "ATo" "A9o" "A5s" "QQ" "QJs" "KQo" "KQs" "KTs" "KJs" "KJo" "54s")) (partial group-by first))
+
 (defn pair-range [hand]
   (if (= (last hand) "+") (pair-range (apply str "AA-" (drop-last hand)))
   (map (fn [r] (str r r)) (filter #(<= (rank-value (last hand)) (rank-value %) (rank-value (first hand))) ranks))
@@ -205,12 +213,6 @@ all-fold
       )
   )
 
-(apply min-key (juxt second first) {:call 20 :raise 20 :fold 70})
-
-(dissoc {:raise 20 :call 10 :fold 70} :call)
-
-(min :raise :fold)
-
 (defn drop-min [act]
   (let [d (apply min-key (juxt second first) act)]
     (update-vals (dissoc act (first d)) #(+ % (/ (second d) 2)))
@@ -218,8 +220,6 @@ all-fold
 
 (defn drop-third [act]
   (if (> (count act) 2) (drop-min act) act))
-
-(def mact {:call 20 :raise 20 :fold 60})
 
 (defn round-hand [h]
   (let [hand (name (key h))
@@ -233,4 +233,53 @@ all-fold
 (defn simplify-strat [strat]
   (ordered-map (map round-hand strat)))
 
+(defn group-by-action [strat]
+  (update-vals (group-by val strat) #(map first %)))
+
+(defn act-str [act]
+(str/join "/" (map (fn [[k v]] (str (str/capitalize (name k))"(" v "%)")) act)))
+
+(defn group-adjacent
+  [nums]
+  (->> nums
+       (sort-by #((comp - rank-value) (second (name %))))
+       (map-indexed vector)
+       (partition-by (fn [[i n]] (+ (rank-value (second (name n))) i)))
+       (map (partial mapv second))))
+
+(defn top? [h]
+  (or (= h :AA) (= (- (rank-value (first (name h))) (rank-value (second (name h)))) 1)))
+
+(defn abbreviate [hands]
+  (if (= (count hands) 1)
+    (name (first hands))
+    (if (top? (first hands))
+      (str (name (last hands)) "+")
+      (str (name (first hands)) "-" (name (last hands))))))
+
+(defn group-range [r]
+  (update-vals (group-by #(hand-type (name %)) r) (partial group-by #(first (name %)))))
+
+(defn abbrv-pairs [hands]
+  (map abbreviate (group-adjacent (flatten (mapv val hands)))))
+
+(defn abbrv-nopairs [hands]
+  (map abbreviate (apply concat (map second (sort-by (fn [[k v]] ((comp - rank-value) k)) (update-vals hands group-adjacent))))))
+
+(defn abbrv-range [range]
+(as-> range r
+ (group-range r)
+ (update r :pair abbrv-pairs)
+ (update r :suited abbrv-nopairs)
+ (update r :offsuit abbrv-nopairs)
+ (map second r)
+ (flatten r)
+ (str/join ", " r)))
+
+(defn abbrv-strat [strat]
+(as-> strat r
+  (group-by-action r)
+  (update-vals r abbrv-range)
+  (update-keys r act-str)
+  (map (fn [[k v]] (str k ": " v)) r)))
 
