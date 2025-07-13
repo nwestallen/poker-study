@@ -237,7 +237,7 @@ all-fold
   (update-vals (group-by val strat) #(map first %)))
 
 (defn act-str [act]
-(str/join "/" (map (fn [[k v]] (str (str/capitalize (name k))"(" v "%)")) act)))
+(str/join "/" (remove str/blank? (map (fn [[k v]] (if (> v 0) (str (str/capitalize (name k))"(" v "%)"))) act))))
 
 (defn group-adjacent
   [nums]
@@ -276,10 +276,26 @@ all-fold
  (flatten r)
  (str/join ", " r)))
 
+(def act-rank
+  {
+   #{:raise} 0
+   #{:call} 1
+   #{:raise :call} 2
+   #{:raise :fold} 3
+   #{:call :fold} 4
+   #{:raise :call :fold} 5
+   #{:fold} 6
+   }
+  )
+
+(set (keys (filter (comp pos? val) {:raise 100 :call 0 :fold 0})))
+
 (defn abbrv-strat [strat]
-(as-> strat r
-  (group-by-action r)
-  (update-vals r abbrv-range)
-  (update-keys r act-str)
-  (map (fn [[k v]] (str k ": " v)) r)))
+  (as-> strat r
+    (group-by-action r)
+    (update-vals r abbrv-range)
+    (sort-by #(get act-rank (set (keys (filter (comp pos? val) (key %))))) r)
+    (update-keys r act-str)
+    (mapv (fn [[k v]] (str k ": " v)) r)))
+
 
