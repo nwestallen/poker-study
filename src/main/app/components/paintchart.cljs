@@ -8,6 +8,7 @@
             [app.components.accreport :refer [AccReport]]
             [app.components.paintcontrol :refer [ControlPanel]]
             [app.components.freqchart :refer [FreqChart]]
+            [app.components.pokertable :refer [PokerTable]]
             [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat]]
             ["react-dom/client" :as rdom]))
 
@@ -27,7 +28,11 @@
                     ))
     (d/div {:class-name (css :m-2 :flex :flex-row :my-10)}
            (d/div {:class-name (css :flex :flex-col :mr-10)}
-                  (d/h3 {:class-name (css :font-bold :mb-2 :text-lg)} "Strategy")
+                  (d/div {:class-name (css :flex :flex-row :mb-2)}
+                         (d/div {:class-name (css :w-5 :h-5 :rounded-full :bg-red-500 :mx-1 :mt-0.5)}) (d/p {:class-name (css :font-semibold :mr-2)}"Raise")
+                         (d/div {:class-name (css :w-5 :h-5 :rounded-full :bg-green-500 :mx-1 :mt-0.5)}) (d/p {:class-name (css :font-semibold :mr-2)}"Call")
+                         (d/div {:class-name (css :w-5 :h-5 :rounded-full :bg-sky-500 :mx-1 :mt-0.5)}) (d/p {:class-name (css :font-semibold :mr-2)}"Fold")
+                   )
                   (d/div {:class-name (css {:width "700px"} {:height "700px"})}
                   ($ PureChart {:strategy strategy :set-strategy set-strategy :update-strat update}))
                   (d/div {:class-name (css :flex :flex-row)}
@@ -39,7 +44,9 @@
                   )
                   )
                   )
-           (d/div {:class-name (css :p-4 :rounded-lg :flex :flex-col :border :border-black {:width "40%"} :h-fit)}
+           (d/div {:class-name (css :mt-12 :flex :flex-col {:width "40%"})}
+                  ($ PokerTable {:cards '("Ah") :active-seat "UTG1"})
+           (d/div {:class-name (css :p-4 :mt-10 :rounded-lg :flex :flex-col :border :border-black :h-fit)}
                          (map #(d/p {:class-name (css :mb-4)} %) strat-text)
-                         )
+                         ))
            ))))
