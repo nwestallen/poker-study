@@ -17,9 +17,13 @@
   (d/svg {:width "100%", :viewBox (str "0 0 " 100 " " 100), :fill "none"}
          (d/circle {:cx 50 :cy 50 :fill color :r 50})
          (d/text {:x 50 :y 50 :fill "black" :text-anchor "middle" :dominant-baseline "middle" :font-size "1.5em" :font-weight "bold"} title)
-
   ))
-(defnc PokerTable [{:keys [cards active-seat]}]
+
+(defnc Bet [{:keys [amount]}]
+  (if amount (d/div {:class-name (css :text-white :h-fit :w-fit :p-1 {:font-size "0.9em"}
+                                      :rounded :text-center :align-middle {:background "rgb(111, 176, 128)"})} amount)))
+
+(defnc PokerTable [{:keys [cards active-seat bets pot]}]
   (d/div {:class-name (css :relative {:width "100%"} :flex :border :border-black :rounded-xl)}
          ($ Felt {:fill "rgb(34 197 94)"  :border "rgb(60 60 60)" :border-width "10" :width "700" :height "300" :padding "10px"})
          (d/div {:class-name (css {:width "39%"} :flex :absolute {:top "33%"} {:left "30%"})}
@@ -35,16 +39,19 @@
          (d/div {:class-name (css {:width "8%"} {:top "65%"} {:left "92%"} {:height "16%"} :absolute)}($ PokerSeat {:title "UTG" :active (= active-seat "UTG")}))
          (d/div {:class-name (css {:width "8%"} {:top "20%"} {:left "92%"} {:height "16%"} :absolute)}($ PokerSeat {:title "BB" :active (= active-seat "BB")}))
          (d/div {:class-name (css {:width "8%"} {:top "-5%"} {:left "62%"} {:height "16%"} :absolute)}($ PokerSeat {:title "SB" :active (= active-seat "SB")}))
-         (d/div {:class-name (css {:top "44%"} {:left "44%"} :text-white :h-fit :w-fit :absolute :p-1 :rounded :text-center :align-middle {:background "rgb(111, 176, 128)"})} "1.5BB")
-         (d/div {:class-name (css {:top "12%"} {:left "30.5%"} {:font-size "0.9em"} :text-white :h-fit :w-fit :absolute :p-1 :rounded  :text-center :align-middle {:background "rgb(111, 176, 128)"})} "1.5BB")
-         (d/div {:class-name (css {:top "12%"} {:left "62.5%"} {:font-size "0.9em"} :text-white :h-fit :w-fit :absolute :p-1 :rounded :text-center :align-middle {:background "rgb(111, 176, 128)"})} "1.5BB")
-         (d/div {:class-name (css {:top "27%"} {:left "84%"} {:font-size "0.9em"} :text-white :h-fit :w-fit :absolute :p-1 :rounded :text-center :align-middle {:background "rgb(111, 176, 128)"})} "1.5BB")
-         (d/div {:class-name (css {:top "27%"} {:left "9%"} {:font-size "0.9em"} :text-white :h-fit :w-fit :absolute :p-1 :rounded :text-center :align-middle {:background "rgb(111, 176, 128)"})} "1.5BB")
-         (d/div {:class-name (css {:top "64%"} {:left "9%"} {:font-size "0.9em"} :text-white :h-fit :w-fit :absolute :p-1 :rounded :text-center :align-middle {:background "rgb(111, 176, 128)"})} "1.5BB")
-         (d/div {:class-name (css {:top "64%"} {:left "84%"} {:font-size "0.9em"} :text-white :h-fit :w-fit :absolute :p-1 :rounded :text-center :align-middle {:background "rgb(111, 176, 128)"})} "1.5BB")
-         (d/div {:class-name (css {:top "79%"} {:left "70%"} {:font-size "0.9em"} :text-white :h-fit :w-fit :absolute :p-1 :rounded :text-center :align-middle {:background "rgb(111, 176, 128)"})} "1.5BB")
-         (d/div {:class-name (css {:top "79%"} {:left "23%"} {:font-size "0.9em"} :text-white :h-fit :w-fit :absolute :p-1 :rounded :text-center :align-middle {:background "rgb(111, 176, 128)"})} "1.5BB")
-         (d/div {:class-name (css {:top "79.5%"} {:left "46%"} {:font-size "0.9em"} :text-white :h-fit :w-fit :absolute :p-1 :rounded :text-center :align-middle {:background "rgb(111, 176, 128)"})} "1.5BB")
+         (d/div {:class-name (css {:top "44%"} {:left "44%"} :text-white :h-fit :w-fit :absolute :p-1 :rounded :text-center :align-middle {:background "rgb(111, 176, 128)"})} pot)
+         (d/div {:class-name (css {:top "12%"} {:left "30.5%"} :absolute)} ($ Bet {:amount (:BTN bets)}))
+         (d/div {:class-name (css {:top "12%"} {:left "62.5%"} :absolute)} ($ Bet {:amount (:SB bets)}))
+         (d/div {:class-name (css {:top "27%"} {:left "84%"} :absolute)} ($ Bet {:amount (:BB bets)}))
+         (d/div {:class-name (css {:top "27%"} {:left "9%"} :absolute)} ($ Bet {:amount (:CO bets)}))
+         (d/div {:class-name (css {:top "64%"} {:left "9%"} :absolute)} ($ Bet {:amount (:HJ bets)}))
+         (d/div {:class-name (css {:top "64%"} {:left "84%"} :absolute)} ($ Bet {:amount (:UTG bets)}))
+         (d/div {:class-name (css {:top "79%"} {:left "70%"} :absolute)} ($ Bet {:amount (:UTG1 bets)}))
+         (d/div {:class-name (css {:top "79%"} {:left "23%"} :absolute)} ($ Bet {:amount (:LJ bets)}))
+         (d/div {:class-name (css {:top "79.5%"} {:left "46%"} :absolute)} ($ Bet {:amount (:UTG2 bets)}))
          )
   )
+
+
+;;Action URL: F-F-F-F-F-F-F-R3.5-R12.5
 
