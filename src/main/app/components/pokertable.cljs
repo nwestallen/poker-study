@@ -4,6 +4,7 @@
             [shadow.css :refer [css]]
             [app.components.cards :refer [card-img]]
             [app.components.felt :refer [Felt]]
+            [app.utils.tablelogic :refer [stack-chips]]
             ["react-dom/client" :as rdom]))
 
 
@@ -26,25 +27,34 @@
 (def chip-pos
   [
    (css :absolute {:bottom "0%"})
-   (css :absolute {:bottom "6%"})
-   (css :absolute {:bottom "12%"})
-   (css :absolute {:bottom "18%"})
-   (css :absolute {:bottom "24%"})
-   (css :absolute {:bottom "30%"})
-   (css :absolute {:bottom "36%"})
+   (css :absolute {:bottom "7%"})
+   (css :absolute {:bottom "14%"})
+   (css :absolute {:bottom "21%"})
+   (css :absolute {:bottom "28%"})
+   (css :absolute {:bottom "35%"})
    (css :absolute {:bottom "42%"})
-   (css :absolute {:bottom "48%"})
-   (css :absolute {:bottom "54%"})
-   (css :absolute {:bottom "60%"})
-   (css :absolute {:bottom "66%"})
-   (css :absolute {:bottom "72%"})
-   (css :absolute {:bottom "78%"})
+   (css :absolute {:bottom "49%"})
+   (css :absolute {:bottom "56%"})
+   (css :absolute {:bottom "63%"})
+   (css :absolute {:bottom "70%"})
+   (css :absolute {:bottom "77%"})
    (css :absolute {:bottom "84%"})
-   (css :absolute {:bottom "90%"})
+   (css :absolute {:bottom "91%"})
+   (css :absolute {:bottom "98%"})
+   (css :absolute {:bottom "105%"})
    ])
+
+(def chip-img
+  {
+   :Black "../BlackChip.svg"
+   :Green "../GreenChip.svg"
+   :Red "../RedChip.svg"
+   :Blue "../BlueChip.svg"
+   })
+
 (defnc ChipStack [{:keys [amount]}]
   (d/div {:class-name (css {:padding-bottom "100%"} :relative)}
-         (map #(d/img {:src "../BlueChip.svg" :class-name (get chip-pos %)}) (range amount))
+         (map #(d/img {:src ((first %) chip-img) :class-name (get chip-pos (second %))}) (stack-chips amount))
          ))
 
 (defnc PokerTable [{:keys [cards active-seat bets pot]}]
@@ -54,8 +64,7 @@
                 (map #(d/div {:class-name (css {:width "20%"})} (card-img %)) cards)
                 )
          (d/div {:class-name (css {:width "4%"} {:top "24%"} {:left "32%"} {:height "8%"} :absolute)} ($ DealerButton {:color "white" :title "DEALER"}))
-         (d/div {:class-name (css :absolute {:width "2%"} {:top "22%"} {:left "38%"})} ($ ChipStack {:amount 10}))
-         (d/div {:class-name (css :absolute {:width "2%"} {:top "22%"} {:left "42%"})} ($ ChipStack {:amount 5}))
+         (d/div {:class-name (css :absolute {:width "3%"} {:top "22%"} {:left "38%"})} ($ ChipStack {:amount 257}))
          (d/div {:class-name (css {:width "8%"} {:top "-5%"} {:left "30%"} {:height "16%"} :absolute)} ($ PokerSeat {:title "BTN" :active (= active-seat "BTN")}))
          (d/div {:class-name (css {:width "8%"} {:top "20%"} {:left "0%"} {:height "16%"} :absolute)}($ PokerSeat {:title "CO" :active (= active-seat "CO")}))
          (d/div {:class-name (css {:width "8%"} {:top "65%"} {:left "0%"} {:height "16%"} :absolute)}($ PokerSeat {:title "HJ" :active (= active-seat "HJ")}))
