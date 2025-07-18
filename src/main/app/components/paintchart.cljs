@@ -45,7 +45,7 @@
                   )
                   )
            (d/div {:class-name (css :mt-12 :flex :flex-col {:width "40%"})}
-                  ($ PokerTable {:active-seat "SB" :pot "1.5BB" :bets {:SB "0.5BB" :BB "1BB" :BTN "52BB"}})
+                  ($ PokerTable {:active-seat "UTG" :pot 1.5 :bets {:SB 0.5 :BB 1} :stacks {:SB 149.5 :BB 149 :UTG 150 :UTG1 150 :UTG2 150 :LJ 150 :HJ 150 :CO 150 :BTN 150}})
            (d/div {:class-name (css :p-4 :mt-10 :rounded-lg :flex :flex-col :border :border-black :h-fit)}
                          (map #(d/p {:class-name (css :mb-4)} %) strat-text)
                          )

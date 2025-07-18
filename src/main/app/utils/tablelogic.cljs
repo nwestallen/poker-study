@@ -39,5 +39,5 @@
                (vec (range start end))))))
 
 (defn stack-chips [amount]
-(apply concat (map (fn [[k v]] (map #(vector k %) v)) (zipmap [:Black :Green :Red :Blue] (stack (chips amount))))))
+(apply concat (map (fn [[k v]] (map #(vector k %) v)) (zipmap [:Blue :Red :Green :Black] (stack (reverse (chips amount)))))))
 
