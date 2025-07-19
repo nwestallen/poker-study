@@ -3,9 +3,10 @@
             [helix.dom :as d]
             [helix.hooks :as hooks]
             [shadow.css :refer [css]]
+            [clojure.string :as str]
             [app.components.cards :refer [card-img]]
             [app.components.felt :refer [Felt]]
-            [app.utils.tablelogic :refer [stack-chips zip-play]]
+            [app.utils.tablelogic :refer [stack-chips zip-play parse-actions]]
             ["react-dom/client" :as rdom]))
 
 
@@ -68,15 +69,15 @@
                 (map #(d/div {:class-name (css {:width "20%"})} (card-img %)) cards)
                 )
          (d/div {:class-name (css {:width "4%"} {:top "24%"} {:left "32%"} {:height "8%"} :absolute)} ($ DealerButton {:color "white" :title "DEALER"}))
-         (d/div {:class-name (css {:width "9%"} {:top "-5%"} {:left "30%"} {:height "16%"} :absolute)} ($ PokerSeat {:title "BTN" :active (= active-seat "BTN") :stack (:BTN stacks) :fold (contains? folds :BTN)}))
-         (d/div {:class-name (css {:width "9%"} {:top "20%"} {:left "0%"} {:height "16%"} :absolute)}($ PokerSeat {:title "CO" :active (= active-seat "CO") :stack (:CO stacks) :fold (contains? folds :CO)}))
-         (d/div {:class-name (css {:width "9%"} {:top "65%"} {:left "0%"} {:height "16%"} :absolute)}($ PokerSeat {:title "HJ" :active (= active-seat "HJ") :stack (:HJ stacks) :fold (contains? folds :HJ)}))
-         (d/div {:class-name (css {:width "9%"} {:top "89%"} {:left "21%"} {:height "16%"} :absolute)}($ PokerSeat {:title "LJ" :active (= active-seat "LJ") :stack (:LJ stacks) :fold (contains? folds :LJ)}))
-         (d/div {:class-name (css {:width "9%"} {:top "89%"} {:left "46%"} {:height "16%"} :absolute)}($ PokerSeat {:title "UTG2" :active (= active-seat "UTG2") :stack (:UTG2 stacks) :fold (contains? folds :UTG2)}))
-         (d/div {:class-name (css {:width "9%"} {:top "89%"} {:left "71%"} {:height "16%"} :absolute)}($ PokerSeat {:title "UTG1" :active (= active-seat "UTG1") :stack (:UTG1 stacks) :fold (contains? folds :UTG1)}))
-         (d/div {:class-name (css {:width "9%"} {:top "65%"} {:left "92%"} {:height "16%"} :absolute)}($ PokerSeat {:title "UTG" :active (= active-seat "UTG") :stack (:UTG stacks) :fold (contains? folds :UTG)}))
-         (d/div {:class-name (css {:width "9%"} {:top "20%"} {:left "92%"} {:height "16%"} :absolute)}($ PokerSeat {:title "BB" :active (= active-seat "BB") :stack (:BB stacks) :fold (contains? folds :BB)}))
-         (d/div {:class-name (css {:width "9%"} {:top "-5%"} {:left "62%"} {:height "16%"} :absolute)}($ PokerSeat {:title "SB" :active (= active-seat "SB") :stack (:SB stacks) :fold (contains? folds :SB)}))
+         (d/div {:class-name (css {:width "9%"} {:top "-5%"} {:left "30%"} {:height "16%"} :absolute)} ($ PokerSeat {:title "BTN" :active (= active-seat :BTN) :stack (:BTN stacks) :fold (contains? folds :BTN)}))
+         (d/div {:class-name (css {:width "9%"} {:top "20%"} {:left "0%"} {:height "16%"} :absolute)}($ PokerSeat {:title "CO" :active (= active-seat :CO) :stack (:CO stacks) :fold (contains? folds :CO)}))
+         (d/div {:class-name (css {:width "9%"} {:top "65%"} {:left "0%"} {:height "16%"} :absolute)}($ PokerSeat {:title "HJ" :active (= active-seat :HJ) :stack (:HJ stacks) :fold (contains? folds :HJ)}))
+         (d/div {:class-name (css {:width "9%"} {:top "89%"} {:left "21%"} {:height "16%"} :absolute)}($ PokerSeat {:title "LJ" :active (= active-seat :LJ) :stack (:LJ stacks) :fold (contains? folds :LJ)}))
+         (d/div {:class-name (css {:width "9%"} {:top "89%"} {:left "46%"} {:height "16%"} :absolute)}($ PokerSeat {:title "UTG2" :active (= active-seat :UTG2) :stack (:UTG2 stacks) :fold (contains? folds :UTG2)}))
+         (d/div {:class-name (css {:width "9%"} {:top "89%"} {:left "71%"} {:height "16%"} :absolute)}($ PokerSeat {:title "UTG1" :active (= active-seat :UTG1) :stack (:UTG1 stacks) :fold (contains? folds :UTG1)}))
+         (d/div {:class-name (css {:width "9%"} {:top "65%"} {:left "92%"} {:height "16%"} :absolute)}($ PokerSeat {:title "UTG" :active (= active-seat :UTG) :stack (:UTG stacks) :fold (contains? folds :UTG)}))
+         (d/div {:class-name (css {:width "9%"} {:top "20%"} {:left "92%"} {:height "16%"} :absolute)}($ PokerSeat {:title "BB" :active (= active-seat :BB) :stack (:BB stacks) :fold (contains? folds :BB)}))
+         (d/div {:class-name (css {:width "9%"} {:top "-5%"} {:left "62%"} {:height "16%"} :absolute)}($ PokerSeat {:title "SB" :active (= active-seat :SB) :stack (:SB stacks) :fold (contains? folds :SB)}))
          (d/div {:class-name (css {:top "44%"} {:left "44%"} :absolute)} ($ Bet {:amount (apply + (vals bets))}))
          (d/div {:class-name (css {:top "14%"} {:left "30.5%"} :absolute)} ($ Bet {:amount (:BTN bets)}))
          (d/div {:class-name (css {:top "14%"} {:left "62.5%"} :absolute)} ($ Bet {:amount (:SB bets)}))
@@ -91,23 +92,37 @@
   )
 
 
-(zip-play [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] [:fold :fold :fold 3 :fold :fold 3 :fold 3 3])
+(defnc ActionForm [{:keys [on-submit]}]
+  (let [[state set-state] (hooks/use-state "")]
+  (d/form {:class-name (css :h-fit {:width "50%"} :m-3 :rounded-lg :p-2 {:background-color "rgb(175 175 175)"}) :on-submit #(do (.preventDefault %) (.log js/console (prn-str state)) (on-submit state))}
+          (d/h3 {:class-name (css :font-bold)} "Action Sequence Input")
+          (d/div (d/input {:type "text" :class-name (css :border :border-black :w-full) :value state :on-change (fn [e] (set-state e.target.value))}))
+   (d/input {:type "submit" :value "Submit" :class-name (css :rounded-md :font-bold :bg-sky-500 :text-white :py-1 :px-2 :mt-2 [:hover :bg-sky-400 :cursor-pointer])})))
+  )
 
 (defnc TableContainer [{:keys [seats stack-size active-seat]}]
   (let [
         [stacks set-stacks!] (hooks/use-state (zipmap seats (repeat stack-size)))
         [bets set-bets!] (hooks/use-state (zipmap seats (repeat 0)))
-        [active-seat set-active-seat!] (hooks/use-state "SB")
+        [active-seat set-active-seat!] (hooks/use-state :SB)
         [folds set-folds!] (hooks/use-state #{})
-        ]
+        set-table! (fn [state]
+                     (let [acts (str/replace state #"AI" (str stack-size))]
+                     (do
+                     (doseq [[f s] (zip-play seats (parse-actions acts))]
+                       (if (= s :fold) (set-folds! #(conj % f))
+                           (do (set-bets! #(assoc % f s))
+                               (set-stacks! #(assoc % f (- stack-size s))))))
+                     (set-active-seat! (first (last (zip-play seats (parse-actions (str acts "-X"))))))
+                     )))]
     (hooks/use-effect :once
-      (set-bets! #(update % :SB + 0.5))
-      (set-bets! #(update % :BB + 1))
-      (set-active-seat! "UTG")
-      (doseq [[f s] [[:UTG1 :fold] [:UTG2 :fold] [:LJ 3]]]
-        (if (= s :fold) (set-folds! #(conj % f)) (set-bets! #(update % f + s))))
+      (set-bets! #(assoc % :SB 0.5 :BB 1))
+      (set-stacks! #(update % :SB - 0.5))
+      (set-stacks! #(update % :BB - 1))
+      (set-active-seat! :UTG)
       )
     (<>
+      ($ ActionForm {:on-submit (fn [state] (set-table! state))})
       ($ PokerTable {:active-seat active-seat :bets bets :stacks stacks :folds folds})
       )
     ))

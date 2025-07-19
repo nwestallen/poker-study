@@ -45,7 +45,7 @@
                   )
                   )
            (d/div {:class-name (css :mt-12 :flex :flex-col {:width "40%"})}
-                  ($ TableContainer {:stack-size 150 :seats [:SB :BB :UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN]})
+                  ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB]})
            (d/div {:class-name (css :p-4 :mt-10 :rounded-lg :flex :flex-col :border :border-black :h-fit)}
                          (map #(d/p {:class-name (css :mb-4)} %) strat-text)
                          )
