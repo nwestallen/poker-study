@@ -6,7 +6,7 @@
 
 (def action-seq '(:bet :raise :fold :fold :raise :fold :fold :call :fold :raise :call :call :call))
 
-(defn deal
+(defn zip-play
   "Return a vector of [seat action] pairs.
    `seats`   – ordered collection of still‑in players
    `actions` – finite sequence of actions (:bet :raise :call :fold …)"
@@ -23,7 +23,7 @@
                  (conj (subvec t 1) s))]
         (recur t' (rest a) (conj out [s x]))))))  ; tail recursion
 
-(def bet-amounts {:SB 0.5 :BB 1})
+(zip-play positions action-seq)
 
 (defn chips [amount]
   (let [denominations [100 25 5 1]]
@@ -41,3 +41,7 @@
 (defn stack-chips [amount]
 (apply concat (map (fn [[k v]] (map #(vector k %) v)) (zipmap [:Blue :Red :Green :Black] (stack (reverse (chips amount)))))))
 
+;; for the result of 'deal'(rename), doseq: -increment corresponding bet value, -decrement corresponding stack value
+;; bets and stacks must therefore be stateful slices within th epokertable component
+;; at some point, go through this project and annotate all fucntions with side-effects with '!'
+;; raise and call amounts should be specified; call amount equal to last raise amount

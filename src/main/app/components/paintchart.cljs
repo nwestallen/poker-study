@@ -8,7 +8,7 @@
             [app.components.accreport :refer [AccReport]]
             [app.components.paintcontrol :refer [ControlPanel]]
             [app.components.freqchart :refer [FreqChart]]
-            [app.components.pokertable :refer [PokerTable ChipStack]]
+            [app.components.pokertable :refer [TableContainer]]
             [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat]]
             ["react-dom/client" :as rdom]))
 
@@ -45,7 +45,7 @@
                   )
                   )
            (d/div {:class-name (css :mt-12 :flex :flex-col {:width "40%"})}
-                  ($ PokerTable {:active-seat "UTG" :pot 1.5 :bets {:SB 0.5 :BB 1} :stacks {:SB 149.5 :BB 149 :UTG 150 :UTG1 150 :UTG2 150 :LJ 150 :HJ 150 :CO 150 :BTN 150}})
+                  ($ TableContainer {:stack-size 150 :seats [:SB :BB :UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN]})
            (d/div {:class-name (css :p-4 :mt-10 :rounded-lg :flex :flex-col :border :border-black :h-fit)}
                          (map #(d/p {:class-name (css :mb-4)} %) strat-text)
                          )
