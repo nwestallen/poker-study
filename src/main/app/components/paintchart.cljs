@@ -9,6 +9,7 @@
             [app.components.paintcontrol :refer [ControlPanel]]
             [app.components.freqchart :refer [FreqChart]]
             [app.components.pokertable :refer [TableContainer]]
+            [app.components.scenariomanager :refer [ScenarioManager]]
             [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat]]
             ["react-dom/client" :as rdom]))
 
@@ -18,6 +19,7 @@
         [mix set-mix!] (hooks/use-state {:raise 35, :call 35, :fold 30})
         [answer set-answer!] (hooks/use-state answer)
         [show-an set-show-an!] (hooks/use-state false)
+        [actions set-actions!] (hooks/use-state "")
         update (hooks/use-memo [mix height] (update-vals mix #(js/parseFloat (.toFixed (* (/ height 100) %) 2))))
         strat-text (hooks/use-memo [strategy] (abbrv-strat strategy))
         ]
@@ -43,10 +45,15 @@
                   )
                   )
            (d/div {:class-name (css :mt-12 :flex :flex-col {:width "40%"})}
-                  ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB]})
+                  ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions actions :set-actions! set-actions!})
            (d/div {:class-name (css :p-4 :mt-10 :rounded-lg :flex :flex-col :border :border-black :h-fit)}
                          (map #(d/p {:class-name (css :mb-4)} %) strat-text)
                          )
+           ($ ScenarioManager {:current-scenario {:title ""
+                                                  :table "F-F-F"
+                                                  :strategy strategy}
+                               :on-scenario-change (fn [scenario]
+                                                     (do (set-strategy! (:strategy scenario)) (set-actions! (:table scenario))))})
            )
            )
                   (if show-an

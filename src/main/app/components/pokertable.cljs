@@ -92,15 +92,14 @@
   )
 
 
-(defnc ActionForm [{:keys [on-submit]}]
-  (let [[state set-state] (hooks/use-state "")]
-  (d/form {:class-name (css :h-fit {:width "50%"} :m-3 :rounded-lg :p-2 {:background-color "rgb(175 175 175)"}) :on-submit #(do (.preventDefault %) (.log js/console (prn-str state)) (on-submit state))}
+(defnc ActionForm [{:keys [on-submit actions set-actions!]}]
+  (d/form {:class-name (css :h-fit {:width "50%"} :m-3 :rounded-lg :p-2 {:background-color "rgb(175 175 175)"}) :on-submit #(do (.preventDefault %) (.log js/console actions) (on-submit actions))}
           (d/h3 {:class-name (css :font-bold)} "Action Sequence Input")
-          (d/div (d/input {:type "text" :class-name (css :border :border-black :w-full) :value state :on-change (fn [e] (set-state e.target.value))}))
-   (d/input {:type "submit" :value "Submit" :class-name (css :rounded-md :font-bold :bg-sky-500 :text-white :py-1 :px-2 :mt-2 [:hover :bg-sky-400 :cursor-pointer])})))
+          (d/div (d/input {:type "text" :class-name (css :border :border-black :w-full) :value actions :on-change (fn [e] (set-actions! e.target.value))}))
+   (d/input {:type "submit" :value "Submit" :class-name (css :rounded-md :font-bold :bg-sky-500 :text-white :py-1 :px-2 :mt-2 [:hover :bg-sky-400 :cursor-pointer])}))
   )
 
-(defnc TableContainer [{:keys [seats stack-size active-seat]}]
+(defnc TableContainer [{:keys [seats stack-size active-seat actions set-actions!]}]
   (let [
         [stacks set-stacks!] (hooks/use-state (zipmap seats (repeat stack-size)))
         [bets set-bets!] (hooks/use-state (zipmap seats (repeat 0)))
@@ -122,7 +121,7 @@
       (set-active-seat! :UTG)
       )
     (<>
-      ($ ActionForm {:on-submit (fn [state] (set-table! state))})
+      ($ ActionForm {:on-submit (fn [actions] (set-table! actions)) :actions actions :set-actions! set-actions!})
       ($ PokerTable {:active-seat active-seat :bets bets :stacks stacks :folds folds})
       )
     ))
