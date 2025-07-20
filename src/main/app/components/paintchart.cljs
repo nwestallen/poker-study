@@ -13,10 +13,11 @@
             ["react-dom/client" :as rdom]))
 
 (defnc Paintchart [{:keys [answer]}]
-  (let [[strategy set-strategy] (hooks/use-state all-fold)
-        [height set-height] (hooks/use-state 100)
-        [mix set-mix] (hooks/use-state {:raise 35, :call 35, :fold 30})
-        [show-an set-show-an] (hooks/use-state false)
+  (let [[strategy set-strategy!] (hooks/use-state all-fold)
+        [height set-height!] (hooks/use-state 100)
+        [mix set-mix!] (hooks/use-state {:raise 35, :call 35, :fold 30})
+        [answer set-answer!] (hooks/use-state answer)
+        [show-an set-show-an!] (hooks/use-state false)
         update (hooks/use-memo [mix height] (update-vals mix #(js/parseFloat (.toFixed (* (/ height 100) %) 2))))
         strat-text (hooks/use-memo [strategy] (abbrv-strat strategy))
         ]
@@ -29,13 +30,15 @@
                          (d/div {:class-name (css :w-5 :h-5 :rounded-full :bg-sky-500 :mx-1 :mt-0.5)}) (d/p {:class-name (css :font-semibold :mr-2)}"Fold")
                    )
                   (d/div {:class-name (css {:width "700px"} {:height "700px"})}
-                  ($ PureChart {:strategy strategy :set-strategy set-strategy :update-strat update}))
+                  ($ PureChart {:strategy strategy :set-strategy set-strategy! :update-strat update}))
                   (d/div {:class-name (css :flex :flex-row)}
-                  ($ ControlPanel {:mix mix :set-mix set-mix :height height :set-height set-height :update update})
-                  ($ RangeForm {:on-submit #(set-strategy (convert-ranges %))})
+                  ($ ControlPanel {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update})
+                  ($ RangeForm {:on-submit #(set-strategy! (convert-ranges %))})
                   (d/div {:class-name (css :flex :flex-col)}
-                  (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-show-an (not show-an))}"Check Answer")
-                  (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-strategy (simplify-strat strategy))}"Simplify Strat")
+                  (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-answer! strategy)} "Set Answer")
+                  (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-show-an! (not show-an))} "Check Answer")
+                  (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-strategy! (simplify-strat strategy))} "Simplify Strat")
+                  (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-strategy! all-fold)} "Clear Strategy")
                   )
                   )
                   )
@@ -49,6 +52,6 @@
                   (if show-an
                     (d/div {:class-name (css :absolute :w-screen :flex :flex-row :justify-center)}
                     (d/div {:class-name (css :absolute :w-screen {:height "150vh"} :bg-slate-700 {:opacity 0.7})})
-                    ($ AccReport {:guess strategy :answer answer :on-close #(set-show-an (not show-an))})
+                    ($ AccReport {:guess strategy :answer answer :on-close #(set-show-an! (not show-an))})
                     ))
     )))
