@@ -30,7 +30,7 @@
 (defnc AccReport [{:keys [guess answer on-close]}]
   (let [[hidelist set-hidelist] (hooks/use-state #{})
         accuracy (hooks/use-memo [guess answer] (strat-accuracy guess answer))]
-  (d/div {:class-name (css :absolute :m-5 :p-5 {:background "rgb(120 120 120)"} {:width "85%"} {:opacity 1} {:left "10%"} :rounded-xl :shadow-xl)}
+  (d/div {:class-name (css :absolute :m-5 :p-5 {:background "rgb(120 120 120)"} {:width "85%"} {:opacity 1} :rounded-xl :shadow-xl)}
          (d/button {:on-click on-close :class-name (css {:background "rgb(64 64 64)"} :text-white :py-1 :px-2 :rounded-md)} "Close")
          (d/div {:class-name (css :flex :flex-row)}
                 (d/div {:class-name (css {:width "50%"} :m-2 {:height "50%"})} ($ PureChart {:strategy guess :hidelist hidelist}))

@@ -21,11 +21,6 @@
         strat-text (hooks/use-memo [strategy] (abbrv-strat strategy))
         ]
     (<>
-                  (if show-an
-                    (d/div
-                    (d/div {:class-name (css :absolute :w-screen {:height "150vh"} :bg-slate-700 {:opacity 0.7})})
-                    ($ AccReport {:guess strategy :answer answer :on-close #(set-show-an (not show-an))})
-                    ))
     (d/div {:class-name (css :m-2 :flex :flex-row :my-10)}
            (d/div {:class-name (css :flex :flex-col :mr-10)}
                   (d/div {:class-name (css :flex :flex-row :mb-2)}
@@ -50,4 +45,10 @@
                          (map #(d/p {:class-name (css :mb-4)} %) strat-text)
                          )
            )
-           ))))
+           )
+                  (if show-an
+                    (d/div {:class-name (css :absolute :w-screen :flex :flex-row :justify-center)}
+                    (d/div {:class-name (css :absolute :w-screen {:height "150vh"} :bg-slate-700 {:opacity 0.7})})
+                    ($ AccReport {:guess strategy :answer answer :on-close #(set-show-an (not show-an))})
+                    ))
+    )))
