@@ -6,11 +6,12 @@
 
 (defnc Navbar []
   (let [navigate (router/useNavigate)]
-    (d/nav {:class-name (css :bg-gray-800 :p-4 :w-full)}
+    (d/nav {:class-name (css {:background "rgb(60 60 60)"} :p-4 :w-full)}
       (d/div {:class-name (css :flex :space-x-4)}
-        (d/button {:class-name (css :text-white :hover:text-gray-300 :px-3 :py-2 :rounded)
-                   :on-click #(navigate "/")}
-          "Paintchart")
-        (d/button {:class-name (css :text-white :hover:text-gray-300 :px-3 :py-2 :rounded)
-                   :on-click #(navigate "/select")}
-          "Selectchart")))))
+        (d/button {:class-name (css :text-white :px-3 :py-2 :rounded :font-bold)
+                   :on-click #(navigate "/create")}
+                  "Create")
+        (d/button {:class-name (css :text-white :px-3 :py-2 :rounded :font-bold)
+                   :on-click #(navigate "/test")}
+          "Test")
+        ))))

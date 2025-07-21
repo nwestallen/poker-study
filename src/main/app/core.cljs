@@ -5,8 +5,8 @@
             [shadow.css :refer [css]]
             ["react-dom/client" :as rdom]
             ["react-router-dom" :as router]
-            [app.components.paintchart :refer [Paintchart]]
-            [app.components.selectchart :refer [Selectchart]]
+            [app.components.creator :refer [Creator]]
+            [app.components.rangetest :refer [RangeTest]]
             [app.components.navbar :refer [Navbar]]
             [app.utils.strategy :refer [all-fold keyed-strat six-strat strat-ranges]]
             ))
@@ -17,8 +17,9 @@
     (<>
       ($ Navbar)
       ($ router/Routes
-        ($ router/Route {:path "/" :element ($ Paintchart {:answer (strat-ranges (get-in six-strat [:RFI :EP :OPEN]))})})
-        ($ router/Route {:path "/select" :element ($ Selectchart)})))))
+        ($ router/Route {:path "/create" :element ($ Creator {:answer (strat-ranges (get-in six-strat [:RFI :EP :OPEN]))})})
+        ($ router/Route {:path "/test" :element ($ RangeTest {:answer (strat-ranges (get-in six-strat [:RFI :EP :OPEN]))})})
+        ))))
 
 (defn ^:export init []
   (let [root (rdom/createRoot (js/document.getElementById "root"))]
