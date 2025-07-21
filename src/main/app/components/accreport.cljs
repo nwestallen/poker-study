@@ -27,7 +27,7 @@
          (d/p (abbrv-range (filter-results guess answer filter-fn))))
   )
 
-(defnc AccReport [{:keys [guess answer on-close]}]
+(defnc AccReport [{:keys [guess answer on-close set-strategy!]}]
   (let [[hidelist set-hidelist!] (hooks/use-state #{})
         accuracy (hooks/use-memo [guess answer] (strat-accuracy guess answer))]
   (d/div {:class-name (css :absolute :m-5 :p-5 {:background "rgb(120 120 120)"} {:width "85%"} {:opacity 1} :rounded-xl :shadow-xl)}
@@ -39,6 +39,7 @@
                        (d/div {:class-name (css {:width "250px"} {:height "150px"})} ($ FreqBar {:left (percent-summary guess) :right (percent-summary answer)}))
                        ($ ResultSet {:name "Mistakes: " :guess guess :answer answer :set-hidelist! set-hidelist! :filter-fn #(<= 2 (second %) 5)})
                        ($ ResultSet {:name "Blunders: " :guess guess :answer answer :set-hidelist! set-hidelist! :filter-fn #(> (second %) 5)})
+                       (d/button {:on-click #(set-strategy! answer) :class-name (css :m-3 :p-2 {:background "rgb(64 64 64)"} :text-white :rounded-md)} "Match Answer")
                 )
                 (d/div {:class-name (css {:width "50%"} :m-2 {:height "50%"})} ($ PureChart {:strategy answer :hidelist hidelist}))
                            )
