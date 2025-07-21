@@ -276,25 +276,19 @@ all-fold
  (flatten r)
  (str/join ", " r)))
 
-(def act-rank
-  {
-   #{:raise} 0
-   #{:call} 1
-   #{:raise :call} 2
-   #{:raise :fold} 3
-   #{:call :fold} 4
-   #{:raise :call :fold} 5
-   #{:fold} 6
-   }
-  )
-
 (set (keys (filter (comp pos? val) {:raise 100 :call 0 :fold 0})))
 
 (defn abbrv-strat [strat]
   (as-> strat r
     (group-by-action r)
     (update-vals r abbrv-range)
-    (sort-by #(get act-rank (set (keys (filter (comp pos? val) (key %))))) r)
-    (update-keys r act-str)
+    (sort-by (fn [[k v]]
+               (let [raise-pct (get k :raise 0)
+                     call-pct (get k :call 0)]
+                 (cond
+                   (> raise-pct 0) [0 (- raise-pct) (- call-pct)]
+                   (> call-pct 0) [1 0 (- call-pct)]
+                   :else [2 0 0]))) r)
+    (mapv (fn [[k v]] [(act-str k) v]) r)
     (mapv (fn [[k v]] (str k ": " v)) r)))
 
