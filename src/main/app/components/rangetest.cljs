@@ -29,7 +29,7 @@
                   (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-show-an! (not show-an))} "Check Answer")
                   (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-strategy! all-fold)} "Clear Strategy")
                   )
-           (d/div {:class-name (css {:width "300px"} :border :border-black :rounded-lg :absolute {:top "405px"} {:left "710px"})}
+           (d/div {:class-name (css {:width "261px"} :m-1.5 :border :border-black :rounded-lg :absolute {:top "405px"} {:left "710px"})}
            ($ ScenarioLoader {:current-scenario {:title ""
                                                   :table "F-F-F"
                                                   :strategy strategy}

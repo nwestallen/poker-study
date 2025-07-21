@@ -22,22 +22,20 @@
     (d/div {:class-name (css :m-2 :flex :flex-row :my-10)}
            (d/div {:class-name (css :flex :flex-col)}
                   ($ Paintchart {:strategy strategy :set-strategy! set-strategy!})
-                  (d/div {:class-name (css :p-4 :mt-10 :rounded-lg :flex :flex-col :border :border-black :h-fit {:width "700px"})}
-                         (map #(d/p {:class-name (css :mb-4)} %) strat-text))
+                  (d/div {:class-name (css :flex :flex-row {:width "695px"})}
+                         ($ ScenarioManager {:current-scenario {:title ""
+                                                                :table "F-F-F"
+                                                                :strategy strategy}
+                                             :on-scenario-change (fn [scenario]
+                                                                   (do (set-strategy! (:strategy scenario)) (set-table-actions! (:table scenario))))}))
                   (d/div {:class-name (css :flex :flex-col :absolute {:top "400px"} {:left "707px"})}
-                         ($ RangeForm {:on-submit #(set-strategy! (convert-ranges %))})
                          (d/div {:class-name (css :flex :flex-col)}
+                                ($ ActionForm {:actions form-actions :set-actions! set-form-actions! :on-submit #(set-table-actions! form-actions)})
+                                ($ RangeForm {:on-submit #(set-strategy! (convert-ranges %))})
                                 (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-strategy! (simplify-strat strategy))} "Simplify Strat")
                                 (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-strategy! all-fold)} "Clear Strategy"))))
 
            (d/div {:class-name (css :flex :flex-col {:width "40%"} :mt-9)}
                   ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions table-actions})
-                  (d/br)
-                  (d/div {:class-name (css :flex :flex-row)}
-                  ($ ActionForm {:actions form-actions :set-actions! set-form-actions! :on-submit #(set-table-actions! form-actions)})
-                  ($ ScenarioManager {:current-scenario {:title ""
-                                                         :table "F-F-F"
-                                                         :strategy strategy}
-                                      :on-scenario-change (fn [scenario]
-                                                            (do (set-strategy! (:strategy scenario)) (set-table-actions! (:table scenario))))}))
-                  ))))
+                  (d/div {:class-name (css :p-4 :mt-10 :rounded-lg :flex :flex-col :border :border-black :h-fit :w-full)}
+                         (map #(d/p {:class-name (css :mb-4)} %) strat-text))))))
