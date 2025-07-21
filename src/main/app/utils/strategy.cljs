@@ -234,7 +234,7 @@ all-fold
   (ordered-map (map round-hand strat)))
 
 (defn group-by-action [strat]
-  (update-vals (group-by val strat) #(map first %)))
+  (update-vals (group-by #(into {} (filter (comp pos? val) (val %))) strat) #(map first %)))
 
 (defn act-str [act]
 (str/join "/" (remove str/blank? (map (fn [[k v]] (if (> v 0) (str (str/capitalize (name k))"(" v "%)"))) act))))
@@ -297,5 +297,4 @@ all-fold
     (sort-by #(get act-rank (set (keys (filter (comp pos? val) (key %))))) r)
     (update-keys r act-str)
     (mapv (fn [[k v]] (str k ": " v)) r)))
-
 
