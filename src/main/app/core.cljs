@@ -4,16 +4,21 @@
             [helix.dom :as d]
             [shadow.css :refer [css]]
             ["react-dom/client" :as rdom]
+            ["react-router-dom" :as router]
             [app.components.paintchart :refer [Paintchart]]
             [app.components.selectchart :refer [Selectchart]]
+            [app.components.navbar :refer [Navbar]]
             [app.utils.strategy :refer [all-fold keyed-strat six-strat strat-ranges]]
             ))
 
 (defnc app []
   {:helix/features {:fast-refresh true}}
-  (d/div {:class-name (css :flex :flex-row :min-h-screen)}
-         ($ Paintchart {:answer (strat-ranges (get-in six-strat [:RFI :EP :OPEN]))})
-    ))
+  ($ router/BrowserRouter
+    (<>
+      ($ Navbar)
+      ($ router/Routes
+        ($ router/Route {:path "/" :element ($ Paintchart {:answer (strat-ranges (get-in six-strat [:RFI :EP :OPEN]))})})
+        ($ router/Route {:path "/select" :element ($ Selectchart)})))))
 
 (defn ^:export init []
   (let [root (rdom/createRoot (js/document.getElementById "root"))]
