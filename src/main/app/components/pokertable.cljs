@@ -46,10 +46,10 @@
 
 (def chip-img
   {
-   :Black "../BlackChip.svg"
-   :Green "../GreenChip.svg"
-   :Red "../RedChip.svg"
-   :Blue "../BlueChip.svg"
+   :Black "BlackChip.svg"
+   :Green "GreenChip.svg"
+   :Red "RedChip.svg"
+   :Blue "BlueChip.svg"
    })
 
 (defnc ChipStack [{:keys [amount]}]
