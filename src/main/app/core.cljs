@@ -17,7 +17,7 @@
     (<>
       ($ Navbar)
       ($ router/Routes
-        ($ router/Route {:path "/create" :element ($ Creator {:answer (strat-ranges (get-in six-strat [:RFI :EP :OPEN]))})})
+        ($ router/Route {:path "/" :element ($ Creator {:answer (strat-ranges (get-in six-strat [:RFI :EP :OPEN]))})})
         ($ router/Route {:path "/test" :element ($ RangeTest {:answer (strat-ranges (get-in six-strat [:RFI :EP :OPEN]))})})
         ))))
 
