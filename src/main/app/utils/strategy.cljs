@@ -197,7 +197,7 @@ all-fold
   (update-vals (action-summary strat) combo-percent))
 
 (defn mult-round [m n]
-  (/ (Math/round (* 100 (* (Math/round (/ n m)) m))) 100)
+  (Math/round (/ (Math/round (* 100 (* (Math/round (/ n m)) m))) 100))
   )
 
 (defn pair-round [n]
