@@ -10,6 +10,7 @@
             [app.components.freqchart :refer [FreqChart]]
             [app.components.pokertable :refer [TableContainer]]
             [app.components.scenariomanager :refer [ScenarioLoader]]
+            [app.components.strategysummary :refer [StrategySummary]]
             [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat]]
             ["react-dom/client" :as rdom]))
 
@@ -38,9 +39,7 @@
            (d/div {:class-name (css :mt-12 :flex :flex-col {:width "40%"})}
                   (d/h2 {:class-name (css :font-bold :my-2 :text-4xl)} title)
                   ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions actions :set-actions! set-actions!})
-           (d/div {:class-name (css :p-4 :mt-10 :rounded-lg :flex :flex-col :border :border-black :h-fit)}
-                         (map #(d/p {:class-name (css :mb-4)} %) strat-text)
-                         )
+           ($ StrategySummary {:strat-text strat-text})
            )
            )
                   (if show-an

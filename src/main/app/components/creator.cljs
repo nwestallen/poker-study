@@ -11,6 +11,7 @@
             [app.components.pokertable :refer [TableContainer]]
             [app.components.scenariomanager :refer [ScenarioManager]]
             [app.components.actionform :refer [ActionForm]]
+            [app.components.strategysummary :refer [StrategySummary]]
             [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat]]
             ["react-dom/client" :as rdom]))
 
@@ -37,5 +38,4 @@
 
            (d/div {:class-name (css :flex :flex-col {:width "40%"} :mt-9)}
                   ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions table-actions})
-                  (d/div {:class-name (css :p-4 :mt-10 :rounded-lg :flex :flex-col :border :border-black :h-fit :w-full)}
-                         (map #(d/p {:class-name (css :mb-4)} %) strat-text))))))
+                  ($ StrategySummary {:strat-text strat-text})))))
