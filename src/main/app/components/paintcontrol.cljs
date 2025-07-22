@@ -21,7 +21,7 @@
   )
 
 (defnc HeightInput [{:keys [height set-height]}]
-  (d/div {:class-name (css :flex :flex-col :border-2 :border-black :p-1 :rounded-md :text-white {:background-color "rgb(64 64 64)"} {:height "60px"})}
+  (d/div {:class-name (css :flex :flex-col :p-1 :rounded-md :text-white {:background-color "rgb(64 64 64)"} {:height "60px"})}
          (d/p {:class-name (css :text-center)} "Range")
          (d/input {:type "text" :class-name (css :text-center {:width "44px" :height "30px"} :text-white {:background-color "rgb(64 64 64)"}) :value height :on-change (fn [e] (set-height (js/parseInt e.target.value)))})
          )

@@ -20,22 +20,23 @@
         [form-actions set-form-actions!] (hooks/use-state "")
         [table-actions set-table-actions!] (hooks/use-state "")
         strat-text (hooks/use-memo [strategy] (abbrv-strat strategy))]
-    (d/div {:class-name (css :m-2 :flex :flex-row :my-10)}
+    (d/div {:class-name (css :m-2 :flex :flex-row :my-5)}
            (d/div {:class-name (css :flex :flex-col)}
-                  ($ Paintchart {:strategy strategy :set-strategy! set-strategy!})
+                  (d/div {:class-name (css {:width "900px"})} ($ Paintchart {:strategy strategy :set-strategy! set-strategy!}))
                   (d/div {:class-name (css :flex :flex-row {:width "695px"})}
                          ($ ScenarioManager {:current-scenario {:title ""
                                                                 :table "F-F-F"
                                                                 :strategy strategy}
                                              :on-scenario-change (fn [scenario]
                                                                    (do (set-strategy! (:strategy scenario)) (set-table-actions! (:table scenario))))}))
-                  (d/div {:class-name (css :flex :flex-col :absolute {:top "400px"} {:left "707px"})}
+                  (d/div {:class-name (css :flex :flex-col :absolute {:top "375px"} {:left "630px"})}
                          (d/div {:class-name (css :flex :flex-col)}
                                 ($ ActionForm {:actions form-actions :set-actions! set-form-actions! :on-submit #(set-table-actions! form-actions)})
                                 ($ RangeForm {:on-submit #(set-strategy! (convert-ranges %))})
-                                (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-strategy! (simplify-strat strategy))} "Simplify Strat")
-                                (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-2 :rounded-md) :on-click #(set-strategy! all-fold)} "Clear Strategy"))))
+                                (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mx-4 :my-1 :rounded-md) :on-click #(set-strategy! (simplify-strat strategy))} "Simplify Strat")
+                                (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mx-4 :my-1 :rounded-md) :on-click #(set-strategy! all-fold)} "Clear Strategy"))))
 
            (d/div {:class-name (css :flex :flex-col {:width "40%"} :mt-9)}
                   ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions table-actions})
                   ($ StrategySummary {:strat-text strat-text})))))
+
