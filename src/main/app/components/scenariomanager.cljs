@@ -23,7 +23,7 @@
                           (set-title! "")
                           (set-saving! false))))]
 
-    (d/div {:class-name (css :bg-white :rounded-md :p-4)}
+    (d/div {:class-name (css :bg-white :rounded-md :p-4 :text-xs)}
       (d/h3 {:class-name (css :text-slate-700 :mb-4 :mt-0)} "Save Current Scenario")
       (d/div {:class-name (css :mb-4)}
         (d/label {:class-name (css :text-slate-600 :block :font-semibold :mb-1)} "Title:")
@@ -85,7 +85,7 @@
      (refresh-scenarios)
      js/undefined)
 
-    (d/div {:class-name (css :bg-white :rounded-md :p-4)}
+    (d/div {:class-name (css :bg-white :rounded-md :p-4 :text-xs)}
       (d/h3 {:class-name (css :text-slate-700 :mb-4 :mt-0)} "Load Scenario")
 
       (d/div {:class-name (css :border-b :border-gray-200 :mb-4 :pb-4)}
