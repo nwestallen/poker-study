@@ -27,7 +27,7 @@
            (d/div {:class-name (css :flex :flex-col {:width "39%"})}
                   ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :height height :mix mix :update update})
                   ($ ScenarioManager {:current-scenario {:title ""
-                                                         :table ""
+                                                         :table table-actions
                                                          :strategy strategy}
                                       :on-scenario-change (fn [scenario]
                                                             (do (set-strategy! (:strategy scenario)) (set-table-actions! (:table scenario))))}))
