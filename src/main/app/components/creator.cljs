@@ -31,15 +31,15 @@
                                                          :strategy strategy}
                                       :on-scenario-change (fn [scenario]
                                                             (do (set-strategy! (:strategy scenario)) (set-table-actions! (:table scenario))))}))
-           (d/div {:class-name (css :flex :flex-col {:width "14%"} :m-4)}
+           (d/div {:class-name (css :flex :flex-col {:width "15%"} :m-4)}
                   (d/div {:class-name (css :flex :flex-col)}
                          (d/div {:class-name (css {:width "100%"} :mt-4 :flex :flex-col :justify-start)} ($ SliderSquare {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update}))
                          ($ ActionForm {:actions form-actions :set-actions! set-form-actions! :on-submit #(set-table-actions! form-actions)})
                          ($ RangeForm {:on-submit #(set-strategy! (convert-ranges %))})
-                         (d/button {:class-name (css :shadow-md :text-shadow-sm :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :my-1 :rounded-md) :on-click #(set-strategy! (simplify-strat strategy))} "Simplify Strat")
-                         (d/button {:class-name (css :shadow-md :text-shadow-sm :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :my-1 :rounded-md) :on-click #(set-strategy! all-fold)} "Clear Strategy")))
+                         (d/button {:class-name (css :shadow-md :text-shadow-sm :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :my-1 :rounded-md [:hover :bg-sky-400]) :on-click #(set-strategy! (simplify-strat strategy))} "Simplify Strat")
+                         (d/button {:class-name (css :shadow-md :text-shadow-sm :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :my-1 :rounded-md [:hover :bg-sky-400]) :on-click #(set-strategy! all-fold)} "Clear Strategy")))
 
-           (d/div {:class-name (css :flex :flex-col {:width "45%"} :mt-8)}
+           (d/div {:class-name (css :flex :flex-col {:width "44%"} :mt-8)}
                   ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions table-actions})
                   ($ StrategySummary {:strat-text strat-text})))))
 

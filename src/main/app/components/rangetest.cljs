@@ -39,8 +39,8 @@
                                                                                                    :on-load (fn [scenario]
                                                                                                               (do (set-answer! (:strategy scenario)) (set-actions! (:table scenario)) (set-title! (:title scenario))))}))
                    ($ SliderSquare {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update})
-                   (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md) :on-click #(set-show-an! (not show-an))} "Check Answer")
-                   (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md) :on-click #(set-strategy! all-fold)} "Clear Strategy"))
+                   (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md [:hover :bg-sky-400]) :on-click #(set-show-an! (not show-an))} "Check Answer")
+                   (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md [:hover :bg-sky-400]) :on-click #(set-strategy! all-fold)} "Clear Strategy"))
 
             (d/div {:class-name (css :flex :flex-col {:width "40%"} :mt-7)}
                    ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :height height :mix mix :update update})))

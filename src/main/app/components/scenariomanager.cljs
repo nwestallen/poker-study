@@ -137,16 +137,16 @@
   "Main scenario management component"
   [{:keys [current-scenario on-scenario-change]}]
   (let [[active-tab set-active-tab!] (hooks/use-state :save)]
-    (d/div {:class-name (css :h-fit {:width "500px"} :my-3 :rounded-lg :p-4 {:background-color "rgb(175 175 175)"})}
+    (d/div {:class-name (css :h-fit {:width "500px"} :my-3 :rounded-lg :p-4 {:background-color "rgb(150 150 150)"})}
       (d/div {:class-name (css :flex :mb-4 {:border-bottom "2px solid #ccc"})}
         (d/button {:class-name (css :font-bold :mr-1 :py-2 :px-4 :text-white :border-none :cursor-pointer
-                                   :bg-slate-500 {:border-radius "0.375rem 0.375rem 0 0"}
-                                   [:hover :bg-sky-400])
+                                   {:background "rgb(65 65 65)"} {:border-radius "0.375rem 0.375rem 0 0"}
+                                   [:hover :bg-slate-500])
                    :onClick #(set-active-tab! :save)}
                   "Save")
         (d/button {:class-name (css :font-bold :mr-1 :py-2 :px-4 :text-white :border-none :cursor-pointer
-                                   :bg-slate-500 {:border-radius "0.375rem 0.375rem 0 0"}
-                                   [:hover :bg-sky-400])
+                                   {:background "rgb(65 65 65)"} {:border-radius "0.375rem 0.375rem 0 0"}
+                                   [:hover :bg-slate-500])
                    :onClick #(set-active-tab! :load)}
                   "Load"))
 
