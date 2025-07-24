@@ -26,7 +26,7 @@
       (let [raise-angle (* 360 (/ raise-pct total))
             call-angle (* 360 (/ call-pct total))
             fold-angle (* 360 (/ fold-pct total))]
-        (d/svg {:width size :height size}
+        (d/svg {:width size :height size :style {:filter "drop-shadow(1px 1px 2px rgba(0,0,0,0.2))"}}
           (when (> raise-pct 0)
             (if (>= raise-pct 100)
               (d/circle {:cx center :cy center :r radius :fill "#ef4444"})

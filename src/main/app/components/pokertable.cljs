@@ -64,7 +64,7 @@
                     (d/p {:class-name (css {:background "rgb(120 120 120)"} :p-0.5 :h-fit :rounded-md)}(str amount "BB")))))
 
 (defnc PokerTable [{:keys [cards active-seat bets stacks folds]}]
-  (d/div {:class-name (css :relative {:width "100%"} :flex :border :border-black :rounded-xl)}
+  (d/div {:class-name (css :relative {:width "100%"} :flex :border :border-black :rounded-xl :shadow-md)}
          ($ Felt {:fill "rgb(34 197 94)"  :border "rgb(60 60 60)" :border-width "10" :width "700" :height "300" :padding "10px"})
          (d/div {:class-name (css {:width "39%"} :flex :absolute {:top "33%"} {:left "30%"})}
                 (map #(d/div {:class-name (css {:width "20%"})} (card-img %)) cards)

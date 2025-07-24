@@ -28,7 +28,7 @@
      (d/div {:class-name (css :m-2 :flex :flex-row :justify-evenly)}
 
             (d/div {:class-name (css :mt-3 :flex :flex-col {:width "40%"})}
-                   (d/h2 {:class-name (css :font-bold :text-2xl :mb-4 :ml-2)} title)
+                   (d/h2 {:class-name (css :font-bold :text-2xl :mb-4 :ml-2 :text-shadow-md)} title)
                    ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions actions :set-actions! set-actions!})
                    ($ StrategySummary {:strat-text strat-text}))
 
@@ -39,8 +39,8 @@
                                                                                                    :on-load (fn [scenario]
                                                                                                               (do (set-answer! (:strategy scenario)) (set-actions! (:table scenario)) (set-title! (:title scenario))))}))
                    ($ SliderSquare {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update})
-                   (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md) :on-click #(set-show-an! (not show-an))} "Check Answer")
-                   (d/button {:class-name (css :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md) :on-click #(set-strategy! all-fold)} "Clear Strategy"))
+                   (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md) :on-click #(set-show-an! (not show-an))} "Check Answer")
+                   (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md) :on-click #(set-strategy! all-fold)} "Clear Strategy"))
 
             (d/div {:class-name (css :flex :flex-col {:width "40%"} :mt-7)}
                    ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :height height :mix mix :update update})))
