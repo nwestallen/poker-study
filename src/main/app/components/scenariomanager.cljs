@@ -56,19 +56,23 @@
   [{:keys [on-load]}]
   (let [[saved-scenarios set-saved-scenarios!] (hooks/use-state [])
         [loading? set-loading!] (hooks/use-state false)
+        [selected-scenario set-selected-scenario!] (hooks/use-state "")
 
         refresh-scenarios (fn []
                            (set-saved-scenarios! (scenarios/list-saved-scenarios)))
 
-        handle-load (fn [scenario-key]
-                     (set-loading! true)
-                     (when-let [scenario (scenarios/load-scenario-from-local-storage scenario-key)]
-                       (when on-load (on-load scenario)))
-                     (set-loading! false))
+        handle-load (fn []
+                     (when-not (empty? selected-scenario)
+                       (set-loading! true)
+                       (when-let [scenario (scenarios/load-scenario-from-local-storage selected-scenario)]
+                         (when on-load (on-load scenario)))
+                       (set-loading! false)))
 
-        handle-delete (fn [scenario-key]
-                       (when (js/confirm (str "Delete scenario: " scenario-key "?"))
-                         (scenarios/delete-scenario scenario-key)
+        handle-delete (fn []
+                       (when (and (not (empty? selected-scenario))
+                                  (js/confirm (str "Delete scenario: " selected-scenario "?")))
+                         (scenarios/delete-scenario selected-scenario)
+                         (set-selected-scenario! "")
                          (refresh-scenarios)))
 
         handle-file-upload (fn [e]
@@ -85,14 +89,14 @@
      (refresh-scenarios)
      js/undefined)
 
-    (d/div {:class-name (css :bg-white :rounded-md :p-4 :text-xs)}
+    (d/div {:class-name (css :bg-white :rounded-md :p-4 :text-xs :shadow-md :text-shadow-sm)}
       (d/h3 {:class-name (css :text-slate-700 :mb-4 :mt-0)} "Load Scenario")
 
       (d/div {:class-name (css :border-b :border-gray-200 :mb-4 :pb-4)}
         (d/label {:class-name (css :text-slate-600 :block :font-semibold :mb-1)} "Upload EDN file:")
         (d/input {:type "file"
                   :accept ".edn"
-                  :class-name (css :border :border-gray-300 :rounded-md :p-2 :w-full)
+                  :class-name (css :border :border-gray-300 :rounded-md :p-2 :w-full :shadow-sm)
                   :onChange handle-file-upload}))
 
       (d/div
@@ -105,22 +109,29 @@
 
         (if (empty? saved-scenarios)
           (d/p {:class-name (css :text-gray-500 :italic)} "No saved scenarios found")
-          (d/ul {:class-name (css :list-none :m-0 :p-0)}
-           (for [scenario-key saved-scenarios]
-             (d/li {:key scenario-key
-                    :class-name (css :flex :justify-between :items-center :bg-gray-50 :rounded-md :mb-2 :p-3)}
-                   (d/span {:class-name (css :font-medium)} scenario-key)
-                   (d/div {:class-name (css :flex :gap-1)}
-                     (d/button {:onClick #(handle-load scenario-key)
-                                :disabled loading?
-                                :class-name (css :bg-sky-500 :text-white :font-bold :px-3 :py-1 :rounded-md 
-                                                [:hover :bg-sky-400 :cursor-pointer]
-                                                [:disabled :bg-gray-400 :cursor-not-allowed])}
-                               "Load")
-                     (d/button {:onClick #(handle-delete scenario-key)
-                                :class-name (css :bg-red-500 :text-white :font-bold :px-3 :py-1 :rounded-md 
-                                                [:hover :bg-red-600 :cursor-pointer])}
-                               "Delete"))))))))))
+          (d/div
+            (d/div {:class-name (css :mb-4)}
+              (d/label {:class-name (css :text-slate-600 :block :font-semibold :mb-1)} "Select scenario:")
+              (d/select {:value selected-scenario
+                         :onChange #(set-selected-scenario! (.. % -target -value))
+                         :class-name (css :border :border-gray-300 :rounded-md :p-2 :w-full [:focus :border-sky-500 :outline-none] :shadow-sm)}
+                        (d/option {:value ""} "-- Choose a scenario --")
+                        (for [scenario-key saved-scenarios]
+                          (d/option {:key scenario-key :value scenario-key} scenario-key))))
+            
+            (d/div {:class-name (css :flex :gap-2)}
+              (d/button {:onClick handle-load
+                         :disabled (or (empty? selected-scenario) loading?)
+                         :class-name (css :bg-sky-500 :text-white :font-bold :px-2 :py-1 :rounded-md :shadow-sm
+                                         [:hover :bg-sky-400 :cursor-pointer]
+                                         [:disabled :bg-gray-400 :cursor-not-allowed])}
+                        (if loading? "Loading..." "Load"))
+              (d/button {:onClick handle-delete
+                         :disabled (empty? selected-scenario)
+                         :class-name (css :bg-red-500 :text-white :font-bold :px-2 :py-1 :rounded-md :shadow-sm
+                                         [:hover :bg-red-600 :cursor-pointer]
+                                         [:disabled :bg-gray-400 :cursor-not-allowed])}
+                        "Delete"))))))))
 
 (defnc ScenarioManager
   "Main scenario management component"
