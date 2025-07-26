@@ -1,66 +1,53 @@
 (ns app.components.actionpie
   (:require [helix.core :refer [defnc $]]
-            [helix.dom :as d]))
+            [helix.dom :as d]
+            [shadow.css :refer [css]]))
 
 (defn- parse-action-string [action-str]
   "Parse action string like 'Raise(83.33%)/Fold(16.67%)' into action percentages"
-  (let [parts (clojure.string/split action-str #"[/:]")
-        actions {}]
-    (reduce (fn [acc part]
-              (if-let [[_ action pct] (re-find #"(\w+)\((\d+(?:\.\d+)?)%" part)]
-                (assoc acc (keyword (clojure.string/lower-case action)) (js/parseFloat pct))
-                acc))
-            actions parts)))
+  (->> (clojure.string/split action-str #"[/:]")
+       (keep #(when-let [[_ action pct] (re-find #"(\w+)\((\d+(?:\.\d+)?)%" %)]
+                [(keyword (clojure.string/lower-case action)) (js/parseFloat pct)]))
+       (into {})))
 
-(defnc ActionPie [{:keys [action-string size]
-                   :or {size 20}}]
+(defn- angle-to-coords [angle radius center]
+  [(+ center (* radius (Math/sin (* (/ angle 180) Math/PI))))
+   (- center (* radius (Math/cos (* (/ angle 180) Math/PI))))])
+
+(defn- pie-slice [start-angle end-angle radius center color]
+  (let [[end-x end-y] (angle-to-coords end-angle radius center)
+        large-arc (if (> (- end-angle start-angle) 180) 1 0)]
+    (if (>= (- end-angle start-angle) 360)
+      (d/circle {:cx center :cy center :r radius :fill color})
+      (let [[start-x start-y] (angle-to-coords start-angle radius center)]
+        (d/path {:d (str "M " center " " center 
+                        " L " start-x " " start-y
+                        " A " radius " " radius " 0 " large-arc " 1 "
+                        end-x " " end-y " Z")
+                 :fill color})))))
+
+(defnc ActionPie [{:keys [action-string]}]
   (let [actions (parse-action-string action-string)
-        raise-pct (get actions :raise 0)
-        call-pct (get actions :call 0)
-        fold-pct (get actions :fold 0)
-        total (+ raise-pct call-pct fold-pct)
-        radius (- (/ size 2) 1)
-        center (/ size 2)]
+        action-data [{:type :raise :pct (get actions :raise 0) :color "#ef4444"}
+                     {:type :call :pct (get actions :call 0) :color "#10b981"}
+                     {:type :fold :pct (get actions :fold 0) :color "#0ea5e9"}]
+        total (reduce + (map :pct action-data))
+        radius 49
+        center 50]
     (if (= total 0)
-      (d/div {:style {:width size :height size}}) ; empty div if no actions
-      (let [raise-angle (* 360 (/ raise-pct total))
-            call-angle (* 360 (/ call-pct total))
-            fold-angle (* 360 (/ fold-pct total))]
-        (d/svg {:width size :height size :style {:filter "drop-shadow(1px 1px 2px rgba(0,0,0,0.2))"}}
-          (when (> raise-pct 0)
-            (if (>= raise-pct 100)
-              (d/circle {:cx center :cy center :r radius :fill "#ef4444"})
-              (d/path {:d (str "M " center " " center 
-                              " L " center " 0"
-                              " A " radius " " radius " 0 " 
-                              (if (> raise-angle 180) 1 0) " 1 "
-                              (+ center (* radius (Math/sin (* (/ raise-angle 180) Math/PI))))
-                              " "
-                              (- center (* radius (Math/cos (* (/ raise-angle 180) Math/PI))))
-                              " Z")
-                       :fill "#ef4444"}))) ; red-500
-          (when (> call-pct 0)
-            (if (>= call-pct 100)
-              (d/circle {:cx center :cy center :r radius :fill "#10b981"})
-              (d/path {:d (str "M " center " " center 
-                              " L " (+ center (* radius (Math/sin (* (/ raise-angle 180) Math/PI))))
-                              " " (- center (* radius (Math/cos (* (/ raise-angle 180) Math/PI))))
-                              " A " radius " " radius " 0 " 
-                              (if (> call-angle 180) 1 0) " 1 "
-                              (+ center (* radius (Math/sin (* (/ (+ raise-angle call-angle) 180) Math/PI))))
-                              " "
-                              (- center (* radius (Math/cos (* (/ (+ raise-angle call-angle) 180) Math/PI))))
-                              " Z")
-                       :fill "#10b981"}))) ; green-500
-          (when (> fold-pct 0)
-            (if (>= fold-pct 100)
-              (d/circle {:cx center :cy center :r radius :fill "#0ea5e9"})
-              (d/path {:d (str "M " center " " center 
-                              " L " (+ center (* radius (Math/sin (* (/ (+ raise-angle call-angle) 180) Math/PI))))
-                              " " (- center (* radius (Math/cos (* (/ (+ raise-angle call-angle) 180) Math/PI))))
-                              " A " radius " " radius " 0 " 
-                              (if (> fold-angle 180) 1 0) " 1 "
-                              center " 0"
-                              " Z")
-                       :fill "#0ea5e9"}))) ; sky-500
-          )))))
+      (d/div {:class-name (css {:width "100%" :height "100%"})})
+      (d/svg {:width "100%" :viewBox "0 0 100 100" :fill "none" 
+              :class-name (css {:filter "drop-shadow(2px 2px 2px rgba(0,0,0,0.2))"})}
+        (loop [data action-data
+               current-angle 0
+               elements []]
+          (if (empty? data)
+            elements
+            (let [{:keys [pct color]} (first data)
+                  angle (* 360 (/ pct total))
+                  next-angle (+ current-angle angle)]
+              (recur (rest data)
+                     next-angle
+                     (if (> pct 0)
+                       (conj elements (pie-slice current-angle next-angle radius center color))
+                       elements)))))))))
