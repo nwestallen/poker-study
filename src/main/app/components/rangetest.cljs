@@ -12,10 +12,13 @@
             [app.components.strategysummary :refer [StrategySummary]]
             [app.components.mixslider :refer [SliderSquare]]
             [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat]]
-            ["react-dom/client" :as rdom]))
+            [app.utils.scenarios :as scenarios]
+            ["react-dom/client" :as rdom]
+            ["react-router-dom" :as router]))
 
 (defnc RangeTest [{:keys []}]
-  (let [[strategy set-strategy!] (hooks/use-state all-fold)
+  (let [[search-params set-search-params!] (router/useSearchParams)
+        [strategy set-strategy!] (hooks/use-state all-fold)
         [answer set-answer!] (hooks/use-state all-fold)
         [show-an set-show-an!] (hooks/use-state false)
         [actions set-actions!] (hooks/use-state "")
@@ -23,7 +26,25 @@
         [mix set-mix!] (hooks/use-state {:raise 35, :call 35, :fold 30})
         [height set-height!] (hooks/use-state 100)
         update (hooks/use-memo [mix height] (update-vals mix #(js/parseFloat (.toFixed (* (/ height 100) %) 2))))
-        strat-text (hooks/use-memo [strategy] (abbrv-strat strategy))]
+        strat-text (hooks/use-memo [strategy] (abbrv-strat strategy))
+
+        handle-scenario-load (fn [scenario]
+                               (set-answer! (:strategy scenario))
+                               (set-actions! (:table scenario))
+                               (set-title! (:title scenario))
+                               (set-search-params! #js {"scenario" (:title scenario)}))
+
+        load-scenario-from-url (fn []
+                                 (when-let [scenario-title (.get search-params "scenario")]
+                                   (when-let [scenario (scenarios/load-scenario-from-local-storage scenario-title)]
+                                     (set-answer! (:strategy scenario))
+                                     (set-actions! (:table scenario))
+                                     (set-title! (:title scenario)))))]
+
+    (hooks/use-effect
+     [search-params]
+     (load-scenario-from-url)
+     js/undefined)
     (<>
      (d/div {:class-name (css :m-2 :flex :flex-row :justify-evenly)}
 
@@ -36,8 +57,7 @@
                    (d/div {:class-name (css :border :border-black :rounded-md :mb-4)} ($ ScenarioLoader {:current-scenario {:title ""
                                                                                                                       :table ""
                                                                                                                       :strategy strategy}
-                                                                                                   :on-load (fn [scenario]
-                                                                                                              (do (set-answer! (:strategy scenario)) (set-actions! (:table scenario)) (set-title! (:title scenario))))}))
+                                                                                                   :on-load handle-scenario-load}))
                    ($ SliderSquare {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update})
                    (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md [:hover :bg-sky-400]) :on-click #(set-show-an! (not show-an))} "Check Answer")
                    (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md [:hover :bg-sky-400]) :on-click #(set-strategy! all-fold)} "Clear Strategy"))

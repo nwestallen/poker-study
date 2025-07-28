@@ -13,24 +13,42 @@
             [app.components.strategysummary :refer [StrategySummary]]
             [app.components.mixslider :refer [SliderSquare]]
             [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat]]
-            ["react-dom/client" :as rdom]))
+            [app.utils.scenarios :as scenarios]
+            ["react-dom/client" :as rdom]
+            ["react-router-dom" :as router]))
 
 (defnc Creator [{:keys []}]
-  (let [[strategy set-strategy!] (hooks/use-state all-fold)
+  (let [[search-params set-search-params!] (router/useSearchParams)
+        [strategy set-strategy!] (hooks/use-state all-fold)
         [form-actions set-form-actions!] (hooks/use-state "")
         [table-actions set-table-actions!] (hooks/use-state "")
         [mix set-mix!] (hooks/use-state {:raise 35, :call 35, :fold 30})
         [height set-height!] (hooks/use-state 100)
         update (hooks/use-memo [mix height] (update-vals mix #(js/parseFloat (.toFixed (* (/ height 100) %) 2))))
-        strat-text (hooks/use-memo [strategy] (abbrv-strat strategy))]
+        strat-text (hooks/use-memo [strategy] (abbrv-strat strategy))
+
+        handle-scenario-change (fn [scenario]
+                                 (set-strategy! (:strategy scenario))
+                                 (set-table-actions! (:table scenario))
+                                 (set-search-params! #js {"scenario" (:title scenario)}))
+
+        load-scenario-from-url (fn []
+                                 (when-let [scenario-title (.get search-params "scenario")]
+                                   (when-let [scenario (scenarios/load-scenario-from-local-storage scenario-title)]
+                                     (set-strategy! (:strategy scenario))
+                                     (set-table-actions! (:table scenario)))))]
+
+    (hooks/use-effect
+     [search-params]
+     (load-scenario-from-url)
+     js/undefined)
     (d/div {:class-name (css :m-2 :flex :flex-row :mt-6)}
            (d/div {:class-name (css :flex :flex-col {:width "39%"})}
                   ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :height height :mix mix :update update})
                   ($ ScenarioManager {:current-scenario {:title ""
                                                          :table table-actions
                                                          :strategy strategy}
-                                      :on-scenario-change (fn [scenario]
-                                                            (do (set-strategy! (:strategy scenario)) (set-table-actions! (:table scenario))))}))
+                                      :on-scenario-change handle-scenario-change}))
            (d/div {:class-name (css :flex :flex-col {:width "15%"} :m-4)}
                   (d/div {:class-name (css :flex :flex-col)}
                          (d/div {:class-name (css {:width "100%"} :mt-4 :flex :flex-col :justify-start)} ($ SliderSquare {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update}))
