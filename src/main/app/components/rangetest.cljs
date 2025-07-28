@@ -3,16 +3,15 @@
             [helix.hooks :as hooks]
             [helix.dom :as d]
             [shadow.css :refer [css]]
+            [clojure.string :as str]
             [app.components.paintchart :refer [Paintchart]]
             [app.components.rangeform :refer [RangeForm]]
             [app.components.accreport :refer [AccReport]]
             [app.components.freqchart :refer [FreqChart]]
             [app.components.pokertable :refer [TableContainer]]
-            [app.components.scenariomanager :refer [ScenarioLoader]]
             [app.components.strategysummary :refer [StrategySummary]]
             [app.components.mixslider :refer [SliderSquare]]
-            [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat]]
-            [app.utils.scenarios :as scenarios]
+            [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat encode-strategy decode-strategy]]
             ["react-dom/client" :as rdom]
             ["react-router-dom" :as router]))
 
@@ -28,23 +27,31 @@
         update (hooks/use-memo [mix height] (update-vals mix #(js/parseFloat (.toFixed (* (/ height 100) %) 2))))
         strat-text (hooks/use-memo [strategy] (abbrv-strat strategy))
 
-        handle-scenario-load (fn [scenario]
-                               (set-answer! (:strategy scenario))
-                               (set-actions! (:table scenario))
-                               (set-title! (:title scenario))
-                               (set-search-params! #js {"scenario" (:title scenario)}))
+        update-url-from-state (fn []
+                                (let [encoded-strategy (encode-strategy answer)]
+                                  (when (and (not= answer all-fold) (not (str/blank? actions)) (not= title "Load A Scenario"))
+                                    (set-search-params! #js {"strategy" encoded-strategy 
+                                                             "actions" actions
+                                                             "title" title}))))
 
-        load-scenario-from-url (fn []
-                                 (when-let [scenario-title (.get search-params "scenario")]
-                                   (when-let [scenario (scenarios/load-scenario-from-local-storage scenario-title)]
-                                     (set-answer! (:strategy scenario))
-                                     (set-actions! (:table scenario))
-                                     (set-title! (:title scenario)))))]
+        load-from-url (fn []
+                        (when-let [encoded-strategy (.get search-params "strategy")]
+                          (set-answer! (decode-strategy encoded-strategy)))
+                        (when-let [url-actions (.get search-params "actions")]
+                          (set-actions! url-actions))
+                        (when-let [url-title (.get search-params "title")]
+                          (set-title! url-title)))]
 
     (hooks/use-effect
      [search-params]
-     (load-scenario-from-url)
+     (load-from-url)
      js/undefined)
+
+    (hooks/use-effect
+     [answer actions title]
+     (update-url-from-state)
+     js/undefined)
+
     (<>
      (d/div {:class-name (css :m-2 :flex :flex-row :justify-evenly)}
 
@@ -54,10 +61,6 @@
                    ($ StrategySummary {:strat-text strat-text}))
 
             (d/div {:class-name (css :flex :flex-col {:width "15.5%"} :mx-1.5 :mt-15)}
-                   (d/div {:class-name (css :border :border-black :rounded-md :mb-4)} ($ ScenarioLoader {:current-scenario {:title ""
-                                                                                                                      :table ""
-                                                                                                                      :strategy strategy}
-                                                                                                   :on-load handle-scenario-load}))
                    ($ SliderSquare {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update})
                    (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md [:hover :bg-sky-400]) :on-click #(set-show-an! (not show-an))} "Check Answer")
                    (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md [:hover :bg-sky-400]) :on-click #(set-strategy! all-fold)} "Clear Strategy"))

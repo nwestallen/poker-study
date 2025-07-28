@@ -292,3 +292,47 @@ all-fold
     (mapv (fn [[k v]] [(act-str k) v]) r)
     (mapv (fn [[k v]] (str k ": " v)) r)))
 
+;; Range-based encoding uses existing range compression functions
+
+(defn encode-percentage [pct]
+  "Encode percentage as integer with 2 decimal places (0-10000)"
+  (Math/round (* pct 100)))
+
+(defn decode-percentage [encoded]
+  "Decode percentage from integer back to float"
+  (/ encoded 100.0))
+
+(defn encode-strategy [strat]
+  "Encode strategy using range compression like strategy summary"
+  (try
+    (let [action-groups (group-by-action strat)
+          encoded-groups (map (fn [[actions hands]]
+                                (let [raise-pct (encode-percentage (:raise actions 0))
+                                      call-pct (encode-percentage (:call actions 0))
+                                      range-str (abbrv-range hands)]
+                                  (str raise-pct "," call-pct ":" range-str))) action-groups)]
+      (str/join "|" encoded-groups))
+    (catch :default e
+      (js/console.error "Error encoding strategy:" e)
+      "")))
+
+(defn decode-strategy [encoded-str]
+  "Decode strategy from range-compressed format"
+  (if (str/blank? encoded-str)
+    all-fold
+    (try
+      (let [action-groups (str/split encoded-str #"\|")
+            decoded-actions (mapcat (fn [group]
+                                      (let [[action-str range-str] (str/split group #":" 2)
+                                            [raise-str call-str] (str/split action-str #",")
+                                            raise-pct (decode-percentage (js/parseInt raise-str))
+                                            call-pct (decode-percentage (js/parseInt call-str))
+                                            fold-pct (- 100 raise-pct call-pct)
+                                            hands (hand-ranges (str/split range-str #",\s*"))
+                                            actions {:raise raise-pct :call call-pct :fold fold-pct}]
+                                        (map #(vector (keyword %) actions) hands))) action-groups)]
+        (apply assoc all-fold (flatten decoded-actions)))
+      (catch :default e
+        (js/console.error "Error decoding strategy:" e encoded-str)
+        all-fold))))
+
