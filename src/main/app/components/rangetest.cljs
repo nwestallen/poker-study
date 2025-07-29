@@ -21,7 +21,7 @@
         [answer set-answer!] (hooks/use-state all-fold)
         [show-an set-show-an!] (hooks/use-state false)
         [actions set-actions!] (hooks/use-state "")
-        [title set-title!] (hooks/use-state "Load A Scenario")
+        [title set-title!] (hooks/use-state "Range Test")
         [mix set-mix!] (hooks/use-state {:raise 35, :call 35, :fold 30})
         [height set-height!] (hooks/use-state 100)
         update (hooks/use-memo [mix height] (update-vals mix #(js/parseFloat (.toFixed (* (/ height 100) %) 2))))
@@ -29,7 +29,7 @@
 
         update-url-from-state (fn []
                                 (let [encoded-strategy (encode-strategy answer)]
-                                  (when (and (not= answer all-fold) (not (str/blank? actions)) (not= title "Load A Scenario"))
+                                  (when (and (not= answer all-fold) (not (str/blank? actions)) (not= title "Range Test"))
                                     (set-search-params! #js {"strategy" encoded-strategy 
                                                              "actions" actions
                                                              "title" title}))))
@@ -62,8 +62,9 @@
 
             (d/div {:class-name (css :flex :flex-col {:width "15.5%"} :mx-1.5 :mt-15)}
                    ($ SliderSquare {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update})
-                   (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md [:hover :bg-sky-400]) :on-click #(set-show-an! (not show-an))} "Check Answer")
-                   (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md [:hover :bg-sky-400]) :on-click #(set-strategy! all-fold)} "Clear Strategy"))
+                   (d/div {:class-name (css :flex :flex-row :flex-wrap)}
+                   (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :mr-2 :rounded-md :shadow-md [:hover :bg-sky-400] :text-md) :on-click #(set-show-an! (not show-an))} "Submit")
+                   (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md [:hover :bg-sky-400] :text-md) :on-click #(set-strategy! all-fold)} "Clear")))
 
             (d/div {:class-name (css :flex :flex-col {:width "40%"} :mt-7)}
                    ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :height height :mix mix :update update})))

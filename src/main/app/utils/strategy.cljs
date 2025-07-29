@@ -303,12 +303,22 @@ all-fold
   (/ encoded 100.0))
 
 (defn encode-strategy [strat]
-  "Encode strategy using range compression like strategy summary"
+  "Encode strategy as diff from all-fold using range compression"
   (try
-    (let [action-groups (group-by-action strat)
-          encoded-groups (map (fn [[actions hands]]
-                                (let [raise-pct (encode-percentage (:raise actions 0))
-                                      call-pct (encode-percentage (:call actions 0))
+    (let [;; Only encode hands that differ from all-fold (100% fold)
+          non-fold-hands (filter (fn [[hand actions]]
+                                   (not (and (= (:raise actions 0) 0)
+                                            (= (:call actions 0) 0)
+                                            (= (:fold actions 100) 100)))) strat)
+          ;; Group non-fold hands by action profile
+          action-groups (group-by (fn [[hand actions]] 
+                                    {:raise (:raise actions 0) 
+                                     :call (:call actions 0)
+                                     :fold (:fold actions 100)}) non-fold-hands)
+          encoded-groups (map (fn [[actions hand-entries]]
+                                (let [raise-pct (encode-percentage (:raise actions))
+                                      call-pct (encode-percentage (:call actions))
+                                      hands (map first hand-entries)
                                       range-str (abbrv-range hands)]
                                   (str raise-pct "," call-pct ":" range-str))) action-groups)]
       (str/join "|" encoded-groups))

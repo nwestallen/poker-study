@@ -9,6 +9,6 @@
     (map-indexed 
       (fn [idx line] 
         (d/div {:key idx :class-name (css :flex :flex-row :items-center :mb-4)}
-          (d/div {:class-name (css :mr-1 {:width "5%"})} ($ ActionPie {:action-string line}))
+          (d/div {:class-name (css :mr-1 {:width "4.5%"})} ($ ActionPie {:action-string line}))
           (d/p {:class-name (css :ml-2 {:width "95%"})} line)))
       strat-text)))

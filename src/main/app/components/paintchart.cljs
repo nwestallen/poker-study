@@ -8,7 +8,6 @@
             [app.components.accreport :refer [AccReport]]
             [app.components.freqchart :refer [FreqChart]]
             [app.components.pokertable :refer [TableContainer]]
-            [app.components.scenariomanager :refer [ScenarioManager]]
             [app.components.actionbar :refer [ActionBar]]
             [app.components.mixslider :refer [SliderSquare]]
             [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat percent-summary]]

@@ -40,7 +40,7 @@
 
         copy-url (fn []
                    (let [encoded-strategy (encode-strategy strategy)
-                         url (str js/window.location.origin "/test"
+                         url (str js/window.location.origin "/"
                                   "?strategy=" (js/encodeURIComponent encoded-strategy)
                                   "&actions=" (js/encodeURIComponent table-actions)
                                   (when (not (str/blank? title))
@@ -80,23 +80,24 @@
 
     (d/div {:class-name (css :m-2 :flex :flex-row :mt-6)}
            (d/div {:class-name (css :flex :flex-col {:width "39%"})}
-                  (d/div {:class-name (css :mb-4)}
-                         (d/input {:type "text" 
-                                   :placeholder "Scenario title..." 
-                                   :value title
-                                   :class-name (css :w-full :p-2 :text-2xl :font-bold :border :border-gray-300 :rounded-md :text-shadow-md [:focus :border-sky-500 :outline-none])
-                                   :on-change #(set-title! (.. % -target -value))}))
                   ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :height height :mix mix :update update}))
            (d/div {:class-name (css :flex :flex-col {:width "15%"} :m-4)}
                   (d/div {:class-name (css :flex :flex-col)}
                          (d/div {:class-name (css {:width "100%"} :mt-4 :flex :flex-col :justify-start)} ($ SliderSquare {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update}))
                          ($ ActionForm {:actions form-actions :set-actions! set-form-actions! :on-submit #(set-table-actions! form-actions)})
                          ($ RangeForm {:on-submit #(set-strategy! (convert-ranges %))})
-                         (d/button {:class-name (css :shadow-md :text-shadow-sm :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :my-1 :rounded-md [:hover :bg-sky-400]) :on-click #(set-strategy! (simplify-strat strategy))} "Simplify Strat")
-                         (d/button {:class-name (css :shadow-md :text-shadow-sm :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :my-1 :rounded-md [:hover :bg-sky-400]) :on-click #(set-strategy! all-fold)} "Clear Strategy")
-                         (d/button {:class-name (css :shadow-md :text-shadow-sm :text-white :font-bold :bg-green-500 :h-fit :w-fit :px-2 :py-1 :my-1 :rounded-md [:hover :bg-green-400]) :on-click copy-url} "Copy Test URL")))
+                         (d/div {:class-name (css :flex :flex-row :flex-wrap)}
+                         (d/button {:class-name (css :shadow-md :text-shadow-sm :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-1 :rounded-md [:hover :bg-sky-400] :text-sm) :on-click #(set-strategy! (simplify-strat strategy))} "Simplify")
+                         (d/button {:class-name (css :shadow-md :text-shadow-sm :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-1 :rounded-md [:hover :bg-sky-400] :text-sm) :on-click #(set-strategy! all-fold)} "Clear")
+                         (d/button {:class-name (css :shadow-md :text-shadow-sm :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-1 :rounded-md [:hover :bg-sky-400] :text-sm) :on-click copy-url} "URL"))))
 
            (d/div {:class-name (css :flex :flex-col {:width "44%"} :mt-8)}
+                  (d/div {:class-name (css :mb-4)}
+                         (d/input {:type "text" 
+                                   :placeholder "Scenario title..." 
+                                   :value title
+                                   :class-name (css :w-full :p-2 :text-2xl :font-bold :border :border-gray-300 :rounded-md :text-shadow-md [:focus :border-sky-500 :outline-none])
+                                   :on-change #(set-title! (.. % -target -value))}))
                   ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions table-actions})
                   ($ StrategySummary {:strat-text strat-text})))))
 
