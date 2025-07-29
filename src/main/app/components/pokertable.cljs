@@ -108,6 +108,7 @@
                      (set-active-seat! (first (last (zip-play seats (parse-actions (str acts "-X"))))))
                      )))]
     (hooks/use-effect [actions]
+      (set-folds! #{})
       (set-bets! #(assoc % :SB 0.5 :BB 1))
       (set-stacks! #(update % :SB - 0.5))
       (set-stacks! #(update % :BB - 1))

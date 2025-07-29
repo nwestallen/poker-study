@@ -7,7 +7,6 @@
             [app.components.paintchart :refer [Paintchart]]
             [app.components.rangeform :refer [RangeForm]]
             [app.components.accreport :refer [AccReport]]
-            [app.components.freqchart :refer [FreqChart]]
             [app.components.pokertable :refer [TableContainer]]
             [app.components.actionform :refer [ActionForm]]
             [app.components.strategysummary :refer [StrategySummary]]
