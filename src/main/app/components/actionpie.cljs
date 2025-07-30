@@ -28,9 +28,9 @@
 
 (defnc ActionPie [{:keys [action-string]}]
   (let [actions (parse-action-string action-string)
-        action-data [{:type :raise :pct (get actions :raise 0) :color "#ef4444"}
-                     {:type :call :pct (get actions :call 0) :color "#10b981"}
-                     {:type :fold :pct (get actions :fold 0) :color "#0ea5e9"}]
+        action-data [{:type :raise :pct (get actions :raise 0) :color "rgb(239 68 68)"}
+                     {:type :call :pct (get actions :call 0) :color "rgb(34 197 94)" }
+                     {:type :fold :pct (get actions :fold 0) :color "rgb(14 165 233)" }]
         total (reduce + (map :pct action-data))
         radius 49
         center 50]
@@ -51,3 +51,4 @@
                      (if (> pct 0)
                        (conj elements (pie-slice current-angle next-angle radius center color))
                        elements)))))))))
+

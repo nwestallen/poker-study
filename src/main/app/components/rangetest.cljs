@@ -10,6 +10,7 @@
             [app.components.pokertable :refer [TableContainer]]
             [app.components.strategysummary :refer [StrategySummary]]
             [app.components.mixslider :refer [SliderSquare]]
+            [app.components.mixbuttons :refer [MixButtons]]
             [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat encode-strategy decode-strategy]]
             ["react-dom/client" :as rdom]
             ["react-router-dom" :as router]))
@@ -61,6 +62,7 @@
 
             (d/div {:class-name (css :flex :flex-col {:width "15.5%"} :mx-1.5 :mt-15)}
                    ($ SliderSquare {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update})
+                   ($ MixButtons {:set-mix! set-mix!})
                    (d/div {:class-name (css :flex :flex-row :flex-wrap)}
                    (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :mr-2 :rounded-md :shadow-md [:hover :bg-sky-400] :text-md) :on-click #(set-show-an! (not show-an))} "Submit")
                    (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md [:hover :bg-sky-400] :text-md) :on-click #(set-strategy! all-fold)} "Clear")))
