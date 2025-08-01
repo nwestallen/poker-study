@@ -92,6 +92,6 @@
            (d/div {:class-name (css {:width "20%"} :m-2 {:cursor "pointer"}) :on-click #(set-mix! {(ky frst) 50 (ky mid) 0 (ky lst) 50})} ($ ActionPie {:action-string (str frst "(50%)/" lst "(50%)")}))
            (d/div {:class-name (css {:width "20%"} :m-2 {:cursor "pointer"}) :on-click #(set-mix! {(ky frst) 33 (ky mid) 0 (ky lst) 67})} ($ ActionPie {:action-string (str frst "(33%)/" lst "(67%)")}))
            (d/div {:class-name (css {:width "20%"} :m-2 {:cursor "pointer"}) :on-click #(set-mix! {(ky frst) 25 (ky mid) 0 (ky lst) 75})} ($ ActionPie {:action-string (str frst "(25%)/" lst "(75%)")}))
-           (d/div {:class-name (css {:width "20%"} :m-2 {:cursor "pointer"}) :on-click #(set-mix! {(ky frst) 13 (ky mid) 0 (ky lst) 87})} ($ ActionPie {:action-string (str frst "(17%)/" lst "(83%)")}))
+           (d/div {:class-name (css {:width "20%"} :m-2 {:cursor "pointer"}) :on-click #(set-mix! {(ky frst) 17 (ky mid) 0 (ky lst) 83})} ($ ActionPie {:action-string (str frst "(17%)/" lst "(83%)")}))
            (d/div {:class-name (css {:width "20%"} :m-2 {:cursor "pointer"}) :on-click #(set-mix! {(ky frst) 0 (ky mid) 0 (ky lst) 100})} ($ ActionPie {:action-string (str lst "(100%)")})))))
 
