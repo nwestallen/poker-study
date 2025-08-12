@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
-    "shadow-cljs": "2.26.2"
+    "shadow-cljs": "3.1.8"
   },
   "dependencies": {
     "echarts": "^5.6.0",
