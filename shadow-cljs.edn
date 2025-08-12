@@ -1,14 +1,16 @@
 ;; shadow-cljs configuration
 {
- :deps true
- :nrepl {:middleware [cider.nrepl/cider-middleware]}
+ :deps {:aliases [:dev]}
+ :nrepl {:port 9000
+         :middleware [flow-storm.nrepl.middleware/wrap-flow-storm
+                      cider.nrepl/cider-middleware]}
 
  :builds
  {:app {:target :browser
         :output-dir "docs/js"
         :modules {:main {:init-fn app.core/init}}
         :devtools {:reload-strategy :full
-                   :preloads [app.dev]
+                   :preloads [flow-storm.storm-preload app.dev]
                    :http-root "docs"
                    :http-port 8080}
         }}}

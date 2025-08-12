@@ -4,10 +4,39 @@
         thheller/shadow-cljs {:mvn/version "3.1.8"}
         lilactown/helix {:mvn/version "0.1.11"}
         com.thheller/shadow-css {:mvn/version "0.6.2"}
-        cider/cider-nrepl {:mvn/version "0.51.0"}
         com.github.nwestallen/poker-hand-evaluator {:git/sha "47f449d202448bf5e1f562bbaf8ab8c1592408d8"}
         cljs-bean/cljs-bean {:mvn/version "1.9.0"}
         org.flatland/ordered {:mvn/version "1.15.12"}
         }
+ :aliases
+ {:dev {:classpath-overrides {org.clojure/clojurescript nil} ;; disable the official compiler
+        :extra-deps {thheller/shadow-cljs {:mvn/version "3.1.8"
+                                           :exclusions [org.clojure/clojurescript]}
+                     ;; bring ClojureScriptStorm
+                     com.github.flow-storm/clojurescript {:mvn/version "1.12.42-0"}
+                     ;; add FlowStorm runtime dep
+                     com.github.flow-storm/flow-storm-inst {:mvn/version "4.5.0"}
+                     cider/cider-nrepl {:mvn/version "0.51.0"}
+                     com.github.flow-storm/flow-storm-dbg {:mvn/version "4.5.0"}}
+        :jvm-opts ["-Dcljs.storm.instrumentOnlyPrefixes=app"
+                   "-Dcljs.storm.instrumentEnable=true"
+                   "-Dflowstorm.startRecording=false"]}
+ :dev-storm {:replace-deps {thheller/shadow-cljs {:mvn/version "3.1.8"}
+                            lilactown/helix {:mvn/version "0.1.11"}
+                            com.thheller/shadow-css {:mvn/version "0.6.2"}
+                            com.github.nwestallen/poker-hand-evaluator {:git/sha "47f449d202448bf5e1f562bbaf8ab8c1592408d8"}
+                            cljs-bean/cljs-bean {:mvn/version "1.9.0"}
+                            org.flatland/ordered {:mvn/version "1.15.12"}
+                            ;; FlowStorm dependencies
+                            com.github.flow-storm/clojurescript {:mvn/version "1.12.42-0"}
+                            com.github.flow-storm/flow-storm-inst {:mvn/version "4.5.0"}
+                            cider/cider-nrepl {:mvn/version "0.51.0"}
+                            com.github.flow-storm/flow-storm-dbg {:mvn/version "4.5.0"}}
+             :classpath-overrides {org.clojure/clojurescript nil}
+             :exec-fn shadow.cljs.devtools.cli/main
+             :exec-args {:action :run :fn repl/start}
+             :jvm-opts ["-Dcljs.storm.instrumentOnlyPrefixes=app"
+                        "-Dcljs.storm.instrumentEnable=true"
+                        "-Dflowstorm.startRecording=false"]}}
  }
 
