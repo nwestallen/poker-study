@@ -11,8 +11,7 @@
             [app.components.strategysummary :refer [StrategySummary]]
             [app.components.mixslider :refer [SliderSquare]]
             [app.components.mixbuttons :refer [MixButtons]]
-            [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat encode-strategy decode-strategy]]
-            ["react-dom/client" :as rdom]
+            [app.utils.strategy :refer [all-fold abbrv-strat encode-strategy decode-strategy]]
             ["react-router-dom" :as router]))
 
 (defnc RangeTest [{:keys []}]
@@ -60,15 +59,17 @@
                    ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions actions :set-actions! set-actions!})
                    ($ StrategySummary {:strat-text strat-text}))
 
-            (d/div {:class-name (css :flex :flex-col {:width "15.5%"} :mx-1.5 :mt-15)}
+            (d/div {:class-name (css :flex :flex-col {:width "40%"} :mt-7)}
+                   ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :height height :mix mix :update update}))
+
+            (d/div {:class-name (css :flex :flex-col {:width "15.5%"} :mt-15)}
                    ($ SliderSquare {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update})
                    ($ MixButtons {:set-mix! set-mix!})
                    (d/div {:class-name (css :flex :flex-row :flex-wrap)}
                    (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :mr-2 :rounded-md :shadow-md [:hover :bg-sky-400] :text-md) :on-click #(set-show-an! (not show-an))} "Submit")
                    (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :rounded-md :shadow-md [:hover :bg-sky-400] :text-md) :on-click #(set-strategy! all-fold)} "Clear")))
 
-            (d/div {:class-name (css :flex :flex-col {:width "40%"} :mt-7)}
-                   ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :height height :mix mix :update update})))
+       )
 
      (if show-an
        (d/div {:class-name (css :fixed :top-0 :left-0 :w-screen :flex :flex-row :justify-center)}

@@ -6,13 +6,11 @@
             [clojure.string :as str]
             [app.components.paintchart :refer [Paintchart]]
             [app.components.rangeform :refer [RangeForm]]
-            [app.components.accreport :refer [AccReport]]
             [app.components.pokertable :refer [TableContainer]]
             [app.components.actionform :refer [ActionForm]]
             [app.components.strategysummary :refer [StrategySummary]]
             [app.components.mixslider :refer [SliderSquare]]
-            [app.utils.strategy :refer [action-summary all-fold convert-ranges strat-accuracy simplify-strat abbrv-strat encode-strategy decode-strategy]]
-            ["react-dom/client" :as rdom]
+            [app.utils.strategy :refer [all-fold convert-ranges simplify-strat abbrv-strat encode-strategy decode-strategy]]
             ["react-router-dom" :as router]))
 
 (defnc Creator [{:keys []}]
@@ -77,10 +75,22 @@
        (update-url-from-state))
      js/undefined)
 
-    (d/div {:class-name (css :m-2 :flex :flex-row :mt-6)}
-           (d/div {:class-name (css :flex :flex-col {:width "39%"})}
+    (d/div {:class-name (css :m-2 :flex :flex-row :mt-6 :justify-evenly)}
+
+           (d/div {:class-name (css :flex :flex-col {:width "40%"} :mt-8)}
+                  (d/div {:class-name (css :mb-4)}
+                         (d/input {:type "text"
+                                   :placeholder "Scenario title..."
+                                   :value title
+                                   :class-name (css :w-full :p-2 :text-2xl :font-bold :border :border-gray-300 :rounded-md :text-shadow-md [:focus :border-sky-500 :outline-none])
+                                   :on-change #(set-title! (.. % -target -value))}))
+                  ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions table-actions})
+                  ($ StrategySummary {:strat-text strat-text}))
+
+           (d/div {:class-name (css :flex :flex-col {:width "40%"})}
                   ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :height height :mix mix :update update}))
-           (d/div {:class-name (css :flex :flex-col {:width "15%"} :m-4)}
+
+           (d/div {:class-name (css :flex :flex-col {:width "15.5%"} :mt-4)}
                   (d/div {:class-name (css :flex :flex-col)}
                          (d/div {:class-name (css {:width "100%"} :mt-4 :flex :flex-col :justify-start)} ($ SliderSquare {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update}))
                          ($ ActionForm {:actions form-actions :set-actions! set-form-actions! :on-submit #(set-table-actions! form-actions)})
@@ -90,13 +100,5 @@
                          (d/button {:class-name (css :shadow-md :text-shadow-sm :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-1 :rounded-md [:hover :bg-sky-400] :text-sm) :on-click #(set-strategy! all-fold)} "Clear")
                          (d/button {:class-name (css :shadow-md :text-shadow-sm :text-white :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :m-1 :rounded-md [:hover :bg-sky-400] :text-sm) :on-click copy-url} "URL"))))
 
-           (d/div {:class-name (css :flex :flex-col {:width "44%"} :mt-8)}
-                  (d/div {:class-name (css :mb-4)}
-                         (d/input {:type "text" 
-                                   :placeholder "Scenario title..." 
-                                   :value title
-                                   :class-name (css :w-full :p-2 :text-2xl :font-bold :border :border-gray-300 :rounded-md :text-shadow-md [:focus :border-sky-500 :outline-none])
-                                   :on-change #(set-title! (.. % -target -value))}))
-                  ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions table-actions})
-                  ($ StrategySummary {:strat-text strat-text})))))
+           )))
 

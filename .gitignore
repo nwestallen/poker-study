@@ -19,6 +19,7 @@ pom.xml.asc
 .DS_Store
 .cpcache
 .cljs_node_repl/
+.clj-kondo/
 
 .hgignore
 .hg/
