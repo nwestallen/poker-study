@@ -5,7 +5,7 @@ This is currently a range-memorization tool that I'm building for myself that mi
 * Strategy-painter with arbitary strategy mix (only 3 actions: raise/call/fold) and height (height signifies how often that hand combo is in your extant range)
 * Poker table visualization to reprsent the scenario corresponding to your range (currently 9-handed with SB & BB only)
 * Scenario and (preflop/suit-isomorphic) strategy URL ecoding, so that links can be produced and saved to practice created spots
-* Able to import strategies from GTO Wizard via copying ranges for a given action
+* Able to import strategies from GTO Wizard, Upswing via copying ranges for a given action
 * Import scenarios from GTO Wizard via the preflop_actions URL query parameter
   - Strings of the form "F-F-F-R3-F-C-F" indicate actions of each player, starting with UTG, and can be hand-typed for custom scenarios
 * Button to simplify strategies by naively rounding to preset intervals based on hand comob type:
@@ -31,6 +31,8 @@ This is currently a range-memorization tool that I'm building for myself that mi
   - Number of players
   - Blinds & antes
   - Input for stack sizes
+* Mobile and small layouts/more responsive design
+* Action summary should handle partial strategies (omit unavailable actions and normalize to 100%)
 
 ## Dev Notes
 1. run `npx shadow-cljs run repl/start` in command line

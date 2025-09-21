@@ -135,31 +135,63 @@
   (.toFixed (* 100 (/ (- 1326 (reduce + (vals (diff-summary strat1 strat2)))) 1326)) 1)
   )
 
-(defn classify-hand [hand]
+(def raise-input "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s:0.92,AKo,KK,KQs,KJs,KTs,K9s,K8s:0.97,K7s:0.42,K5s:0.02,AQo,KQo,QQ,QJs,QTs,Q9s,AJo,KJo,QJo:0.53,JJ,JTs,J9s:0.76,ATo,KTo:0.39,QTo:0.1,TT,T9s,T8s:0.12,99,98s:0.19,88,87s:0.29,77,76s:0.35,66:0.93,65s:0.56,55:0.63,54s:0.37,44:0.32,33:0.22,22:0.14")
+
+(str/split raise-input #",")
+
+(defn get-hand [string]
+  (let [first-two (take 2 string)]
+    (if (= (first first-two) (second first-two))
+      (apply str first-two)
+      (apply str (take 3 string))
+      )
+    )
+  )
+
+(get-hand (nth (str/split raise-input #",") 12))
+
+(defn get-amount [string]
+  (if (<= (count string) 3)
+    100
+    (let [d (str/index-of string ":")]
+      (* 100 (js/parseFloat (apply str (drop (+ d 1) string)))))
+    )
+  )
+
+(get-amount (nth (str/split raise-input #",") 2))
+
+(defn parse-hand [string]
+  (if (str/blank? string) {}
+      {(keyword (get-hand string)) (get-amount string)}
+      ))
+
+(parse-hand (nth (str/split raise-input #",") 12))
+
+(defn abstract-hand [hand]
   (if (= (first hand) (nth hand 2)) (str (first hand) (nth hand 2))
       (if (= (second hand) (last hand)) (str (first hand) (nth hand 2) "s")
           (str (first hand) (nth hand 2) "o")))
     )
 
-(defn get-hand [string]
+(defn get-suited-hand [string]
   (apply str (take 4 string)))
 
-(defn get-amount [string]
+(defn get-suited-amount [string]
   (let [d (str/index-of string " ")]
     (* 100 (js/parseFloat (apply str (drop (+ d 1) string))))))
 
 (defn round-two [n]
   (/ (Math/round (* n 100.0)) 100.0))
 
-(defn parse-hand [string]
+(defn parse-suited-hand [string]
   (if (str/blank? string) {}
-  (let [hand (classify-hand (get-hand string))]
-  {(keyword hand) (/ (get-amount string) (combos hand))})))
+  (let [hand (abstract-hand (get-suited-hand string))]
+  {(keyword hand) (/ (get-suited-amount string) (combos hand))})))
 
-(defn parse-hands [string action-key]
+(defn parse-hands [string action-key suited?]
   (as-> string x
     (str/split x #",")
-    (map parse-hand x)
+    (map (if suited? parse-suited-hand parse-hand) x)
     (apply (partial merge-with +) x)
     (update-vals x #(assoc {} action-key  %))
     ))
@@ -168,11 +200,11 @@
   (flatten (into () (apply merge-with merge ranges)))
   )
 
-(defn convert-ranges [{:keys [raise call fold]}]
+(defn convert-ranges [{:keys [raise call fold suited?]}]
   (strategy blank-strat
-  (consolidate-ranges (parse-hands raise :raise)
-                      (parse-hands call :call)
-                      (parse-hands fold :fold))))
+  (consolidate-ranges (parse-hands raise :raise suited?)
+                      (parse-hands call :call suited?)
+                      (parse-hands fold :fold suited?))))
 
 (defn combo-percent [n]
   (* (/ n 1326) 100))
@@ -260,8 +292,6 @@
  (flatten r)
  (str/join ", " r)))
 
-(set (keys (filter (comp pos? val) {:raise 100 :call 0 :fold 0})))
-
 (defn abbrv-strat [strat]
   (as-> strat r
     (group-by-action r)
@@ -275,6 +305,10 @@
                    :else [2 0 0]))) r)
     (mapv (fn [[k v]] [(act-str k) v]) r)
     (mapv (fn [[k v]] (str k ": " v)) r)))
+
+(defn convert-fold [act]
+  (hash-map :fold (+ (:raise act) (:call act)))
+  )
 
 ;; Range-based encoding uses existing range compression functions
 
