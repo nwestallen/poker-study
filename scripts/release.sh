@@ -3,7 +3,12 @@
 
 echo "🚀 Building production release (without FlowStorm)..."
 
+# Build CSS first
+echo "📦 Building CSS..."
+shadow-cljs run build/css-release
+
 # Override the dev-focused shadow-cljs.edn for clean release builds
+echo "📦 Building JavaScript..."
 clojure -M -m shadow.cljs.devtools.cli --config-merge '{
   :deps true
   :nrepl {:middleware ["cider.nrepl/cider-middleware"]}
@@ -11,4 +16,5 @@ clojure -M -m shadow.cljs.devtools.cli --config-merge '{
 }' release app
 
 echo "✅ Production build completed!"
-echo "   Output: docs/js/main.js (no FlowStorm dependencies)"
+echo "   CSS: docs/css/ui.css"
+echo "   JS:  docs/js/main.js (no FlowStorm dependencies)"

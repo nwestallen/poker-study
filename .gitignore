@@ -20,6 +20,7 @@ pom.xml.asc
 .cpcache
 .cljs_node_repl/
 .clj-kondo/
+.claude/
 
 .hgignore
 .hg/

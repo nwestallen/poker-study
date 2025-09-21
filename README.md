@@ -38,4 +38,4 @@ This is currently a range-memorization tool that I'm building for myself that mi
 1. run `npx shadow-cljs run repl/start` in command line
 2. in Emacs cider-repl-connect-cljs
 3. choose localhost, then the port reported from the command line
-4. choose shadow, then either node or browser repl
+4. use `npm run release` to build production deployment - this works around debugger conflict with `shadow-cljs release app`
