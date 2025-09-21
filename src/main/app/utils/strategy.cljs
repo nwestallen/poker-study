@@ -28,9 +28,6 @@
     :pair
     (if (= (last hand) "s") :suited :offsuit)))
 
-(group-by hand-type '("AA" "AKs" "AJo" "QQ" "KQo" "54s"))
-(update-vals (group-by hand-type '("AA" "AKs" "AJo" "ATo" "A9o" "A5s" "QQ" "QJs" "KQo" "KQs" "KTs" "KJs" "KJo" "54s")) (partial group-by first))
-
 (defn pair-range [hand]
   (if (= (last hand) "+") (pair-range (apply str "AA-" (drop-last hand)))
   (map (fn [r] (str r r)) (filter #(<= (rank-value (last hand)) (rank-value %) (rank-value (first hand))) ranks))
@@ -49,8 +46,6 @@
 
 (def hand-ranges (comp flatten (partial map hand-range)))
 
-(apply assoc all-fold (flatten (map #(vector (keyword %) {:raise 100}) (hand-ranges '("QQ+" "A5s+")))))
-
 (defn strategy [base updates]
   (apply assoc base updates))
 
@@ -60,8 +55,6 @@
 (defn act-ranges [actionmap]
   (flatten (map (fn [[k v]] (act-range k v)) actionmap))
   )
-
-(act-ranges {{:raise 100} '("QQ+" "AQs+") {:call 100} '("77-44")})
 
 (def strat-ranges
   (comp (partial strategy all-fold) act-ranges))
@@ -135,10 +128,6 @@
   (.toFixed (* 100 (/ (- 1326 (reduce + (vals (diff-summary strat1 strat2)))) 1326)) 1)
   )
 
-(def raise-input "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s:0.92,AKo,KK,KQs,KJs,KTs,K9s,K8s:0.97,K7s:0.42,K5s:0.02,AQo,KQo,QQ,QJs,QTs,Q9s,AJo,KJo,QJo:0.53,JJ,JTs,J9s:0.76,ATo,KTo:0.39,QTo:0.1,TT,T9s,T8s:0.12,99,98s:0.19,88,87s:0.29,77,76s:0.35,66:0.93,65s:0.56,55:0.63,54s:0.37,44:0.32,33:0.22,22:0.14")
-
-(str/split raise-input #",")
-
 (defn get-hand [string]
   (let [first-two (take 2 string)]
     (if (= (first first-two) (second first-two))
@@ -148,8 +137,6 @@
     )
   )
 
-(get-hand (nth (str/split raise-input #",") 12))
-
 (defn get-amount [string]
   (if (<= (count string) 3)
     100
@@ -158,14 +145,10 @@
     )
   )
 
-(get-amount (nth (str/split raise-input #",") 2))
-
 (defn parse-hand [string]
   (if (str/blank? string) {}
       {(keyword (get-hand string)) (get-amount string)}
       ))
-
-(parse-hand (nth (str/split raise-input #",") 12))
 
 (defn abstract-hand [hand]
   (if (= (first hand) (nth hand 2)) (str (first hand) (nth hand 2))
@@ -292,10 +275,15 @@
  (flatten r)
  (str/join ", " r)))
 
+(defn normalize-act [act]
+  (update-vals act #(* 100 (/ % (apply + (vals act)))))
+  )
+
 (defn abbrv-strat [strat]
   (as-> strat r
     (group-by-action r)
     (update-vals r abbrv-range)
+    (update-keys r normalize-act)
     (sort-by (fn [[k v]]
                (let [raise-pct (get k :raise 0)
                      call-pct (get k :call 0)]
@@ -304,6 +292,7 @@
                    (> call-pct 0) [1 0 (- call-pct)]
                    :else [2 0 0]))) r)
     (mapv (fn [[k v]] [(act-str k) v]) r)
+    (remove #(str/blank? (first %)) r)
     (mapv (fn [[k v]] (str k ": " v)) r)))
 
 (defn convert-fold [act]
