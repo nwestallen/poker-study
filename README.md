@@ -17,9 +17,6 @@ This is currently a range-memorization tool that I'm building for myself that mi
 * Convenience buttons for setting paint mix to selected mix intervals (1/6ths and 1/4ths)
 
 ## Planned Features
-* Enhancements for 3-bet scenarios:
-  - Toggle switch to 'lock' height of the paint mix on the range test screen: if an existing hand's height is 50%, whatever the action mix is, say raise 75% and fold 25%, apply that mix to the 50% remaining, so ultimately the underlying action mix will be raise 37.5% and fold 12.5%
-  - Function to convert non-folds to folds and folds to blanks so that you can paint based on extant range implied by previous action
 * Enhancements for postflop scenarios:
   - Input for specifying cards on board (flop/turn/river)
   - Toggle/remove blinds, set remaining players
@@ -32,10 +29,10 @@ This is currently a range-memorization tool that I'm building for myself that mi
   - Blinds & antes
   - Input for stack sizes
 * Mobile and small layouts/more responsive design
-* Action summary should handle partial strategies (omit unavailable actions and normalize to 100%)
+* Update accuracy report to properly score/display partial ranges
 
 ## Dev Notes
-1. run `npx shadow-cljs run repl/start` in command line
+1. run `npm run dev` in command line
 2. in Emacs cider-repl-connect-cljs
-3. choose localhost, then the port reported from the command line
+3. choose localhost, then the port reported from the command line (browser must be open to evaluate expressions)
 4. use `npm run release` to build production deployment - this works around debugger conflict with `shadow-cljs release app`

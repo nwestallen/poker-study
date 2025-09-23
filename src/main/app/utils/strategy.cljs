@@ -20,7 +20,7 @@
         "K" 13
         "Q" 12
         "J" 11
-        "T" 10
+         "T" 10
         (js/parseInt card)))
 
 (defn hand-type [hand]
@@ -281,9 +281,10 @@
 
 (defn abbrv-strat [strat]
   (as-> strat r
+    (update-vals r normalize-act)
     (group-by-action r)
     (update-vals r abbrv-range)
-    (update-keys r normalize-act)
+    ;;(update-keys r normalize-act)
     (sort-by (fn [[k v]]
                (let [raise-pct (get k :raise 0)
                      call-pct (get k :call 0)]
@@ -296,8 +297,20 @@
     (mapv (fn [[k v]] (str k ": " v)) r)))
 
 (defn convert-fold [act]
+  (hash-map :fold (+ (:raise act) (:call act) (:fold act)))
+  )
+
+(defn convert-act [act]
   (hash-map :fold (+ (:raise act) (:call act)))
   )
+
+(defn keep-heights [strat]
+  (ordered-map (map #(vector (first %) (convert-fold (second %))) strat)))
+
+(defn keep-acts [strat]
+  (ordered-map (map #(vector (first %) (convert-act (second %))) strat)))
+
+(keep-acts HJvCO)
 
 ;; Range-based encoding uses existing range compression functions
 
@@ -310,46 +323,45 @@
   (/ encoded 100.0))
 
 (defn encode-strategy [strat]
-  "Encode strategy as diff from all-fold using range compression"
+  "Encode strategy as diff from blank-strat to preserve empty vs fold distinction"
   (try
-    (let [;; Only encode hands that differ from all-fold (100% fold)
-          non-fold-hands (filter (fn [[hand actions]]
-                                   (not (and (= (:raise actions 0) 0)
-                                            (= (:call actions 0) 0)
-                                            (= (:fold actions 100) 100)))) strat)
-          ;; Group non-fold hands by action profile
-          action-groups (group-by (fn [[hand actions]] 
-                                    {:raise (:raise actions 0) 
+    (let [;; Only encode hands that differ from blank (empty actions)
+          non-blank-hands (filter (fn [[hand actions]]
+                                    (not (empty? actions))) strat)
+          ;; Group hands by action profile
+          action-groups (group-by (fn [[hand actions]]
+                                    {:raise (:raise actions 0)
                                      :call (:call actions 0)
-                                     :fold (:fold actions 100)}) non-fold-hands)
+                                     :fold (:fold actions 0)}) non-blank-hands)
           encoded-groups (map (fn [[actions hand-entries]]
                                 (let [raise-pct (encode-percentage (:raise actions))
                                       call-pct (encode-percentage (:call actions))
+                                      fold-pct (encode-percentage (:fold actions))
                                       hands (map first hand-entries)
                                       range-str (abbrv-range hands)]
-                                  (str raise-pct "," call-pct ":" range-str))) action-groups)]
+                                  (str raise-pct "," call-pct "," fold-pct ":" range-str))) action-groups)]
       (str/join "|" encoded-groups))
     (catch :default e
       (js/console.error "Error encoding strategy:" e)
       "")))
 
 (defn decode-strategy [encoded-str]
-  "Decode strategy from range-compressed format"
+  "Decode strategy from range-compressed format using blank-strat baseline"
   (if (str/blank? encoded-str)
-    all-fold
+    blank-strat
     (try
       (let [action-groups (str/split encoded-str #"\|")
             decoded-actions (mapcat (fn [group]
                                       (let [[action-str range-str] (str/split group #":" 2)
-                                            [raise-str call-str] (str/split action-str #",")
+                                            [raise-str call-str fold-str] (str/split action-str #",")
                                             raise-pct (decode-percentage (js/parseInt raise-str))
                                             call-pct (decode-percentage (js/parseInt call-str))
-                                            fold-pct (- 100 raise-pct call-pct)
+                                            fold-pct (decode-percentage (js/parseInt fold-str))
                                             hands (hand-ranges (str/split range-str #",\s*"))
                                             actions {:raise raise-pct :call call-pct :fold fold-pct}]
                                         (map #(vector (keyword %) actions) hands))) action-groups)]
-        (apply assoc all-fold (flatten decoded-actions)))
+        (apply assoc blank-strat (flatten decoded-actions)))
       (catch :default e
         (js/console.error "Error decoding strategy:" e encoded-str)
-        all-fold))))
+        blank-strat))))
 

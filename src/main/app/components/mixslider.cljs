@@ -54,3 +54,13 @@
   (d/div {:class-name (css {:margin-left "5%" :width "20%" :margin-top "20%"} :min-w-min)} ($ HeightInput {:height height :set-height set-height}))
   )
   )
+
+(defnc SimpleSlider [{:keys [mix set-mix update]}]
+  (d/div {:class-name (css :flex :flex-row :rounded-xl :p-2 :shadow-xl :text-shadow-sm {:width "100%"} {:background "rgb(150 150 150)"})}
+  (d/div {:class-name (css :flex :flex-col {:width "100%"})}
+         (d/div {:class-name (css :shadow-lg)} ($ MixSquare {:hand "AA" :act update}))
+         (d/div {:class-name (css {:height "14px" :margin-top "5%"})} ($ MixSlider {:mix mix :set-mix set-mix}))
+         (d/div {:class-name (css {:margin-top "5%"} :shadow-lg)} ($ ActionInputs {:mix mix :set-mix set-mix}))
+         )
+  )
+  )

@@ -1,5 +1,5 @@
 (ns app.components.creator
-  (:require [helix.core :refer [defnc $ <>]]
+  (:require [helix.core :refer [defnc $]]
             [helix.hooks :as hooks]
             [helix.dom :as d]
             [shadow.css :refer [css]]
@@ -10,7 +10,7 @@
             [app.components.actionform :refer [ActionForm]]
             [app.components.strategysummary :refer [StrategySummary]]
             [app.components.mixslider :refer [SliderSquare]]
-            [app.utils.strategy :refer [all-fold convert-ranges simplify-strat abbrv-strat encode-strategy decode-strategy]]
+            [app.utils.strategy :refer [all-fold blank-strat convert-ranges simplify-strat abbrv-strat encode-strategy decode-strategy]]
             ["react-router-dom" :as router]))
 
 (defnc Creator [{:keys []}]
@@ -26,7 +26,7 @@
 
         update-url-from-state (fn []
                                 (let [encoded-strategy (encode-strategy strategy)]
-                                  (if (= strategy all-fold)
+                                  (if (= strategy blank-strat)
                                     (set-search-params! #js {})
                                     (let [params #js {"strategy" encoded-strategy}]
                                       (when (not (str/blank? table-actions))
@@ -54,7 +54,7 @@
                           (set-title! url-title)))]
 
     (hooks/use-effect
-     [search-params]
+     :once
      (load-from-url)
      js/undefined)
 
@@ -65,14 +65,12 @@
 
     (hooks/use-effect
      [table-actions]
-     (when (not= strategy all-fold)
-       (update-url-from-state))
+       (update-url-from-state)
      js/undefined)
 
     (hooks/use-effect
      [title]
-     (when (not= strategy all-fold)
-       (update-url-from-state))
+       (update-url-from-state)
      js/undefined)
 
     (d/div {:class-name (css :m-2 :flex :flex-row :mt-6 :justify-evenly)}
@@ -88,7 +86,7 @@
                   ($ StrategySummary {:strat-text strat-text}))
 
            (d/div {:class-name (css :flex :flex-col {:width "40%"})}
-                  ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :height height :mix mix :update update}))
+                  ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :update update}))
 
            (d/div {:class-name (css :flex :flex-col {:width "15.5%"} :mt-4)}
                   (d/div {:class-name (css :flex :flex-col)}

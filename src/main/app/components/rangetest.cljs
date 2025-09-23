@@ -5,13 +5,12 @@
             [shadow.css :refer [css]]
             [clojure.string :as str]
             [app.components.paintchart :refer [Paintchart]]
-            [app.components.rangeform :refer [RangeForm]]
             [app.components.accreport :refer [AccReport]]
             [app.components.pokertable :refer [TableContainer]]
             [app.components.strategysummary :refer [StrategySummary]]
-            [app.components.mixslider :refer [SliderSquare]]
+            [app.components.mixslider :refer [SimpleSlider]]
             [app.components.mixbuttons :refer [MixButtons]]
-            [app.utils.strategy :refer [all-fold abbrv-strat encode-strategy decode-strategy]]
+            [app.utils.strategy :refer [all-fold abbrv-strat encode-strategy decode-strategy keep-heights HJvCO]]
             ["react-router-dom" :as router]))
 
 (defnc RangeTest [{:keys []}]
@@ -22,8 +21,6 @@
         [actions set-actions!] (hooks/use-state "")
         [title set-title!] (hooks/use-state "Range Test")
         [mix set-mix!] (hooks/use-state {:raise 35, :call 35, :fold 30})
-        [height set-height!] (hooks/use-state 100)
-        update (hooks/use-memo [mix height] (update-vals mix #(js/parseFloat (.toFixed (* (/ height 100) %) 2))))
         strat-text (hooks/use-memo [strategy] (abbrv-strat strategy))
 
         update-url-from-state (fn []
@@ -35,14 +32,16 @@
 
         load-from-url (fn []
                         (when-let [encoded-strategy (.get search-params "strategy")]
-                          (set-answer! (decode-strategy encoded-strategy)))
+                          (do
+                            (set-strategy! (keep-heights (decode-strategy encoded-strategy)))
+                            (set-answer! (decode-strategy encoded-strategy))))
                         (when-let [url-actions (.get search-params "actions")]
                           (set-actions! url-actions))
                         (when-let [url-title (.get search-params "title")]
                           (set-title! url-title)))]
 
     (hooks/use-effect
-     [search-params]
+     :once
      (load-from-url)
      js/undefined)
 
@@ -60,10 +59,10 @@
                    ($ StrategySummary {:strat-text strat-text}))
 
             (d/div {:class-name (css :flex :flex-col {:width "40%"} :mt-7)}
-                   ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :height height :mix mix :update update}))
+                   ($ Paintchart {:strategy strategy :set-strategy! set-strategy! :update mix :keep-height? true}))
 
             (d/div {:class-name (css :flex :flex-col {:width "15.5%"} :mt-15)}
-                   ($ SliderSquare {:mix mix :set-mix set-mix! :height height :set-height set-height! :update update})
+                   ($ SimpleSlider {:mix mix :set-mix set-mix! :update mix})
                    ($ MixButtons {:set-mix! set-mix!})
                    (d/div {:class-name (css :flex :flex-row :flex-wrap)}
                    (d/button {:class-name (css :text-white :text-shadow-sm :font-bold :bg-slate-500 :h-fit :w-fit :px-2 :py-1 :mt-2 :mr-2 :rounded-md :shadow-md [:hover :bg-sky-400] :text-md) :on-click #(set-show-an! (not show-an))} "Submit")
