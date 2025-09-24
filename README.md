@@ -1,6 +1,8 @@
 # Poker Study Tool
 This is currently a range-memorization tool that I'm building for myself that mimics similar tools available on several browser-based GTO platforms and adds features that I think will help improve my study
 
+<https://poker-study.onrender.com/>
+
 ## Current Features
 * Strategy-painter with arbitary strategy mix (only 3 actions: raise/call/fold) and height (height signifies how often that hand combo is in your extant range)
 * Poker table visualization to reprsent the scenario corresponding to your range (currently 9-handed with SB & BB only)
@@ -29,7 +31,6 @@ This is currently a range-memorization tool that I'm building for myself that mi
   - Blinds & antes
   - Input for stack sizes
 * Mobile and small layouts/more responsive design
-* Update accuracy report to properly score/display partial ranges
 
 ## Dev Notes
 1. run `npm run dev` in command line

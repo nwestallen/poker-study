@@ -125,8 +125,9 @@
   )
 
 (defn strat-accuracy [strat1 strat2]
-  (.toFixed (* 100 (/ (- 1326 (reduce + (vals (diff-summary strat1 strat2)))) 1326)) 1)
-  )
+  (let [base (apply + (vals (action-summary strat2)))]
+  (.toFixed (* 100 (/ (- base (reduce + (vals (diff-summary strat1 strat2)))) base)) 1)
+  ))
 
 (defn get-hand [string]
   (let [first-two (take 2 string)]
@@ -189,11 +190,9 @@
                       (parse-hands call :call suited?)
                       (parse-hands fold :fold suited?))))
 
-(defn combo-percent [n]
-  (* (/ n 1326) 100))
-
 (defn percent-summary [strat]
-  (update-vals (action-summary strat) combo-percent))
+  (let [freqs (action-summary strat)]
+  (update-vals freqs #(* (/ % (apply + (vals freqs))) 100))))
 
 (defn mult-round [m n]
   (Math/round (/ (Math/round (* 100 (* (Math/round (/ n m)) m))) 100))
