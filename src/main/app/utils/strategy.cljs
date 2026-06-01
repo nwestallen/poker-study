@@ -173,7 +173,7 @@
 
 (defn parse-hands [string action-key suited?]
   (as-> string x
-    (str/split x #",")
+    (str/split (str/trim x) #"\s*,\s*")
     (map (if suited? parse-suited-hand parse-hand) x)
     (apply (partial merge-with +) x)
     (update-vals x #(assoc {} action-key  %))
