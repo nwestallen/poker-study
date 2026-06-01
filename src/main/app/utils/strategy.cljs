@@ -43,17 +43,17 @@
     (pair-range hand)
     (if (= (count hand) 3) (list hand) (unpair-range hand))))
 
-(def hand-ranges (comp flatten (partial map hand-range)))
+(defn hand-ranges [hands]
+  (mapcat hand-range hands))
 
 (defn strategy [base updates]
   (apply assoc base updates))
 
 (defn act-range [k v]
-  (flatten (map #(vector (keyword %) k) (hand-ranges v))))
+  (mapcat #(vector (keyword %) k) (hand-ranges v)))
 
 (defn act-ranges [actionmap]
-  (flatten (map (fn [[k v]] (act-range k v)) actionmap))
-  )
+  (mapcat (fn [[k v]] (act-range k v)) actionmap))
 
 (def strat-ranges
   (comp (partial strategy all-fold) act-ranges))
@@ -180,8 +180,7 @@
     ))
 
 (defn consolidate-ranges [& ranges]
-  (flatten (into () (apply merge-with merge ranges)))
-  )
+  (mapcat identity (into () (apply merge-with merge ranges))))
 
 (defn convert-ranges [{:keys [raise call fold suited?]}]
   (strategy blank-strat
@@ -269,7 +268,7 @@
  (update r :pair abbrv-pairs)
  (update r :suited abbrv-nopairs)
  (update r :offsuit abbrv-nopairs)
- (map second r)
+ ((juxt :pair :suited :offsuit) r)
  (flatten r)
  (str/join ", " r)))
 
