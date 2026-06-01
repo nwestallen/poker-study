@@ -300,15 +300,8 @@
   (hash-map :fold (+ (:raise act) (:call act) (:fold act)))
   )
 
-(defn convert-act [act]
-  (hash-map :fold (+ (:raise act) (:call act)))
-  )
-
 (defn keep-heights [strat]
   (ordered-map (map #(vector (first %) (convert-fold (second %))) strat)))
-
-(defn keep-acts [strat]
-  (ordered-map (map #(vector (first %) (convert-act (second %))) strat)))
 
 ;; Range-based encoding uses existing range compression functions
 
