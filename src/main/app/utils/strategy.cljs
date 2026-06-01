@@ -1,6 +1,5 @@
 (ns app.utils.strategy
-  (:require [cljs-bean.core :refer [->clj ->js]]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [flatland.ordered.map :refer [ordered-map]]))
 
 (def all-fold
@@ -291,9 +290,11 @@
                    (> raise-pct 0) [0 (- raise-pct) (- call-pct)]
                    (> call-pct 0) [1 0 (- call-pct)]
                    :else [2 0 0]))) r)
-    (mapv (fn [[k v]] [(act-str k) v]) r)
-    (remove #(str/blank? (first %)) r)
-    (mapv (fn [[k v]] (str k ": " v)) r)))
+    (into [] (keep (fn [[k v]]
+                     (let [label (act-str k)]
+                       (when-not (str/blank? label)
+                         {:actions k :text (str label ": " v)}))))
+          r)))
 
 (defn convert-fold [act]
   (hash-map :fold (+ (:raise act) (:call act) (:fold act)))
@@ -309,20 +310,21 @@
 (defn keep-acts [strat]
   (ordered-map (map #(vector (first %) (convert-act (second %))) strat)))
 
-(keep-acts HJvCO)
-
 ;; Range-based encoding uses existing range compression functions
 
-(defn encode-percentage [pct]
+(defn encode-percentage
   "Encode percentage as integer with 2 decimal places (0-10000)"
+  [pct]
   (Math/round (* pct 100)))
 
-(defn decode-percentage [encoded]
+(defn decode-percentage
   "Decode percentage from integer back to float"
+  [encoded]
   (/ encoded 100.0))
 
-(defn encode-strategy [strat]
+(defn encode-strategy
   "Encode strategy as diff from blank-strat to preserve empty vs fold distinction"
+  [strat]
   (try
     (let [;; Only encode hands that differ from blank (empty actions)
           non-blank-hands (filter (fn [[hand actions]]
@@ -344,8 +346,9 @@
       (js/console.error "Error encoding strategy:" e)
       "")))
 
-(defn decode-strategy [encoded-str]
+(defn decode-strategy
   "Decode strategy from range-compressed format using blank-strat baseline"
+  [encoded-str]
   (if (str/blank? encoded-str)
     blank-strat
     (try

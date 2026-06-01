@@ -3,13 +3,6 @@
             [helix.dom :as d]
             [shadow.css :refer [css]]))
 
-(defn- parse-action-string [action-str]
-  "Parse action string like 'Raise(83.33%)/Fold(16.67%)' into action percentages"
-  (->> (clojure.string/split action-str #"[/:]")
-       (keep #(when-let [[_ action pct] (re-find #"(\w+)\((\d+(?:\.\d+)?)%" %)]
-                [(keyword (clojure.string/lower-case action)) (js/parseFloat pct)]))
-       (into {})))
-
 (defn- angle-to-coords [angle radius center]
   [(+ center (* radius (Math/sin (* (/ angle 180) Math/PI))))
    (- center (* radius (Math/cos (* (/ angle 180) Math/PI))))])
@@ -26,9 +19,8 @@
                         end-x " " end-y " Z")
                  :fill color})))))
 
-(defnc ActionPie [{:keys [action-string]}]
-  (let [actions (parse-action-string action-string)
-        action-data [{:type :raise :pct (get actions :raise 0) :color "rgb(239 68 68)"}
+(defnc ActionPie [{:keys [actions]}]
+  (let [action-data [{:type :raise :pct (get actions :raise 0) :color "rgb(239 68 68)"}
                      {:type :call :pct (get actions :call 0) :color "rgb(34 197 94)" }
                      {:type :fold :pct (get actions :fold 0) :color "rgb(14 165 233)" }]
         total (reduce + (map :pct action-data))
