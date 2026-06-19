@@ -58,13 +58,13 @@
          ))
 
 (defnc Bet [{:keys [amount]}]
-  (if (pos? amount) (d/div {:class-name (css :text-white {:width "100%"} :p-1 {:font-size "0.65em"} :flex :flex-row
+  (if (pos? amount) (d/div {:class-name (css :text-white {:width "100%"} :p-1 {:font-size "1.5cqw"} :flex :flex-row
                                       :rounded :text-center :items-center)}
-                    (d/div {:class-name (css {:width "24px"} :p-1 :m-1)} ($ ChipStack {:amount (* 2 amount)}))
-                    (d/p {:class-name (css {:background "rgb(120 120 120)"} :p-0.5 :h-fit :rounded-md :shadow-md)}(str amount "BB")))))
+                    (d/div {:class-name (css {:width "5.7cqw"} :p-1 :m-1)} ($ ChipStack {:amount (* 2 amount)}))
+                    (d/p {:class-name (css {:background "rgb(120 120 120)"} {:width "70%"} :p-0.5 :h-fit :rounded-md :shadow-md)}(str amount "BB")))))
 
 (defnc PokerTable [{:keys [cards active-seat bets stacks folds]}]
-  (d/div {:class-name (css :relative {:width "100%"} :flex :border :border-black :rounded-xl :shadow-md :text-shadow-sm)}
+  (d/div {:class-name (css :relative {:width "100%"} {:container-type "inline-size"} :flex :border :border-black :rounded-xl :shadow-md :text-shadow-sm)}
          ($ Felt {:fill "rgb(34 197 94)"  :border "rgb(60 60 60)" :border-width "10" :width "700" :height "300" :padding "10px"})
          (d/div {:class-name (css {:width "39%"} :flex :absolute {:top "33%"} {:left "30%"})}
                 (map #(d/div {:class-name (css {:width "20%"})} (card-img %)) cards)
