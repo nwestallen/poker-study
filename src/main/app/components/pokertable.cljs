@@ -52,6 +52,55 @@
    :Blue "./BlueChip.svg"
    })
 
+(def ^:private felt-w 700)
+(def ^:private felt-h 300)
+(def ^:private ring-cx (/ felt-w 2))
+(def ^:private ring-cy (/ felt-h 2))
+(def ^:private ring-a 348)
+(def ^:private ring-b 152)
+(def ^:private ring-exp 0.83)
+(def ^:private bottom-y 289)
+(def ^:private bottom-cos -0.45)
+(def ^:private bet-k 0.62)
+(def ^:private tau (* 2 js/Math.PI))
+
+(defn- ->pct
+  "Felt-unit point [x y] -> container {:left :top} as percent strings."
+  [[x y]]
+  {:left (str (* 100 (/ x felt-w)) "%")
+   :top  (str (* 100 (/ y felt-h)) "%")})
+
+(defn- spow
+  "Signed power: keeps the sign of `t` while raising its magnitude to `e`."
+  [t e]
+  (* (js/Math.sign t) (js/Math.pow (js/Math.abs t) e)))
+
+(defn- seat-point
+  "Felt-unit [x y] for seat at vector index `i` of `n` total seats, computed in
+   the felt's 700x300 frame (aspect-correct), ready for `->pct`.
+
+   Seats sit at even angular steps clockwise from top-center. The top and sides
+   follow a superellipse that hugs the felt (a rounded rectangle wider at the
+   arches than an ellipse): `ring-a`/`ring-b` are its half-extents and `ring-exp`
+   its shape, where 1.0 is an ellipse and < 1 bulges the arches outward. Seats
+   whose cos θ is below `bottom-cos` snap onto a flat bottom rail at `bottom-y`
+   so the bottom row is level. The phase keeps the top-center clear (board area)
+   with the blinds straddling it: slot 0 sits just clockwise of top-center, so
+   the passed action-ordered seats land in the same orientation as the original
+   hand-placed 9-max layout."
+  [i n]
+  (let [slot (mod (+ i 2) n)
+        theta (* (/ (+ slot 0.5) n) tau)
+        c (js/Math.cos theta)
+        y (if (< c bottom-cos)
+            bottom-y
+            (- ring-cy (* ring-b (spow c ring-exp))))]
+    [(+ ring-cx (* ring-a (spow (js/Math.sin theta) ring-exp))) y]))
+
+(defn- lerp-to-center [[x y] k]
+  [(+ ring-cx (* k (- x ring-cx)))
+   (+ ring-cy (* k (- y ring-cy)))])
+
 (defnc ChipStack [{:keys [amount]}]
   (d/div {:class-name (css {:padding-bottom "100%"} :relative)}
          (map #(d/img {:src ((first %) chip-img) :class-name (get chip-pos (second %))}) (stack-chips amount))
@@ -63,33 +112,34 @@
                     (d/div {:class-name (css {:width "5.7cqw"} :p-1 :m-1)} ($ ChipStack {:amount (* 2 amount)}))
                     (d/p {:class-name (css {:background "rgb(120 120 120)"} {:width "70%"} :p-0.5 :h-fit :rounded-md :shadow-md)}(str amount "BB")))))
 
-(defnc PokerTable [{:keys [cards active-seat bets stacks folds]}]
-  (d/div {:class-name (css :relative {:width "100%"} {:container-type "inline-size"} :flex :border :border-black :rounded-xl :shadow-md :text-shadow-sm)}
-         ($ Felt {:fill "rgb(34 197 94)"  :border "rgb(60 60 60)" :border-width "10" :width "700" :height "300" :padding "10px"})
+(defnc PokerTable [{:keys [seats cards active-seat bets stacks folds]}]
+  (let [n (count seats)
+        centered (fn [{:keys [left top]}]
+                   {:left left :top top :transform "translate(-50%,-50%)"})]
+    (d/div {:class-name (css :relative {:width "100%"} :border :border-black :rounded-xl :shadow-md :p-7)}
+     (d/div {:class-name (css :relative {:width "100%"} {:container-type "inline-size"} :flex :text-shadow-sm)}
+         ($ Felt {:fill "rgb(34 197 94)"  :border "rgb(60 60 60)" :border-width "10" :width felt-w :height felt-h :padding "10px"})
          (d/div {:class-name (css {:width "39%"} :flex :absolute {:top "33%"} {:left "30%"})}
                 (map #(d/div {:class-name (css {:width "20%"})} (card-img %)) cards)
                 )
          (d/div {:class-name (css {:width "4%"} {:top "24%"} {:left "32%"} {:height "8%"} :absolute)} ($ DealerButton {:color "white" :title "DEALER"}))
-         (d/div {:class-name (css {:width "9%"} {:top "-5%"} {:left "30%"} {:height "16%"} :absolute)} ($ PokerSeat {:title "BTN" :active (= active-seat :BTN) :stack (:BTN stacks) :fold (contains? folds :BTN)}))
-         (d/div {:class-name (css {:width "9%"} {:top "20%"} {:left "0%"} {:height "16%"} :absolute)}($ PokerSeat {:title "CO" :active (= active-seat :CO) :stack (:CO stacks) :fold (contains? folds :CO)}))
-         (d/div {:class-name (css {:width "9%"} {:top "65%"} {:left "0%"} {:height "16%"} :absolute)}($ PokerSeat {:title "HJ" :active (= active-seat :HJ) :stack (:HJ stacks) :fold (contains? folds :HJ)}))
-         (d/div {:class-name (css {:width "9%"} {:top "89%"} {:left "21%"} {:height "16%"} :absolute)}($ PokerSeat {:title "LJ" :active (= active-seat :LJ) :stack (:LJ stacks) :fold (contains? folds :LJ)}))
-         (d/div {:class-name (css {:width "9%"} {:top "89%"} {:left "46%"} {:height "16%"} :absolute)}($ PokerSeat {:title "UTG2" :active (= active-seat :UTG2) :stack (:UTG2 stacks) :fold (contains? folds :UTG2)}))
-         (d/div {:class-name (css {:width "9%"} {:top "89%"} {:left "71%"} {:height "16%"} :absolute)}($ PokerSeat {:title "UTG1" :active (= active-seat :UTG1) :stack (:UTG1 stacks) :fold (contains? folds :UTG1)}))
-         (d/div {:class-name (css {:width "9%"} {:top "65%"} {:left "92%"} {:height "16%"} :absolute)}($ PokerSeat {:title "UTG" :active (= active-seat :UTG) :stack (:UTG stacks) :fold (contains? folds :UTG)}))
-         (d/div {:class-name (css {:width "9%"} {:top "20%"} {:left "92%"} {:height "16%"} :absolute)}($ PokerSeat {:title "BB" :active (= active-seat :BB) :stack (:BB stacks) :fold (contains? folds :BB)}))
-         (d/div {:class-name (css {:width "9%"} {:top "-5%"} {:left "62%"} {:height "16%"} :absolute)}($ PokerSeat {:title "SB" :active (= active-seat :SB) :stack (:SB stacks) :fold (contains? folds :SB)}))
+         (map-indexed
+           (fn [i s]
+             (d/div {:key (str "seat-" s)
+                     :class-name (css {:width "9%"} {:height "16%"} :absolute)
+                     :style (centered (->pct (seat-point i n)))}
+                    ($ PokerSeat {:title (name s) :active (= active-seat s)
+                                  :stack (get stacks s) :fold (contains? folds s)})))
+           seats)
          (d/div {:class-name (css {:top "44%"} {:left "44%"} :absolute)} ($ Bet {:amount (apply + (vals bets))}))
-         (d/div {:class-name (css {:top "14%"} {:left "30.5%"} :absolute)} ($ Bet {:amount (:BTN bets)}))
-         (d/div {:class-name (css {:top "14%"} {:left "62.5%"} :absolute)} ($ Bet {:amount (:SB bets)}))
-         (d/div {:class-name (css {:top "27%"} {:left "79%"} :absolute)} ($ Bet {:amount (:BB bets)}))
-         (d/div {:class-name (css {:top "27%"} {:left "10%"} :absolute)} ($ Bet {:amount (:CO bets)}))
-         (d/div {:class-name (css {:top "60%"} {:left "10%"} :absolute)} ($ Bet {:amount (:HJ bets)}))
-         (d/div {:class-name (css {:top "60%"} {:left "79%"} :absolute)} ($ Bet {:amount (:UTG bets)}))
-         (d/div {:class-name (css {:top "73%"} {:left "70%"} :absolute)} ($ Bet {:amount (:UTG1 bets)}))
-         (d/div {:class-name (css {:top "73%"} {:left "23%"} :absolute)} ($ Bet {:amount (:LJ bets)}))
-         (d/div {:class-name (css {:top "73%"} {:left "46%"} :absolute)} ($ Bet {:amount (:UTG2 bets)}))
-         )
+         (map-indexed
+           (fn [i s]
+             (d/div {:key (str "bet-" s)
+                     :class-name (css :absolute)
+                     :style (centered (->pct (lerp-to-center (seat-point i n) bet-k)))}
+                    ($ Bet {:amount (get bets s)})))
+           seats)
+         )))
   )
 
 (defnc TableContainer [{:keys [seats stack-size active-seat actions]}]
@@ -115,7 +165,7 @@
       (set-table! actions)
       )
     (hooks/use-effect :once
-                      (set-active-seat! :UTG))
-      ($ PokerTable {:active-seat active-seat :bets bets :stacks stacks :folds folds})
+                      (set-active-seat! (first seats)))
+      ($ PokerTable {:seats seats :active-seat active-seat :bets bets :stacks stacks :folds folds})
     ))
 
