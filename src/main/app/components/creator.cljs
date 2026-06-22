@@ -8,9 +8,11 @@
             [app.components.rangeform :refer [RangeForm]]
             [app.components.pokertable :refer [TableContainer]]
             [app.components.actionform :refer [ActionForm]]
+            [app.components.tableform :refer [TableForm]]
             [app.components.strategysummary :refer [StrategySummary]]
             [app.components.mixslider :refer [SliderSquare]]
             [app.utils.strategy :refer [all-fold blank-strat convert-ranges simplify-strat abbrv-strat encode-strategy decode-strategy]]
+            [app.utils.tablelogic :refer [seatnames]]
             ["react-router-dom" :as router]))
 
 (defnc Creator [{:keys []}]
@@ -18,6 +20,7 @@
         [strategy set-strategy!] (hooks/use-state all-fold)
         [form-actions set-form-actions!] (hooks/use-state "")
         [table-actions set-table-actions!] (hooks/use-state "")
+        [table-size set-table-size!] (hooks/use-state "9")
         [title set-title!] (hooks/use-state "")
         [mix set-mix!] (hooks/use-state {:raise 35, :call 35, :fold 30})
         [height set-height!] (hooks/use-state 100)
@@ -31,6 +34,8 @@
                                     (let [params #js {"strategy" encoded-strategy}]
                                       (when (not (str/blank? table-actions))
                                         (js/Object.assign params #js {"actions" table-actions}))
+                                      (when (not (str/blank? table-size))
+                                        (js/Object.assign params #js {"tablesize" table-size}))
                                       (when (not (str/blank? title))
                                         (js/Object.assign params #js {"title" title}))
                                       (set-search-params! params)))))
@@ -40,6 +45,7 @@
                          url (str js/window.location.origin "/"
                                   "?strategy=" (js/encodeURIComponent encoded-strategy)
                                   "&actions=" (js/encodeURIComponent table-actions)
+                                  "&tablesize=" (js/encodeURIComponent table-size)
                                   (when (not (str/blank? title))
                                     (str "&title=" (js/encodeURIComponent title))))]
                      (js/navigator.clipboard.writeText url)
@@ -48,8 +54,10 @@
         load-from-url (fn []
                         (when-let [encoded-strategy (.get search-params "strategy")]
                           (set-strategy! (decode-strategy encoded-strategy)))
-                        (when-let [actions (.get search-params "actions")]
-                          (set-table-actions! actions))
+                        (when-let [url-actions (.get search-params "actions")]
+                          (set-table-actions! url-actions))
+                        (when-let [url-tablesize (.get search-params "tablesize")]
+                          (set-table-size! url-tablesize))
                         (when-let [url-title (.get search-params "title")]
                           (set-title! url-title)))]
 
@@ -73,16 +81,22 @@
        (update-url-from-state)
      js/undefined)
 
+    (hooks/use-effect
+     [table-size]
+     (update-url-from-state)
+     js/undefined)
+
     (d/div {:class-name (css :m-2 :flex :flex-row :mt-6 :justify-evenly)}
 
-           (d/div {:class-name (css :flex :flex-col {:width "40%"} :mt-8)}
-                  (d/div {:class-name (css :mb-4)}
+           (d/div {:class-name (css :flex :flex-col :justify-start :gap-4 {:width "40%"} :mt-8)}
+                  (d/div
                          (d/input {:type "text"
                                    :placeholder "Scenario title..."
                                    :value title
                                    :class-name (css :w-full :p-2 :text-2xl :font-bold :border :border-gray-300 :rounded-md :text-shadow-md [:focus :border-sky-500 :outline-none])
                                    :on-change #(set-title! (.. % -target -value))}))
-                  ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions table-actions})
+                  ($ TableContainer {:stack-size 150 :seats ((keyword table-size) seatnames) :actions table-actions})
+                  ($ TableForm {:size table-size :set-size! set-table-size!})
                   ($ StrategySummary {:strat-text strat-text}))
 
            (d/div {:class-name (css :flex :flex-col {:width "40%"})}

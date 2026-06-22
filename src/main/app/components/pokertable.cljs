@@ -1,13 +1,11 @@
 (ns app.components.pokertable
   (:require [helix.core :refer [defnc $ <>]]
             [helix.dom :as d]
-            [helix.hooks :as hooks]
             [shadow.css :refer [css]]
-            [clojure.string :as str]
             [app.components.cards :refer [card-img]]
             [app.components.felt :refer [Felt]]
             [app.components.actionform :refer [ActionForm]]
-            [app.utils.tablelogic :refer [stack-chips zip-play parse-actions]]
+            [app.utils.tablelogic :refer [stack-chips derive-table-state]]
             ["react-dom/client" :as rdom]))
 
 
@@ -58,7 +56,8 @@
 (def ^:private ring-cy (/ felt-h 2))
 (def ^:private ring-a 348)
 (def ^:private ring-b 152)
-(def ^:private ring-exp 0.83)
+(def ^:private ring-exp 1.15)
+(def ^:private ring-exp-y 0.4)
 (def ^:private bottom-y 289)
 (def ^:private bottom-cos -0.45)
 (def ^:private bet-k 0.62)
@@ -79,11 +78,19 @@
   "Felt-unit [x y] for seat at vector index `i` of `n` total seats, computed in
    the felt's 700x300 frame (aspect-correct), ready for `->pct`.
 
-   Seats sit at even angular steps clockwise from top-center. The top and sides
-   follow a superellipse that hugs the felt (a rounded rectangle wider at the
-   arches than an ellipse): `ring-a`/`ring-b` are its half-extents and `ring-exp`
-   its shape, where 1.0 is an ellipse and < 1 bulges the arches outward. Seats
-   whose cos θ is below `bottom-cos` snap onto a flat bottom rail at `bottom-y`
+   Seats sit at even angular steps clockwise from top-center on a Lamé curve
+   (generalized ellipse) sized by half-extents `ring-a`/`ring-b`. Its shape
+   exponent is split per axis — legal because x depends only on sin θ and y only
+   on cos θ, so the axes are independent (1.0 on an axis = a plain ellipse there):
+   - `ring-exp` (horizontal) > 1 compresses the diagonal seats toward the
+     top/bottom centers, evening their spacing instead of bunching them into the
+     felt's rounded corners (which a < 1, bulged-arch value did).
+   - `ring-exp-y` (vertical) < 1 lifts the top row clear of the felt; it helps
+     small seat counts most, where the top pair lands at a wider angle / smaller
+     cos θ and so sits deeper on the arch. The two combine: pulling a top seat
+     inward moves it over the felt's higher straight edge, costing clearance,
+     which the vertical lift pays back. Tune them together, not in isolation.
+   Seats whose cos θ is below `bottom-cos` snap onto a flat bottom rail at `bottom-y`
    so the bottom row is level. The phase keeps the top-center clear (board area)
    with the blinds straddling it: slot 0 sits just clockwise of top-center, so
    the passed action-ordered seats land in the same orientation as the original
@@ -94,7 +101,7 @@
         c (js/Math.cos theta)
         y (if (< c bottom-cos)
             bottom-y
-            (- ring-cy (* ring-b (spow c ring-exp))))]
+            (- ring-cy (* ring-b (spow c ring-exp-y))))]
     [(+ ring-cx (* ring-a (spow (js/Math.sin theta) ring-exp))) y]))
 
 (defn- lerp-to-center [[x y] k]
@@ -142,30 +149,9 @@
          )))
   )
 
-(defnc TableContainer [{:keys [seats stack-size active-seat actions]}]
-  (let [
-        [stacks set-stacks!] (hooks/use-state (zipmap seats (repeat stack-size)))
-        [bets set-bets!] (hooks/use-state (zipmap seats (repeat 0)))
-        [active-seat set-active-seat!] (hooks/use-state :SB)
-        [folds set-folds!] (hooks/use-state #{})
-        set-table! (fn [state]
-                     (let [acts (str/replace state #"AI" (str stack-size))]
-                     (do
-                     (doseq [[f s] (zip-play seats (parse-actions acts))]
-                       (if (= s :fold) (set-folds! #(conj % f))
-                           (do (set-bets! #(assoc % f s))
-                               (set-stacks! #(assoc % f (- stack-size s))))))
-                     (set-active-seat! (first (last (zip-play seats (parse-actions (str acts "-X"))))))
-                     )))]
-    (hooks/use-effect [actions]
-      (set-folds! #{})
-      (set-bets! #(assoc % :SB 0.5 :BB 1))
-      (set-stacks! #(update % :SB - 0.5))
-      (set-stacks! #(update % :BB - 1))
-      (set-table! actions)
-      )
-    (hooks/use-effect :once
-                      (set-active-seat! (first seats)))
-      ($ PokerTable {:seats seats :active-seat active-seat :bets bets :stacks stacks :folds folds})
-    ))
+(defnc TableContainer [{:keys [seats stack-size actions]}]
+  (let [{:keys [stacks bets folds active-seat]}
+        (derive-table-state seats stack-size actions)]
+    ($ PokerTable {:seats seats :active-seat active-seat
+                   :bets bets :stacks stacks :folds folds})))
 

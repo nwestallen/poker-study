@@ -11,6 +11,7 @@
             [app.components.mixslider :refer [SimpleSlider]]
             [app.components.mixbuttons :refer [MixButtons]]
             [app.utils.strategy :refer [all-fold abbrv-strat encode-strategy decode-strategy keep-heights HJvCO]]
+            [app.utils.tablelogic :refer [seatnames]]
             ["react-router-dom" :as router]))
 
 (defnc RangeTest [{:keys []}]
@@ -18,6 +19,7 @@
         [strategy set-strategy!] (hooks/use-state all-fold)
         [answer set-answer!] (hooks/use-state all-fold)
         [show-an set-show-an!] (hooks/use-state false)
+        [table-size set-table-size!] (hooks/use-state "9")
         [actions set-actions!] (hooks/use-state "")
         [title set-title!] (hooks/use-state "Range Test")
         [mix set-mix!] (hooks/use-state {:raise 35, :call 35, :fold 30})
@@ -26,8 +28,9 @@
         update-url-from-state (fn []
                                 (let [encoded-strategy (encode-strategy answer)]
                                   (when (and (not= answer all-fold) (not (str/blank? actions)) (not= title "Range Test"))
-                                    (set-search-params! #js {"strategy" encoded-strategy 
+                                    (set-search-params! #js {"strategy" encoded-strategy
                                                              "actions" actions
+                                                             "tablesize" table-size
                                                              "title" title}))))
 
         load-from-url (fn []
@@ -37,6 +40,8 @@
                             (set-answer! (decode-strategy encoded-strategy))))
                         (when-let [url-actions (.get search-params "actions")]
                           (set-actions! url-actions))
+                        (when-let [url-tablesize (.get search-params "tablesize")]
+                          (set-table-size! url-tablesize))
                         (when-let [url-title (.get search-params "title")]
                           (set-title! url-title)))]
 
@@ -46,16 +51,16 @@
      js/undefined)
 
     (hooks/use-effect
-     [answer actions title]
+     [answer actions title table-size]
      (update-url-from-state)
      js/undefined)
 
     (<>
      (d/div {:class-name (css :m-2 :flex :flex-row :justify-evenly)}
 
-            (d/div {:class-name (css :mt-3 :flex :flex-col {:width "40%"})}
-                   (d/h2 {:class-name (css :font-bold :text-2xl :mb-4 :ml-2 :text-shadow-md)} title)
-                   ($ TableContainer {:stack-size 150 :seats [:UTG :UTG1 :UTG2 :LJ :HJ :CO :BTN :SB :BB] :actions actions :set-actions! set-actions!})
+            (d/div {:class-name (css :flex :flex-col :justify-start :gap-4 {:width "40%"})}
+                   (d/h2 {:class-name (css :font-bold :text-2xl :my-2 :ml-2 :text-shadow-md)} title)
+                   ($ TableContainer {:stack-size 150 :seats ((keyword table-size) seatnames) :actions actions :set-actions! set-actions!})
                    ($ StrategySummary {:strat-text strat-text}))
 
             (d/div {:class-name (css :flex :flex-col {:width "40%"} :mt-7)}
